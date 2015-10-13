@@ -23,6 +23,14 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="big-margin">
+    <template>
+      <div style="padding-top: 10000px">
+        <vaadin-adaptive-overlay></vaadin-adaptive-overlay>
+      </div>
+    </template>
+  </test-fixture>
+
 
   <script>
     describe('overlay modes', function() {
@@ -43,9 +51,7 @@
         beforeEach(function(done) {
           overlay._fullScreen = true;
           overlay.open();
-          Polymer.Base.async(function() {
-            done();
-          });
+          Polymer.Base.async(done);
         });
 
         it('should have correct target elements', function(done) {
@@ -73,14 +79,37 @@
 
       });
 
+      var isSafari = navigator.userAgent.toLowerCase().indexOf('safari/') > -1;
+      if (isSafari) {
+        describe('iOS margin', function() {
+          var bigMargin;
+
+          beforeEach(function(done) {
+            bigMargin = fixture('big-margin').firstElementChild;
+            bigMargin._isIOS = true;
+            bigMargin._fullScreen = true;
+            Polymer.Base.async(done);
+          });
+
+          it('should preserve scroll position on iOS', function(done) {
+            document.body.scrollTop = 500;
+            bigMargin.open();
+
+            Polymer.Base.async(function() {
+              expect(bigMargin.$.dropdown.style.paddingTop).to.equal('500px');
+              bigMargin.close();
+              Polymer.Base.async(done);
+            });
+          });
+        });
+      }
+
       describe('non-fullscreen', function() {
 
         beforeEach(function(done) {
           overlay._fullScreen = false;
           overlay.open();
-          Polymer.Base.async(function() {
-            done();
-          });
+          Polymer.Base.async(done);
         });
 
         it('should have correct target elements', function() {

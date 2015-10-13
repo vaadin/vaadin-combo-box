@@ -20,7 +20,7 @@
   </style>
 
   <template>
-    <iron-dropdown id="dropdown" opened={{opened}} fullscreen$=[[_fullScreen]] on-iron-overlay-closed="_closed" on-iron-overlay-opened="_opened">
+    <iron-dropdown id="dropdown" on-touchstart='_onDropdownTouch' opened={{opened}} fullscreen$=[[_fullScreen]] on-iron-overlay-closed="_closed" on-iron-overlay-opened="_opened">
       <div class="dropdown-content">
         <content>
       </div>
@@ -76,6 +76,12 @@
             "width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1, user-scalable=no";
           return viewport;
         }
+      },
+      /**
+       * True if running on an iOS device
+       */
+      _isIOS: {
+        value: /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
       }
     },
 
@@ -119,6 +125,13 @@
       this._patchIronFitBehavior();
     },
 
+    /**
+     * Prevent scrolling the body while dropdown open
+     */
+    _onDropdownTouch: function(e) {
+      e.preventDefault();
+    },
+
     attached: function() {
       this._fullScreenChanged();
     },
@@ -143,7 +156,23 @@
     _opened: function() {
       if (this._fullScreen) {
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
+
+        if (this._isIOS) {
+          this._preserveDropdownPosition();
+        }
+
       }
+    },
+
+    /**
+     * Bypasses and issue with iOS input focusing while the content is scrolled.
+     */
+    _preserveDropdownPosition: function() {
+      ['Top', 'Left'].forEach(function(extent) {
+          var value = document.body['scroll' + extent];
+          this.$.dropdown.style['padding' + extent] = value + "px";
+          document.body['scroll' + extent] = value;
+      }.bind(this));
     },
 
     /**
