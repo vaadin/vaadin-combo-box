@@ -92,7 +92,8 @@
           });
 
           it('should preserve scroll position on iOS', function(done) {
-            document.body.scrollTop = 500;
+            var scrollTarget = document.body.scrollTop ? document.body : window;
+            scrollTarget.scrollTop = 500;
             bigMargin.open();
 
             Polymer.Base.async(function() {

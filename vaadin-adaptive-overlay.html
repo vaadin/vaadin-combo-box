@@ -155,9 +155,11 @@
      */
     _preserveDropdownPosition: function() {
       ['Top', 'Left'].forEach(function(extent) {
-          var value = document.body['scroll' + extent];
-          this.$.dropdown.style['padding' + extent] = value + "px";
-          document.body['scroll' + extent] = value;
+        var scrollTarget = document.body['scroll' + extent] ? document.body : window;
+
+        var value = scrollTarget['scroll' + extent];
+        this.$.dropdown.style['padding' + extent] = value + "px";
+        scrollTarget['scroll' + extent] = value;
       }.bind(this));
     },
 
