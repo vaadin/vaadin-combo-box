@@ -39,8 +39,7 @@
       opened: {
         type: Boolean,
         notify: true,
-        value: false,
-        observer: '_openedChanged'
+        value: false
       },
 
       /**
@@ -82,19 +81,6 @@
        */
       _isIOS: {
         value: /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
-      }
-    },
-
-    /**
-     * Called when the value of `opened` changes.
-     *
-     * @param {boolean} opened True if the overlay is opened.
-     */
-    _openedChanged: function(opened) {
-      if (opened) {
-        this.open();
-      } else {
-        this.close();
       }
     },
 
