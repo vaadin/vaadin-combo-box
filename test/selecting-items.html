@@ -24,29 +24,29 @@
   describe('selecting a value', function() {
     var combobox;
     var input;
-    var selector;
+    var itemsList;
 
     beforeEach(function() {
       combobox = fixture('combobox');
       input = combobox.$$("input");
-      selector = combobox.$.selector;
+      itemsList = combobox.$.itemsList;
     });
 
     it('should select by using the text input', function() {
       input.bindValue = "foo";
       expect(combobox.value).to.equal("foo");
-      expect(selector.selected).to.equal("foo");
+      expect(itemsList.selectedItem).to.equal("foo");
     });
 
     it('should select by using the selector', function() {
-      selector.selected = "foo";
+      itemsList.selectedItem = "foo";
       expect(combobox.value).to.equal("foo");
       expect(input.bindValue).to.equal("foo");
     });
 
     it('should select by using JS api', function() {
       combobox.value = "foo";
-      expect(selector.selected).to.equal("foo");
+      expect(itemsList.selectedItem).to.equal("foo");
       expect(input.bindValue).to.equal("foo");
     });
 
