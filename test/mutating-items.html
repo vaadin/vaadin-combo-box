@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-combo basic tests</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+
+  <link rel="import" href="common.html">
+</head>
+
+<body>
+
+<test-fixture id="combobox">
+  <template>
+    <vaadin-combo-box></vaadin-combo-box>
+  </template>
+</test-fixture>
+
+
+<script>
+  describe('selecting a value', function() {
+    var combobox;
+    var input;
+    var itemsList;
+
+    beforeEach(function() {
+      combobox = fixture('combobox');
+      input = combobox.$$("input");
+      itemsList = combobox.$.itemsList;
+    });
+
+    it('should push by using array mutation method', function() {
+      combobox.items = [];
+      combobox.push('items', 'foo');
+      expect(combobox.items.length).to.equal(1);
+      expect(combobox.items[0]).to.equal("foo");
+    });
+
+    it('should pop by using array mutation method', function() {
+      combobox.items = ['foo', 'bar'];
+      combobox.pop('items');
+      expect(combobox.items.length).to.equal(1);
+      expect(combobox.items[0]).to.equal("foo");
+    });
+
+    it('should update', function() {
+      combobox.items = ['foo', 'bar'];
+      expect(itemsList.items[1]).to.equal("bar");
+      combobox.items[1] = 'baz';
+      expect(itemsList.items[1]).to.equal("baz");
+    });
+
+  });
+</script>
+
+</body>
+
+</html>
