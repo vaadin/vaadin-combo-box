@@ -77,6 +77,11 @@
         observer: 'close'
       }
     },
+
+    listeners: {
+      'input.bind-value-changed':'_inputValueChanged'
+    },
+
     /**
      * Open the overlay.
      */
@@ -84,10 +89,20 @@
       this.$.overlay.open();
     },
 
+    _inputValueChanged: function() {
+      if(!this.opened && this._isFiltering()) {
+        this.open();
+      }
+    },
+
     _openedChanged: function() {
       if(!this.opened) {
         this.$.input.bindValue = this.value;
       }
+    },
+
+    _isFiltering: function() {
+      return this.$.input.bindValue != this.value;
     },
 
     /**
