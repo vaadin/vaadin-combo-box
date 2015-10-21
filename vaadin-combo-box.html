@@ -192,37 +192,53 @@
       }
     },
 
+    _moveCursorByOffset: function(offset) {
+      var i = this.$.input;
+      var l = i.value.length;
+      var s = i.selectionStart;
+      var o = s + offset
+      if (o >= 0 && o <= l && s != o) {
+        event.preventDefault();
+        i.setSelectionRange(o, o);
+      }
+    },
+
     _onKeydown: function(event) {
       if (!event.metaKey && !event.ctrlKey && !event.altKey) {
         switch (event.keyCode) {
-        case 37: case 39:
-          console.log("arrows")
+        case 37: // up
+          event.preventDefault();
+          this._moveCursorByOffset(-1);
           break
-        case 38:
+        case 39: // down
+          event.preventDefault();
+          this._moveCursorByOffset(+1);
+          break
+        case 38: // right
           event.preventDefault();
           var n = this._selectItemByOffset(-1);
           break;
-        case 40:
+        case 40: // left
           event.preventDefault();
           var n = this._selectItemByOffset(+1);
           break;
-        case 27:
+        case 27: // escape
           if (this.opened) {
             event.preventDefault();
             this.close();
           }
           event.preventDefault();
           break;
-        case 13:
+        case 13: // enter
           if (this.opened) {
             event.preventDefault();
             this.value = this.$.selector.selectedItem;
           } else if (!this.$.input.value) {
+            // FIXME: this never happens, how to clear the input ?
+            event.preventDefault();
             this.$.selector.clearSelection();
             this.close();
           }
-          break;
-        default:
         }
       }
     },
