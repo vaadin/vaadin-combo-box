@@ -41,7 +41,7 @@
 
   <template>
     <paper-input-container on-tap='open'>
-      <input id='input' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged'>
+      <input id='input' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged' autocomplete="off">
       <iron-icon icon='arrow-drop-down' suffix></iron-icon>
     </paper-input-container>
 
@@ -92,7 +92,7 @@
      * Open the overlay.
      */
     open: function() {
-      this.$.overlay.open();
+      this._selectItemByOffset(0);
     },
 
     _fullScreenInputValueChanged: function(event) {
@@ -108,6 +108,7 @@
         if(this.items) {
           this.$.selector.items = this._filter(this.items);
           this.$.selector.selectedItem = this.value;
+          this._selectItem(this.$.selector.items[0]);
         }
       }
     },
@@ -120,9 +121,11 @@
     },
 
     _selectedItemChanged: function() {
-      var _val = this.$.selector.selectedItem;
-      if (_val !== null) {
-        this.value = _val;
+      if (!this._handingSelection) {
+        var _val = this.$.selector.selectedItem;
+        if (_val !== null) {
+          this.value = _val;
+        }
       }
     },
 
@@ -152,7 +155,77 @@
     */
     _getValidity: function(){
       return this.$.input.validate();
-    }
+    },
+
+    listeners: {
+      'keydown': '_onKeydown'
+    },
+
+    _handingSelection: false,
+
+    _selectItem: function(item) {
+      this._handingSelection = true;
+      this.$.selector.clearSelection();
+      try {
+        this.$.selector.selectItem(item);
+        // ignore iron-list: Uncaught TypeError: <item> should be a valid item
+      } catch(ignore) {
+      }
+      this._handingSelection = false;
+    },
+
+    _selectItemByOffset: function(offset) {
+      if (!this.opened) {
+        this.$.overlay.open();
+      }
+      var val = this.$.selector.selectedItem || this.$.input.value;
+      if (!offset) {
+        console.log(val)
+        if (val)
+          this._selectItem(val);
+        return;
+      }
+      var its = this.$.selector.items;
+      var idx = offset + its.indexOf(val);
+      if (idx >= 0 && idx < its.length) {
+        this._selectItem(its[idx]);
+      }
+    },
+
+    _onKeydown: function(event) {
+      if (!event.metaKey && !event.ctrlKey && !event.altKey) {
+        switch (event.keyCode) {
+        case 37: case 39:
+          console.log("arrows")
+          break
+        case 38:
+          event.preventDefault();
+          var n = this._selectItemByOffset(-1);
+          break;
+        case 40:
+          event.preventDefault();
+          var n = this._selectItemByOffset(+1);
+          break;
+        case 27:
+          if (this.opened) {
+            event.preventDefault();
+            this.close();
+          }
+          event.preventDefault();
+          break;
+        case 13:
+          if (this.opened) {
+            event.preventDefault();
+            this.value = this.$.selector.selectedItem;
+          } else if (!this.$.input.value) {
+            this.$.selector.clearSelection();
+            this.close();
+          }
+          break;
+        default:
+        }
+      }
+    },
 
   });
 </script>
