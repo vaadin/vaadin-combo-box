@@ -15,16 +15,9 @@
   <style>
     /* Temporary styles */
 
-    #selector div {
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    #selector div.iron-selected {
-      background: rgba(0, 0, 0, 0.4);
-    }
-
     #itemsList {
       @apply(--layout-flex);
+      background: #FFF;
     }
 
     .item {
@@ -32,6 +25,10 @@
       cursor: pointer;
       padding: 16px 22px;
       border-bottom: 1px solid #DDD;
+    }
+
+    .item:hover {
+      background: #EEE;
     }
 
     .item.selected {
