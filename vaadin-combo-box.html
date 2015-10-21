@@ -20,7 +20,6 @@
     }
 
     .item {
-      @apply(--layout-horizontal);
       cursor: pointer;
       padding: 16px 22px;
       border-bottom: 1px solid #DDD;
@@ -30,7 +29,7 @@
       background: #EEE;
     }
 
-    .item.selected {
+    .item[selected] {
       background-color: var(--google-grey-100);
     }
   </style>
@@ -44,7 +43,7 @@
     <vaadin-adaptive-overlay id='overlay' opened={{opened}}>
       <iron-list id="itemsList" items="[[items]]" selected-item="{{value}}" selection-enabled>
         <template>
-          <div class$="[[_computedClass(selected)]]">[[item]]</div>
+          <div selected$=[[selected]] class="item">[[item]]</div>
         </template>
       </iron-list>
     </vaadin-adaptive-overlay>
@@ -91,14 +90,6 @@
      */
     close: function() {
       this.$.overlay.close();
-    },
-
-    _computedClass: function(isSelected) {
-      var classes = 'item';
-      if (isSelected) {
-        classes += ' selected';
-      }
-      return classes;
     }
   });
 </script>
