@@ -21,6 +21,10 @@
     #selector div.iron-selected {
       background: rgba(0, 0, 0, 0.4);
     }
+
+    ::content #dropdown:not([fullscreen]) paper-input-container {
+      display: none;
+    }
   </style>
 
   <template>
@@ -30,6 +34,10 @@
     </paper-input-container>
 
     <vaadin-adaptive-overlay id='overlay' opened={{opened}}>
+      <paper-input-container>
+        <input id='fullScreenInput' is='iron-input' bind-value='[[value]]' on-bind-value-changed='_fullScreenInputValueChanged'>
+        <iron-icon icon='arrow-drop-down' on-tap='close' suffix></iron-icon>
+      </paper-input-container>
       <iron-selector id='selector' selected={{value}} attr-for-selected='val'>
         <div val='foo'>foo</div>
         <div val='bar'>bar</div>
@@ -79,12 +87,8 @@
       this.$.overlay.open();
     },
 
-    _inputValue: function(value) {
-      if(value) {
-        this.$.input.bindValue = value;
-      }
-
-      return this.$.input.bindValue;
+    _fullScreenInputValueChanged: function(event) {
+      this.$.input.bindValue = event.detail.value;
     },
 
     _inputValueChanged: function() {
@@ -103,18 +107,18 @@
     _filter: function(arr) {
       return arr.filter(function(item) {
         // Check if item contains input value.
-        return item.indexOf(this._inputValue()) > -1;
+        return item.indexOf(this.$.input.bindValue) > -1;
       }.bind(this));
     },
 
     _openedChanged: function() {
       if(!this.opened) {
-        this._inputValue(this.value);
+        this.$.input.bindValue = this.value;
       }
     },
 
     _isFiltering: function() {
-      return this._inputValue() != this.value;
+      return this.$.input.bindValue != this.value;
     },
 
     /**
