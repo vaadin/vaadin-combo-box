@@ -35,15 +35,15 @@
     it('should push by using array mutation method', function() {
       combobox.items = [];
       combobox.push('items', 'foo');
-      expect(combobox.items.length).to.equal(1);
-      expect(combobox.items[0]).to.equal("foo");
+      expect(itemsList.items.length).to.equal(1);
+      expect(itemsList.items[0]).to.equal("foo");
     });
 
     it('should pop by using array mutation method', function() {
       combobox.items = ['foo', 'bar'];
       combobox.pop('items');
-      expect(combobox.items.length).to.equal(1);
-      expect(combobox.items[0]).to.equal("foo");
+      expect(itemsList.items.length).to.equal(1);
+      expect(itemsList.items[0]).to.equal("foo");
     });
 
     it('should update', function() {
