@@ -25,8 +25,7 @@
     var comboBox;
 
     function getFilteredItems() {
-      //TODO: _.filteredItems is a temporary property.
-      return comboBox._filteredItems;
+      return comboBox.$.selector.items;
     };
 
     function getInput() {
@@ -98,8 +97,7 @@
         it('should filter items', function() {
           setInputValue('foo')
 
-          expect(getFilteredItems()).to.include('foo');
-          expect(getFilteredItems()).to.have.length(1);
+          expect(getFilteredItems()).to.eql(['foo']);
         });
 
         it('should be visible only in fullscreen mode', function() {
