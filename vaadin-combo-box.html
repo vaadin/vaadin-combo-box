@@ -90,8 +90,17 @@
     },
 
     _inputValueChanged: function() {
-      if(!this.opened && this._isFiltering()) {
-        this.open();
+      if(this._isFiltering()) {
+        if(!this.opened) {
+          this.open();
+        }
+
+        //TODO: set filtered items to the dynamic list.
+        this._filteredItems = [];
+
+        for(var i=0;i<this.items.length;i++) {
+          this._filteredItems.push(this.items[i]);
+        }
       }
     },
 

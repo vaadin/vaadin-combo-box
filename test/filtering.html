@@ -23,7 +23,9 @@
 <script>
   describe('filtering items', function() {
     var comboBox;
+
     function getFilteredItems() {
+      //TODO: _.filteredItems is a temporary property.
       return comboBox._filteredItems;
     };
 
@@ -74,14 +76,16 @@
       });
     });
 
-    describe.skip('filter behaviour', function() {
+    describe('filtering items', function() {
       it('should filter items using contains', function() {
         setInputValue('a');
+
         expect(getFilteredItems()).to.include('foo');
       });
 
       it('should filter out all items with a invalid filter', function() {
         setInputValue('qux');
+
         expect(getFilteredItems()).to.be.empty;
       });
     });
