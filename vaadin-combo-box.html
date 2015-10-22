@@ -88,6 +88,15 @@
       }
     },
 
+    ready: function() {
+      var sel = this.$.selector;
+      this.$.overlay.addEventListener('vaadin-adaptative-overlay-opened', function() {
+      });
+      this.$.overlay.addEventListener('vaadin-adaptative-overlay-closed', function() {
+        sel.clearSelection();
+      });
+    },
+
     /**
      * Open the overlay.
      */
@@ -175,14 +184,15 @@
     },
 
     _selectItemByOffset: function(offset) {
+      var val = this.$.selector.selectedItem || this.$.input.value;
+      if (val) {
+        this._selectItem(val);
+      }
       if (!this.opened) {
         this.$.overlay.open();
+        if (offset) return;
       }
-      var val = this.$.selector.selectedItem || this.$.input.value;
       if (!offset) {
-        console.log(val)
-        if (val)
-          this._selectItem(val);
         return;
       }
       var its = this.$.selector.items;
@@ -198,7 +208,6 @@
       var s = i.selectionStart;
       var o = s + offset
       if (o >= 0 && o <= l && s != o) {
-        event.preventDefault();
         i.setSelectionRange(o, o);
       }
     },
@@ -206,28 +215,24 @@
     _onKeydown: function(event) {
       if (!event.metaKey && !event.ctrlKey && !event.altKey) {
         switch (event.keyCode) {
-        case 37: // up
+        case 37: // left
           event.preventDefault();
           this._moveCursorByOffset(-1);
           break
-        case 39: // down
+        case 39: // rigth
           event.preventDefault();
           this._moveCursorByOffset(+1);
           break
-        case 38: // right
+        case 38: // up
           event.preventDefault();
           var n = this._selectItemByOffset(-1);
           break;
-        case 40: // left
+        case 40: // down
           event.preventDefault();
           var n = this._selectItemByOffset(+1);
           break;
         case 27: // escape
-          if (this.opened) {
-            event.preventDefault();
-            this.close();
-          }
-          event.preventDefault();
+          // Do nothing since iron-dropdown handles it
           break;
         case 13: // enter
           if (this.opened) {
