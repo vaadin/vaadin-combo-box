@@ -34,20 +34,24 @@
       background-color: var(--google-grey-100);
     }
 
-    :host ::content #dropdown:not([fullscreen]) paper-input-container {
+    :host #overlay {
+      background-color: #FFF;
+    }
+
+    :host #overlay:not([fullscreen]) paper-input-container {
       display: none;
     }
   </style>
 
   <template>
-    <paper-input-container on-tap='open'>
-      <input id='input' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged' autocomplete="off">
+    <paper-input-container on-tap='open' on-touchend='_preventDefault'>
+      <input id='input' autocomplete='off' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged'>
       <iron-icon icon='arrow-drop-down' suffix></iron-icon>
     </paper-input-container>
 
-    <vaadin-adaptive-overlay id='overlay' opened={{opened}}>
+    <vaadin-adaptive-overlay id='overlay' opened={{opened}} full-screen={{_fullScreen}} fullscreen$={{_fullScreen}}>
       <paper-input-container>
-        <input id='fullScreenInput' is='iron-input' bind-value='[[value]]' on-bind-value-changed='_fullScreenInputValueChanged'>
+        <input id='fullScreenInput' autocomplete='off' is='iron-input' bind-value='[[value]]' on-bind-value-changed='_fullScreenInputValueChanged'>
         <iron-icon icon='arrow-drop-down' on-tap='close' suffix></iron-icon>
       </paper-input-container>
       <iron-list id='selector' items='[[items]]' selected-item='[[value]]' on-selected-item-changed='_selectedItemChanged' selection-enabled>
@@ -83,49 +87,47 @@
        */
       value: {
         type: String,
-        notify: true,
         observer: 'close'
       }
-    },
-
-    ready: function() {
-      var sel = this.$.selector;
-      this.$.overlay.addEventListener('vaadin-adaptative-overlay-opened', function() {
-      });
-      this.$.overlay.addEventListener('vaadin-adaptative-overlay-closed', function() {
-        sel.clearSelection();
-      });
     },
 
     /**
      * Open the overlay.
      */
     open: function() {
-      this._selectItemByOffset(0);
+      this.$.overlay.open();
     },
 
     _fullScreenInputValueChanged: function(event) {
       this.$.input.bindValue = event.detail.value;
     },
 
-    _inputValueChanged: function() {
-      if(this._isFiltering()) {
-        if(!this.opened) {
-          this.open();
-        }
+    _inputChanged: false,
 
-        if(this.items) {
-          this.$.selector.items = this._filter(this.items);
-          this.$.selector.selectedItem = this.value;
-          this._selectItem(this.$.selector.items[0]);
-        }
+    _inputValueChanged: function() {
+      this._inputChanged = true;
+      if(!this.opened && this._isFiltering()) {
+          this.open();
+      }
+
+      if(this.items) {
+        this.$.selector.items = this._filter(this.items, this.$.input.bindValue);
+        this._restoreSelectorValue();
       }
     },
 
-    _filter: function(arr) {
+    _restoreSelectorValue() {
+      if (this.$.selector.items && this.$.selector.items.indexOf(this.value) > -1) {
+        this.$.selector.selectItem(this.value);
+      } else {
+        this.$.selector.clearSelection();
+      }
+    },
+
+    _filter: function(arr, filter) {
       return arr.filter(function(item) {
         // Check if item contains input value.
-        return item.indexOf(this.$.input.bindValue) > -1;
+        return item.toString().indexOf(filter) > -1;
       }.bind(this));
     },
 
@@ -141,13 +143,19 @@
     _openedChanged: function() {
       if (this.opened) {
         this.$.selector.items = this.items;
+        this._restoreSelectorValue();
       } else {
         this.$.input.bindValue = this.value;
+        this.$.fullScreenInput.bindValue = this.value;
       }
     },
 
     _isFiltering: function() {
       return this.$.input.bindValue != this.value;
+    },
+
+    _preventDefault: function(e) {
+      e.preventDefault();
     },
 
     /**
@@ -184,17 +192,11 @@
     },
 
     _selectItemByOffset: function(offset) {
-      var val = this.$.selector.selectedItem || this.$.input.value;
-      if (val) {
-        this._selectItem(val);
-      }
       if (!this.opened) {
         this.$.overlay.open();
-        if (offset) return;
-      }
-      if (!offset) {
         return;
       }
+      var val = this.$.selector.selectedItem || this.$.input.value;
       var its = this.$.selector.items;
       var idx = offset + its.indexOf(val);
       if (idx >= 0 && idx < its.length) {
@@ -235,14 +237,14 @@
           // Do nothing since iron-dropdown handles it
           break;
         case 13: // enter
-          if (this.opened) {
+          if (!this.$.input.value && this.value && this._inputChanged) {
+            this.value = undefined;
+            this._inputChanged = false;
             event.preventDefault();
-            this.value = this.$.selector.selectedItem;
-          } else if (!this.$.input.value) {
-            // FIXME: this never happens, how to clear the input ?
+          } else if (this.opened) {
+            // selecting an item from the list
+            this.value = this.$.input.value = this.$.selector.selectedItem;
             event.preventDefault();
-            this.$.selector.clearSelection();
-            this.close();
           }
         }
       }

@@ -44,34 +44,25 @@
       comboBox.close();
     });
 
-    describe('arrowdown first time', function() {
-      it('should open the popup and not select any item', function() {
+    describe('arrowdown', function() {
+      it('pushing once with empty value should open the popup and not select any item', function() {
         MockInteractions.keyDownOn(comboBox, 40)
         expect(comboBox.opened).to.equal(true);
         expect(getSelector().selectedItem).to.equal(null);
       });
-    });
-
-    describe('arrowdown first time and value is set ', function() {
-      it('should set selected item matching current value', function() {
+      it('pushing once with valid value should set selected item matching current value', function() {
         expect(getSelector().selectedItem).to.equal(null);
         comboBox.value = 'bar';
         MockInteractions.keyDownOn(comboBox, 40);
         expect(getSelector().selectedItem).to.equal('bar');
       });
-    });
-
-    describe('arrowdown twice', function() {
-      it('should open the popup and select first item', function() {
+      it('pushing twice with empty value should open the popup and select first item', function() {
         MockInteractions.keyDownOn(comboBox, 40);
         expect(getSelector().selectedItem).to.equal(null);
         MockInteractions.keyDownOn(comboBox, 40);
         expect(getSelector().selectedItem).to.equal('foo');
       });
-    });
-
-    describe('arrowdown', function() {
-      it('should select next selected item', function() {
+      it('pushing once when combobox is opened should select next selected item', function() {
         comboBox.open();
         comboBox._selectItem('bar')
         MockInteractions.keyDownOn(comboBox, 40);
@@ -79,15 +70,12 @@
       });
     });
 
-    describe('arrowdown first time', function() {
+    describe('arrowup', function() {
       it('should open the popup and not select any item', function() {
         MockInteractions.keyDownOn(comboBox, 38)
         expect(comboBox.opened).to.equal(true);
         expect(getSelector().selectedItem).to.equal(null);
       });
-    });
-
-    describe('arrowup', function() {
       it('should select next previous item', function() {
         comboBox.open();
         comboBox._selectItem('bar')
@@ -96,19 +84,8 @@
       });
     });
 
-    describe('enter', function() {
-      it('should set input value of the selected item and close popup', function() {
-        comboBox.open();
-        expect(comboBox.value).to.equal(undefined);
-        comboBox._selectItem('baz')
-        MockInteractions.keyDownOn(comboBox, 13);
-        expect(comboBox.opened).to.equal(false);
-        expect(comboBox.value).to.equal('baz');
-      });
-    });
-
-    describe('arrowleft', function() {
-      it('should move cursor left', function() {
+    describe('arrowleft/right', function() {
+      it('arrowleft should move cursor left', function() {
         comboBox.value = 'bar';
         getInput().focus();
         setCursorPos(3, 3);
@@ -122,10 +99,7 @@
         MockInteractions.keyDownOn(comboBox, 37);
         expect(getCursorPos()).to.equal(0);
       });
-    });
-
-    describe('arrowright', function() {
-      it('should move cursor right', function() {
+      it('arrowright should move cursor right', function() {
         comboBox.value = 'bar';
         getInput().focus();
         setCursorPos(0, 0);
@@ -140,7 +114,7 @@
         expect(getCursorPos()).to.equal(3);
       });
     });
-    
+
     describe('escape', function() {
       it('should close popup', function() {
         comboBox.open();
@@ -149,6 +123,27 @@
         expect(comboBox.opened).to.equal(true);
       });
     });
+    
+    describe('enter', function() {
+      it('should set input value of the selected item and close popup', function() {
+        comboBox.open();
+        expect(comboBox.value).to.equal(undefined);
+        comboBox._selectItem('baz')
+        MockInteractions.keyDownOn(comboBox, 13);
+        expect(comboBox.opened).to.equal(false);
+        expect(comboBox.value).to.equal('baz');
+      });
+      it('should clear value if input is changed to empty', function() {
+        comboBox.open();
+        getInput().value = comboBox.value = 'foo';
+        MockInteractions.keyDownOn(comboBox, 13);
+        expect(comboBox.value).to.equal('foo');
+        getInput().value = '';
+        MockInteractions.keyDownOn(comboBox, 13);
+        expect(comboBox.value).to.equal(undefined);
+      });
+    });
+    
 
   });
 </script>
