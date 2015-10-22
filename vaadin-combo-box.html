@@ -40,7 +40,7 @@
   </style>
 
   <template>
-    <paper-input-container on-tap='open'>
+    <paper-input-container on-tap='open' on-touchend='_preventDefault'>
       <input id='input' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged'>
       <iron-icon icon='arrow-drop-down' suffix></iron-icon>
     </paper-input-container>
@@ -85,10 +85,6 @@
         type: String,
         notify: true,
         observer: 'close'
-      },
-
-      _fullScreen: {
-        type: Boolean
       }
     },
 
@@ -140,6 +136,10 @@
 
     _isFiltering: function() {
       return this.$.input.bindValue != this.value;
+    },
+
+    _preventDefault: function(e) {
+      e.preventDefault();
     },
 
     /**
