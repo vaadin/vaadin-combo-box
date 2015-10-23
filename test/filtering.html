@@ -29,7 +29,7 @@
     };
 
     function getInput() {
-      if(comboBox._fullScreen) {
+      if(comboBox.$.overlay.fullScreen) {
         return comboBox.$.fullScreenInput;
       }
 
@@ -52,7 +52,7 @@
     [false, true].forEach(function(isFullScreen) {
       describe('setting the input field value in ' + (isFullScreen === true ? 'fullscreen' : 'desktop'), function() {
         beforeEach(function() {
-          comboBox._fullScreen = isFullScreen;
+          comboBox.$.overlay.fullScreen = isFullScreen;
         });
 
         it('should open the popup if closed', function() {
@@ -153,6 +153,25 @@
         expect(comboBox.$.selector.selectedItems).to.contain('foo');
       });
 
+      it('should ignore case', function() {
+        setInputValue('FOO');
+
+        expect(getFilteredItems()).to.eql(['foo']);
+      });
+
+      it('should not filter with a null filter', function() {
+        setInputValue(null);
+
+        expect(getFilteredItems()).to.eql(['foo', 'bar', 'baz']);
+      });
+
+      it('should not throw an error when items arent set', function() {
+        comboBox.items = null;
+
+        setInputValue('foo');
+
+        expect(getFilteredItems()).to.be.null;
+      });
     });
   });
 </script>
