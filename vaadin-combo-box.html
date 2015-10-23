@@ -103,7 +103,10 @@
       this.$.input.bindValue = event.detail.value;
     },
 
+    _inputChanged: false,
+
     _inputValueChanged: function() {
+      this._inputChanged = true;
       if(!this.opened && this._isFiltering()) {
           this.open();
       }
@@ -117,6 +120,8 @@
     _restoreSelectorValue: function() {
       if (this.$.selector.items && this.$.selector.items.indexOf(this.value) > -1) {
         this.$.selector.selectItem(this.value);
+      } else {
+        this.$.selector.clearSelection();
       }
     },
 
@@ -131,9 +136,11 @@
     },
 
     _selectedItemChanged: function() {
-      var _val = this.$.selector.selectedItem;
-      if (_val !== null) {
-        this.value = _val;
+      if (!this._handingSelection) {
+        var _val = this.$.selector.selectedItem;
+        if (_val !== null) {
+          this.value = _val;
+        }
       }
     },
 
@@ -169,7 +176,83 @@
     */
     _getValidity: function(){
       return this.$.input.validate();
-    }
+    },
+
+    listeners: {
+      'keydown': '_onKeydown'
+    },
+
+    _handingSelection: false,
+
+    _selectItem: function(item) {
+      this._handingSelection = true;
+      this.$.selector.clearSelection();
+      try {
+        this.$.selector.selectItem(item);
+        // ignore iron-list: Uncaught TypeError: <item> should be a valid item
+      } catch(ignore) {
+      }
+      this._handingSelection = false;
+    },
+
+    _selectItemByOffset: function(offset) {
+      if (!this.opened) {
+        this.$.overlay.open();
+        return;
+      }
+      var val = this.$.selector.selectedItem || this.$.input.value;
+      var its = this.$.selector.items;
+      var idx = offset + its.indexOf(val);
+      if (idx >= 0 && idx < its.length) {
+        this._selectItem(its[idx]);
+      }
+    },
+
+    _moveCursorByOffset: function(offset) {
+      var i = this.$.input;
+      var l = i.value.length;
+      var s = i.selectionStart;
+      var o = s + offset
+      if (o >= 0 && o <= l && s != o) {
+        i.setSelectionRange(o, o);
+      }
+    },
+
+    _onKeydown: function(event) {
+      if (!event.metaKey && !event.ctrlKey && !event.altKey) {
+        switch (event.keyCode) {
+        case 37: // left
+          event.preventDefault();
+          this._moveCursorByOffset(-1);
+          break
+        case 39: // rigth
+          event.preventDefault();
+          this._moveCursorByOffset(+1);
+          break
+        case 38: // up
+          event.preventDefault();
+          var n = this._selectItemByOffset(-1);
+          break;
+        case 40: // down
+          event.preventDefault();
+          var n = this._selectItemByOffset(+1);
+          break;
+        case 27: // escape
+          // Do nothing since iron-dropdown handles it
+          break;
+        case 13: // enter
+          if (!this.$.input.value && this.value && this._inputChanged) {
+            this.value = undefined;
+            this._inputChanged = false;
+            event.preventDefault();
+          } else if (this.opened) {
+            // selecting an item from the list
+            this.value = this.$.input.value = this.$.selector.selectedItem;
+            event.preventDefault();
+          }
+        }
+      }
+    },
 
   });
 </script>

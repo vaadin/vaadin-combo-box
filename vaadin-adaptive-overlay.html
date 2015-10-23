@@ -131,6 +131,7 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
       }
+      this.fire('vaadin-adaptative-overlay-opened');
     },
 
     /**
@@ -140,7 +141,17 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._originalContent;
       }
+      this.fire('vaadin-adaptative-overlay-closed');
     }
 
+    /**
+     * Fired after the `vaadin-adaptative-overlay` opens.
+     * @event vaadin-adaptative-overlay-opened
+     */
+
+    /**
+     * Fired after the `vaadin-adaptative-overlay` closes.
+     * @event vaadin-adaptative-overlay-closed
+     */
   });
 </script>
