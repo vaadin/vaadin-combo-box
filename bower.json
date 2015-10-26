@@ -33,7 +33,7 @@
     "paper-button": "polymerelements/paper-button#~1.0.6",
     "paper-input": "PolymerElements/paper-input#~1.0.12",
     "paper-toast": "polymerelements/paper-toast#~1.0.0",
-    "polymer": "Polymer/polymer#^1.1.3"
+    "polymer": "Polymer/polymer#^1.2.0"
   },
   "devDependencies": {
     "web-component-tester": "*",
