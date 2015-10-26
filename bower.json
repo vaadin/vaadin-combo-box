@@ -27,7 +27,7 @@
     "iron-icon": "PolymerElements/iron-icon#~1.0.4",
     "iron-icons": "PolymerElements/iron-icons#~1.0.3",
     "iron-input": "polymerelements/iron-input#~1.0.5",
-    "iron-list": "polymerelements/iron-list#~1.0.3",
+    "iron-list": "polymerelements/iron-list#~1.1.5",
     "iron-overlay-behavior": "polymerelements/iron-overlay-behavior#~1.0.5",
     "iron-validatable-behavior": "polymerelements/iron-validatable-behavior#~1.0.5",
     "paper-button": "polymerelements/paper-button#~1.0.6",
