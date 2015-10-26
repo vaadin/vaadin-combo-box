@@ -63,6 +63,14 @@
           expect(comboBox.opened).to.equal(true);
         });
 
+        it('should open the popup if closed when setting empty value', function() {
+          comboBox.close();
+
+          setInputValue('');
+
+          expect(comboBox.opened).to.equal(true);
+        });
+
         it('should not change the value of the combobox', function() {
           comboBox.value = 'foo';
           setInputValue('bar');
