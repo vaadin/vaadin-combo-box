@@ -20,7 +20,9 @@
   </style>
 
   <template>
-    <iron-dropdown id="dropdown" opened={{opened}} fullscreen$=[[fullScreen]] on-iron-overlay-closed="_closed" on-iron-overlay-opened="_opened" with-backdrop=[[fullScreen]]>
+    <iron-dropdown id="dropdown" opened={{opened}} fullscreen$=[[fullScreen]] with-backdrop=[[fullScreen]]
+                   on-iron-overlay-closed="_closed" on-iron-overlay-opened="_opened"
+                   vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[verticalOffset]]">
       <div class="dropdown-content">
         <content>
       </div>

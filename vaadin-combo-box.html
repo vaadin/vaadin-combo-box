@@ -52,7 +52,7 @@
   </style>
 
   <template>
-    <paper-input-container on-tap='open' on-touchend='_preventDefault'>
+    <paper-input-container id="inputContainer" on-tap='open' on-touchend='_preventDefault'>
       <input id='input' autocomplete='off' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged' key-event-target>
       <iron-icon icon='arrow-drop-down' suffix></iron-icon>
     </paper-input-container>
@@ -100,11 +100,26 @@
       _focusedIndex: {
         type: Number,
         value: -1
+      },
+
+      /**
+       * A pixel value that will be compared with with the input bottom offset.
+       * If the offset less then this value then the over will be shown above the input.
+       */
+      alignThreshold: {
+        type: Number,
+        value: 200
       }
     },
 
     ready: function() {
       this._addKeyEventListeners();
+    },
+
+    attached: function() {
+      window.addEventListener('resize', this.updateOverlayAlignment.bind(this));
+      window.addEventListener('scroll', this.updateOverlayAlignment.bind(this));
+      this.updateOverlayAlignment();
     },
 
     /**
@@ -257,7 +272,19 @@
     */
     _getValidity: function(){
       return this.$.input.validate();
-    }
+    },
 
+    updateOverlayAlignment: function() {
+      var rect = this.$.inputContainer.getBoundingClientRect();
+
+      if (window.innerWidth - rect.bottom < this.alignThreshold) {
+        this.$.overlay.verticalAlign = 'bottom';
+        this.$.overlay.verticalOffset = rect.height;
+      } else {
+        this.$.overlay.verticalAlign = 'top';
+        this.$.overlay.verticalOffset = 0;
+      }
+      this.$.overlay.$.dropdown.resetFit();
+    }
   });
 </script>
