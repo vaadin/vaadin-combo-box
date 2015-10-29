@@ -121,6 +121,11 @@
       alignThreshold: {
         type: Number,
         value: 200
+      },
+
+      _alignedToBottom: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -304,9 +309,19 @@
       this.$.overlay.verticalAlign = bottomAlign ? 'bottom' : 'top';
       this.$.overlay.verticalOffset = bottomAlign ? rect.height : 0;
 
-      this.$.overlay.$.dropdown.resetFit();
+      if (bottomAlign !== this._alignedToBottom) {
+        if (this.opened) {
+          this.close();
+          this.$.overlay.$.dropdown.resetFit();
+          Polymer.Base.async(this.open.bind(this));
+        } else {
+          this.$.overlay.$.dropdown.resetFit();
+        }
+      }
 
       this.$.selector.style.maxHeight = (bottomAlign ? rect.top : (window.innerHeight - rect.bottom)) + "px";
+
+      this._alignedToBottom = bottomAlign;
     }
   });
 </script>
