@@ -16,6 +16,9 @@
 <dom-module id='vaadin-combo-box'>
   <style>
     /* Temporary styles */
+    :host {
+       display: block;
+    }
 
     #selector {
       background: #fff;
@@ -56,11 +59,6 @@
       display: none;
     }
 
-    /* Remove once #21 is implemented */
-    #selector {
-      max-height: 400px;
-    }
-    /* END - Remove once #21 is implemented */
   </style>
 
   <template>
@@ -312,15 +310,15 @@
       if (bottomAlign !== this._alignedToBottom) {
         if (this.opened) {
           this.close();
+          // iron-dropdown should do this
+          this.$.overlay.$.dropdown.style[bottomAlign ? 'top' : 'bottom'] = undefined;
+
           this.$.overlay.$.dropdown.resetFit();
           Polymer.Base.async(this.open.bind(this));
         } else {
           this.$.overlay.$.dropdown.resetFit();
         }
       }
-
-      this.$.selector.style.maxHeight = (bottomAlign ? rect.top : (window.innerHeight - rect.bottom)) + "px";
-
       this._alignedToBottom = bottomAlign;
     }
   });

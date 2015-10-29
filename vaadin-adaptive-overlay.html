@@ -23,7 +23,7 @@
     <iron-dropdown id="dropdown" opened={{opened}} fullscreen$=[[fullScreen]] with-backdrop=[[fullScreen]]
                    on-iron-overlay-closed="_closed" on-iron-overlay-opened="_opened"
                    vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[verticalOffset]]">
-      <div class="dropdown-content">
+      <div id='dropdownContent' class="dropdown-content">
         <content>
       </div>
     </iron-dropdown>
@@ -87,8 +87,9 @@
      *
      */
     _fullScreenChanged: function() {
-      var parent = this.domHost || this.parentElement;
-      this.$.dropdown.fitInto = this.fullScreen ? document.documentElement : parent;
+      if (this.fullScreen) {
+        this.$.dropdown.fitInto = document.documentElement;
+      }
       this.$.dropdown.positionTarget = this.fullScreen ? document.documentElement : this;
     },
 
@@ -98,10 +99,17 @@
     _patchIronFitBehavior: function() {
       var sd = this.$.dropdown._sizeDimension.bind(this.$.dropdown);
       this.$.dropdown._sizeDimension = function(rect, positionedBy, start, end, extent) {
-        sd(extent === "Width" ? {
-          left: 0
-        } : rect, positionedBy, start, end, extent);
-      };
+        if(extent === "Width") {
+          var parent = this.domHost || this.parentElement;
+          this.$.dropdownContent.style.maxWidth = parent.clientWidth + 'px';
+
+          // iron-dropdown should do this
+          var a = this.$.dropdown.verticalAlign === 'top' ? 'bottom' : 'top';
+          this.$.dropdown.style[a] = 'initial';
+        } else {
+          sd(rect, positionedBy, start, end, extent)
+        }
+      }.bind(this);
     },
 
     ready: function() {
