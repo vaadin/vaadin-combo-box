@@ -300,13 +300,13 @@
     updateOverlayAlignment: function() {
       var rect = this.$.inputContainer.getBoundingClientRect();
 
-      var bottomAlign = window.innerWidth - rect.bottom < this.alignThreshold;
+      var bottomAlign = window.innerHeight - rect.bottom < this.alignThreshold;
       this.$.overlay.verticalAlign = bottomAlign ? 'bottom' : 'top';
       this.$.overlay.verticalOffset = bottomAlign ? rect.height : 0;
 
       this.$.overlay.$.dropdown.resetFit();
 
-      this.$.selector.style.maxHeight = (bottomAlign ? rect.top : (window.innerWidth - rect.bottom)) + "px";
+      this.$.selector.style.maxHeight = (bottomAlign ? rect.top : (window.innerHeight - rect.bottom)) + "px";
     }
   });
 </script>
