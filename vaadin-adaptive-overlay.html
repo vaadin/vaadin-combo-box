@@ -119,7 +119,9 @@
       this.$.dropdown._sizeDimension = function(rect, positionedBy, start, end, extent) {
         if(extent === "Width") {
           var parent = this.domHost || this.parentElement;
-          this.$.dropdownContent.style.maxWidth = parent.clientWidth + 'px';
+          if (!this.fullScreen) {
+            this.$.dropdownContent.style.maxWidth = parent.clientWidth + 'px';
+          }
 
           // iron-dropdown should do this
           var a = this.$.dropdown.verticalAlign === 'top' ? 'bottom' : 'top';
