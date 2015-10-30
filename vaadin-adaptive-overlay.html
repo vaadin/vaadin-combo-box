@@ -161,6 +161,15 @@
     _opened: function() {
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
+      } else {
+        // FIXME(manolo) for some reason in tests after beforeEach has be run, if
+        // we call combobox.open() this.alignmentTarget seems undefined and we cannot
+        // call updateOverlayAlignment(). Using hack right now
+        Polymer.Base.async(function(){
+          window.dispatchEvent(new Event('resize'));
+
+        })
+//         Polymer.Base.async(this.updateOverlayAlignment)
       }
     },
 
