@@ -15,3 +15,8 @@ var describeSkipIf = function(bool, title, callback) {
     describe(title, callback);
   }
 };
+
+var items20 = [];
+for (var i = 0; i < 20; i++) {
+  items20.push('item ' + i)
+}
