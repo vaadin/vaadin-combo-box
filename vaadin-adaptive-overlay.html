@@ -20,9 +20,16 @@
   </style>
 
   <template>
-    <iron-dropdown id="dropdown" opened={{opened}} fullscreen$=[[fullScreen]] with-backdrop=[[fullScreen]]
-                   on-iron-overlay-closed="_closed" on-iron-overlay-opened="_opened"
-                   vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[verticalOffset]]">
+    <iron-dropdown id="dropdown"
+      opened={{opened}}
+      focus-target=[[focusTarget]]
+      fullscreen$=[[fullScreen]]
+      with-backdrop=[[fullScreen]]
+      on-iron-overlay-closed="_closed"
+      on-iron-overlay-opened="_opened"
+      vertical-align="[[verticalAlign]]"
+      horizontal-align="[[horizontalAlign]]"
+      vertical-offset="[[verticalOffset]]">
       <div id='dropdownContent' class="dropdown-content">
         <content>
       </div>
@@ -184,7 +191,7 @@
     },
 
     updateOverlayAlignment: function() {
-      if (!this.alignmentTarget) return;
+      if (!this.alignmentTarget || this.fullScreen) return;
 
       var rect = this.alignmentTarget.getBoundingClientRect();
 
