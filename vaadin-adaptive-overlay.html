@@ -132,7 +132,7 @@
 
           // iron-dropdown should do this
           var a = this.$.dropdown.verticalAlign === 'top' ? 'bottom' : 'top';
-          this.$.dropdown.style[a] = 'initial';
+          this.$.dropdown.style[a] = 'auto';
         } else {
           sd(rect, positionedBy, start, end, extent)
         }
@@ -175,7 +175,9 @@
         // we call combobox.open() this.alignmentTarget seems undefined and we cannot
         // call updateOverlayAlignment(). Using hack right now
         Polymer.Base.async(function() {
-          window.dispatchEvent(new Event('resize'));
+          var ev = document.createEvent('Event');
+          ev.initEvent('resize', true, true);
+          window.dispatchEvent(ev);
         })
         // Polymer.Base.async(this.updateOverlayAlignment)
       }

@@ -23,7 +23,8 @@
 
 <script>
   var comboBox;
-  var isFF = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  // Valid also for IE11
+  var isFF = navigator.userAgent.toLowerCase().indexOf('gecko') > -1;
 
   // The ideal test would be to resize the window, but testing system disallows
   // resizing the iframe, but moving the combo-box using styles and firing
@@ -34,8 +35,11 @@
     comboBox.style.top = top + 'px';
     comboBox.style.left = left + 'px';
     if (document.createEvent) {
-      window.dispatchEvent(new Event('resize'));
-    } else { //IE
+      // using old way because IE11 does not support: new Event('resize') 
+      var ev = document.createEvent('Event');
+      ev.initEvent('resize', true, true);
+      window.dispatchEvent(ev);
+    } else { // Old IE
       var event=document.createEventObject();
       element.fireEvent("onresize",event);
     }
