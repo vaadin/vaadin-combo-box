@@ -46,13 +46,14 @@
   }
 
   function dropContent(){
-    return comboBox.querySelector('#dropdownContent');
+    var overlay = comboBox.$.overlay;
+    return Polymer.dom(overlay.root).querySelector('#dropdownContent');
   }
   function dropContentRect() {
     return dropContent().getBoundingClientRect();
   }
   function inputContentRect() {
-    return comboBox.querySelector('#inputContainer').getBoundingClientRect()
+    return comboBox.$.inputContainer.getBoundingClientRect()
   }
   function expectAlmostEqual(tolerance, a, b)  {
     expect(tolerance).to.be.above(Math.abs(a - b));
