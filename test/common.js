@@ -21,13 +21,14 @@ for (var i = 0; i < 20; i++) {
   items20.push('item ' + i)
 }
 
-var asyncDone = function(cb, done) {
+var asyncDone = function(cb, done, timeout) {
   Polymer.Base.async(function() {
     try {
       cb();
-      done();
+      if (done) done();
     } catch (err) {
-      done(err);
+      if (done) done(err);
+      else throw(err);
     }
-  });
+  }, timeout);
 };
