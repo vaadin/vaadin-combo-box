@@ -20,3 +20,14 @@ var items20 = [];
 for (var i = 0; i < 20; i++) {
   items20.push('item ' + i)
 }
+
+var asyncDone = function(cb, done) {
+  Polymer.Base.async(function() {
+    try {
+      cb();
+      done();
+    } catch (err) {
+      done(err);
+    }
+  });
+};
