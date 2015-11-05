@@ -28,10 +28,7 @@
       fullscreen$=[[fullScreen]]
       with-backdrop=[[fullScreen]]
       on-iron-overlay-closed="_closed"
-      on-iron-overlay-opened="_opened"
-      vertical-align="[[verticalAlign]]"
-      horizontal-align="[[horizontalAlign]]"
-      vertical-offset="[[verticalOffset]]">
+      on-iron-overlay-opened="_opened">
       <div id='dropdownContent' class="dropdown-content">
         <content>
       </div>
@@ -90,8 +87,14 @@
         }
       },
 
-      alignmentTarget: {
-        type: Object
+      /**
+       * The element to align the dropdown by.
+       */
+      alignBy: {
+        type: Object,
+        value: function() {
+          return this.domHost || this.parentElement;
+        }
       },
 
       /**
@@ -103,10 +106,12 @@
         value: 200
       },
 
-      _alignedToBottom: {
-        type: Boolean,
-        value: false
+      _resizeHandler: {
+        value: function() {
+          return this._updateOverlayAlignment.bind(this);
+        }
       }
+
     },
 
     /**
@@ -118,18 +123,13 @@
     },
 
     /**
-     * Need to monkeypatch _sizeDimension to avoid a bug in iron-fit-behavior
+     * Need to monkeypatch _sizeDimension to fix sizingTarget width to match alignBy width
      */
     _patchIronFitBehavior: function() {
       var sd = this.$.dropdown._sizeDimension.bind(this.$.dropdown);
       this.$.dropdown._sizeDimension = function(rect, positionedBy, start, end, extent) {
         if(extent === "Width") {
-          var parent = this.domHost || this.parentElement;
-          this.$.dropdown.sizingTarget.style.maxWidth = parent.clientWidth + 'px';
-
-          // iron-dropdown should do this
-          var a = this.$.dropdown.verticalAlign === 'top' ? 'bottom' : 'top';
-          this.$.dropdown.style[a] = 'auto';
+          this.$.dropdown.sizingTarget.style.maxWidth = this.alignBy.clientWidth + 'px';
         } else {
           sd(rect, positionedBy, start, end, extent);
         }
@@ -140,8 +140,6 @@
       this._patchIronFitBehavior();
     },
 
-    _resizeHandler: undefined,
-
     attached: function() {
       this._fullScreenChanged();
     },
@@ -150,9 +148,6 @@
      * Open the overlay.
      */
     open: function() {
-      this._resizeHandler = this._updateOverlayAlignment.bind(this);
-      window.addEventListener('resize', this._resizeHandler);
-      window.addEventListener('scroll', this._resizeHandler);
       this.$.dropdown.open();
     },
 
@@ -160,10 +155,6 @@
      * Close the overlay.
      */
     close: function() {
-      if (this._resizeHandler) {
-        window.removeEventListener('resize', this._resizeHandler);
-        window.removeEventListener('scroll', this._resizeHandler);
-      }
       this.$.dropdown.close();
     },
 
@@ -174,15 +165,8 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
       } else {
-        // FIXME(manolo) for some reason in tests after beforeEach has be run, if
-        // we call combobox.open() this.alignmentTarget seems undefined and we cannot
-        // call updateOverlayAlignment(). Using hack right now
-        Polymer.Base.async(function() {
-          var ev = document.createEvent('Event');
-          ev.initEvent('resize', true, true);
-          window.dispatchEvent(ev);
-        })
-        // Polymer.Base.async(this.updateOverlayAlignment);
+        window.addEventListener('resize', this._resizeHandler);
+        this.async(this._updateOverlayAlignment);
       }
     },
 
@@ -192,29 +176,27 @@
     _closed: function() {
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._originalContent;
+      } else {
+        window.removeEventListener('resize', this._resizeHandler);
       }
     },
 
     _updateOverlayAlignment: function() {
-      if (!this.alignmentTarget || this.fullScreen) return;
-
-      var rect = this.alignmentTarget.getBoundingClientRect();
-
+      var rect = this.alignBy.getBoundingClientRect();
       var bottomAlign = window.innerHeight - rect.bottom < this.alignThreshold;
-      this.verticalAlign = bottomAlign ? 'bottom' : 'top';
-      this.verticalOffset = bottomAlign ? rect.height : 0;
 
       if (bottomAlign !== this._alignedToBottom) {
-        if (this.opened) {
-          this.close();
-          this.$.dropdown.resetFit();
-          Polymer.Base.async(this.open.bind(this));
-        } else {
-          this.$.dropdown.resetFit();
-        }
-      }
-      this._alignedToBottom = bottomAlign;
-    }
+        // Clear the conflicting top/bottom value
+        this.$.dropdown.style[bottomAlign ? 'top' : 'bottom'] = '';
+        // Reset fit
+        this.close();
+        this.$.dropdown.verticalAlign = bottomAlign ? 'bottom' : 'top';
+        this.$.dropdown.verticalOffset = bottomAlign ? rect.height : 0;
+        this.$.dropdown.resetFit();
+        this.async(this.open);
 
+        this._alignedToBottom = bottomAlign;
+      }
+    }
   });
 </script>
