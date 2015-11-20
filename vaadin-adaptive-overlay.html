@@ -207,6 +207,10 @@
       }
     },
 
+    detached: function() {
+      this._closed();
+    },
+
     _iOSOpened: function() {
       if (this.fullScreen && this.ios) {
         this.$.dropdown.positionTarget = undefined;
