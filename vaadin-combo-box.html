@@ -315,6 +315,7 @@
     },
 
     _setItems: function(items) {
+      this._ignoreSelectionChange = true;
       this.$.selector.items = items;
 
       if (this.$.selector.items && this.$.selector.items.indexOf(this.value) > -1) {
@@ -324,6 +325,7 @@
       if(this.$.selector.items) {
         this._focusedIndex = this.$.selector.items.indexOf(this.$.input.bindValue);
       }
+      this._ignoreSelectionChange = false;
     },
 
     _filter: function(arr, filter) {
@@ -337,9 +339,13 @@
     },
 
     _selectedItemChanged: function() {
+      if (this._ignoreSelectionChange) return;
+
       var _val = this.$.selector.selectedItem;
       if (_val !== null) {
         this.value = _val;
+      } else if (this.opened) {
+        this.close();
       }
     },
 
