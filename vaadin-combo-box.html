@@ -241,7 +241,7 @@
          }
       }.bind(this), true);
 
-      this.$.input.addEventListener('keydown', function(e) {
+      var keydownHandler = function(e) {
         if (this._isEventKey(e, 'down')) {
           this._onArrowDown();
         } else if (this._isEventKey(e, 'up')) {
@@ -251,7 +251,10 @@
         } else if (this._isEventKey(e, 'esc')) {
           this._onEscape();
         }
-      }.bind(this));
+      }.bind(this);
+
+      this.$.input.addEventListener('keydown', keydownHandler);
+      this.$.fullScreenInput.addEventListener('keydown', keydownHandler);
     },
 
     _isEventKey: function(e, k) {
