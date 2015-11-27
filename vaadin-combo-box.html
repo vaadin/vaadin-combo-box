@@ -149,7 +149,7 @@
   <template>
     <paper-input-container id="inputContainer" on-tap='open' on-touchend='_preventDefault' opened$=[[opened]]>
       <label>[[label]]</label>
-      <input id='input' autocomplete='off' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged' key-event-target>
+      <input id='input' autocomplete='off' is='iron-input' bind-value='[[value]]' name$='[[name]]' type='text' required$="[[required]]" on-bind-value-changed='_inputValueChanged'>
       <div suffix>
         <iron-icon icon='arrow-drop-down'></iron-icon>
         <paper-ripple class='circle' center></paper-ripple>
