@@ -91,6 +91,34 @@
 
         expect(combobox.opened).to.be.false;
       });
+
+      describeSkipIf(fullScreen, 'on blur', function() {
+        it('should close the overlay when focus is lost', function(done) {
+          combobox.open();
+          MockInteractions.blur(combobox.$.input);
+          asyncDone(function() {
+            expect(combobox.opened).to.equal(false);
+          }, done, 100);
+        });
+      });
+
+      describeSkipIf(!fullScreen, 'on blur fullscreen', function() {
+        it('should close the overlay when focus is lost', function(done) {
+          // We need a dummy input as a focus target in fullscreen mode.
+          var dummyInput = document.createElement('input');
+          document.body.appendChild(dummyInput);
+
+          combobox.open();
+          Polymer.Base.async(function() {
+            dummyInput.focus();
+          }, 50);
+
+          asyncDone(function() {
+            expect(combobox.opened).to.equal(false);
+            document.body.removeChild(dummyInput);
+          }, done, 100);
+        });
+      });
     });
   });
 </script>
