@@ -91,6 +91,48 @@
 
         expect(combobox.opened).to.be.false;
       });
+
+      describeSkipIf(fullScreen, 'on blur', function() {
+        var dummyInput;
+        var input;
+
+        beforeEach(function() {
+          // Create a dummy input as a focus target.
+          dummyInput = document.createElement('input');
+          document.body.appendChild(dummyInput);
+        });
+
+        afterEach(function() {
+          document.body.removeChild(dummyInput);
+        });
+
+        it('should close the overlay when focus is lost', function(done) {
+          combobox.items = ['foo', 'bar', 'baz'];
+          combobox.open();
+          combobox.$.input.focus();
+          Polymer.Base.async(function() {
+            dummyInput.focus();
+          }, 100);
+
+          asyncDone(function() {
+            expect(combobox.opened).to.equal(false);
+          }, done, 400);
+        });
+
+        it('should cancel typing when focus is lost', function(done) {
+          combobox.items = ['foo', 'bar', 'baz'];
+          combobox.value = 'bar';
+
+          combobox.$.input.focus();
+          combobox.$.input.bindValue = 'baz';
+          combobox.open();
+          dummyInput.focus();
+
+          asyncDone(function() {
+            expect(combobox.$.input.value).to.equal('bar');
+          }, done, 100);
+        });
+      });
     });
   });
 </script>

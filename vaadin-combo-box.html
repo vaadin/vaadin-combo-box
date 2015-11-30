@@ -164,6 +164,7 @@
           type='text'
           required$="[[required]]"
           on-bind-value-changed='_inputValueChanged'
+          on-blur='_onBlur'
           key-event-target>
       <div suffix>
         <iron-icon icon='arrow-drop-down' aria-controls='overlay'></iron-icon>
@@ -310,6 +311,18 @@
         // Do not submit the surrounding form.
         e.preventDefault();
       }
+    },
+
+    _onBlur: function() {
+      this.async(function() {
+        var focusInsideOverlay = this.$.overlay.contains(document.activeElement);
+
+        // When grabbing the scroll handle, the activeElement will become
+        // the body on some browsers, so check for it also.
+        if (!focusInsideOverlay && document.activeElement !== document.body) {
+          this.close();
+        }
+      }, 1);
     },
 
     _onEscape: function() {
