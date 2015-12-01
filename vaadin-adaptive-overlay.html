@@ -288,7 +288,9 @@
       * @type Object
       */
     get scroller() {
-      return this.$.dropdownContent;
+      if (!this.fullScreen) {
+        return this.$.dropdownContent;
+      }
     }
   });
 </script>
