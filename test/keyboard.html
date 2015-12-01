@@ -221,7 +221,7 @@
 
       it('should calculate items correctly when some items are hidden', function(done) {
         var items = [];
-        for(var i=0;i<100;i++) {
+        for (var i = 0; i < 100; i++) {
           items.push(i.toString());
         }
 
@@ -229,7 +229,7 @@
         comboBox.open();
 
         asyncDone(function() {
-          expect(comboBox._lastVisibleIndex()).to.eql(comboBox._visibleItemsCount() - 1)
+          expect(comboBox._lastVisibleIndex()).to.eql(comboBox._visibleItemsCount() - 1);
         }, done, 100);
       });
     });
@@ -240,7 +240,7 @@
       beforeEach(function(done) {
         var items = [];
 
-        for(var i=0;i<100;i++) {
+        for (var i = 0; i < 100; i++) {
           items.push(i.toString());
         }
 

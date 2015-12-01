@@ -318,10 +318,10 @@
     },
 
     _focusedIndexChanged: function(index, prevIndex) {
-      if(index >=  0) {
-        if(index < this.$.selector.firstVisibleIndex) {
+      if (index >= 0) {
+        if (index < this.$.selector.firstVisibleIndex) {
           this.$.selector.scrollToIndex(index);
-        } else if(index >= this._lastVisibleIndex()) {
+        } else if (index > this._lastVisibleIndex()) {
           this.$.selector.scrollToIndex(index - this._visibleItemsCount() + 1);
         }
       }
@@ -334,7 +334,7 @@
 
       if(firstItemHeight) {
         var visibleItems = this.$.selector._viewportSize / firstItemHeight;
-        return Math.round(visibleItems);
+        return Math.floor(visibleItems);
       }
     },
 
