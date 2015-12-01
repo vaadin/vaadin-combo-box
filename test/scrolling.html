@@ -24,28 +24,6 @@
   <script>
     describe('scrolling', function() {
 
-      describe('using keyboard', function() {
-        var combobox;
-        var selector;
-
-        beforeEach(function() {
-          combobox = fixture('combobox');
-
-          var items = [];
-
-          for(var i=0;i<100;i++) {
-            items.push(i);
-          }
-
-          combobox.items = items;
-          selector = combobox.$.selector;
-        });
-
-        it('should scroll down after last item is reached', function() {
-          var visibleItems = combobox._visibleItemsCount;
-        });
-      });
-
       describeSkipIf(!fullScreen, 'fullscreen', function() {
         var combobox;
         var input;
