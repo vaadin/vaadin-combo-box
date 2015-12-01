@@ -279,22 +279,6 @@
           backdrop.style.top = -rect.top + 'px';
         });
       }
-    },
-
-    // scroller property is used by <iron-list>
-    /**
-      * Returns the scrollable element.
-      *
-      * @property scroller
-      * @type Object
-      */
-    get scroller() {
-      // with touch scrolling, default scroller element needs to be used.
-      if (!this.fullScreen) {
-        // For <iron-list> scrollToIndex() and _viewportSize to work in IE11,
-        // we need to use #dropdownContent as scroller element.
-        return this.$.dropdownContent;
-      }
     }
   });
 </script>

@@ -247,6 +247,17 @@
     ready: function() {
       this._addKeyEventListeners();
       Polymer.IronA11yAnnouncer.requestAvailability();
+
+      this._setOverlayScroller();
+    },
+
+    // For <iron-list> scrollToIndex() and _viewportSize to work in IE11,
+    // we need to use #dropdownContent as scroller element.
+    _setOverlayScroller: function() {
+      // with touch scrolling, default scroller element needs to be used.
+      if (!this.$.overlay.fullScreen) {
+        this.$.overlay.scroller =  this.$.overlay.$.dropdownContent;
+      }
     },
 
     _getFocusTarget: function() {
