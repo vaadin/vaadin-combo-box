@@ -279,6 +279,16 @@
           backdrop.style.top = -rect.top + 'px';
         });
       }
+    },
+
+    /**
+      * Returns the scrollable element.
+      *
+      * @property scroller
+      * @type Object
+      */
+    get scroller() {
+      return this.$.dropdownContent;
     }
   });
 </script>
