@@ -399,6 +399,7 @@
       var _val = this.$.selector.selectedItem;
       if (_val !== null) {
         this.value = _val;
+        this.fire('change-selected', this.value);
       } else if (this.opened) {
         this.close();
       }
