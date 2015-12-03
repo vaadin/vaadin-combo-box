@@ -247,6 +247,18 @@
     ready: function() {
       this._addKeyEventListeners();
       Polymer.IronA11yAnnouncer.requestAvailability();
+
+      this._fixOverlayStackingContext();
+    },
+
+    _fixOverlayStackingContext: function() {
+      // Form a stacking context on the scrolling element in Safari 9+ and
+      // Chrome, but not in Safari 8. This fixes iron-list rendering of the
+      // hideable scrollbar issue, brings the scrollber in front of the items.
+      var scroller = this._getOverlayScroller();
+      if (scroller) {
+        scroller.style.transform = 'translate3d(0, 0, 0)';
+      }
     },
 
     // For <iron-list> scrollToIndex() and _viewportSize to work in IE11,
