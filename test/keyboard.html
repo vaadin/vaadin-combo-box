@@ -311,6 +311,24 @@
 
         expect(selector.firstVisibleIndex).to.eql(51 - comboBox._visibleItemsCount() + 1);
       });
+
+      it('should scroll to start if no items focused when opening overlay', function() {
+          selector.scrollToIndex(50);
+          comboBox.close();
+
+          comboBox.open();
+
+          expect(selector.firstVisibleIndex).to.eql(0);
+      });
+
+      it('should scroll to focused item when opening overlay', function() {
+        comboBox.close();
+        comboBox.value = "50";
+
+        comboBox.open();
+
+        expect(selector.firstVisibleIndex).to.eql(49);
+      });
     });
   });
 </script>
