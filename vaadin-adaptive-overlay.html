@@ -31,7 +31,7 @@
       @apply(--dropdown-content-bottom-align);
     }
 
-    #dropdown[ios][fullscreen] {
+    #dropdown[ios] {
       position: absolute;
     }
 
@@ -85,20 +85,30 @@
       },
 
       /**
+       * The responsive break point value. If the viewport width is below,
+       * the overlay would open in full screen mode.
+       */
+      responsiveWidth: {
+        type: String,
+        value: '600px'
+      },
+
+      /**
+       * Turns on the full screen mode regardless of the viewport size.
+       */
+      forceFullScreen: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
        * True if the overlay works in full screen mode (e.g. on mobile devices).
        */
       fullScreen: {
         type: Boolean,
+        readOnly: true,
         notify: true,
-        reflectToAttribute: true,
-        value: function() {
-          try {
-            document.createEvent('TouchEvent');
-            return true;
-          } catch (e) {
-            return false;
-          }
-        }
+        reflectToAttribute: true
       },
 
       /**
@@ -161,13 +171,14 @@
         */
       scroller: {
         type: Object,
-        computed: '_scroller(fullScreen)'
+        computed: '_scroller(fullScreen)',
+        observer: '_scrollerChanged'
       }
     },
 
     _scroller: function(fullScreen) {
       // with touch scrolling, default scroller element needs to be used.
-      if (!this.fullScreen) {
+      if (!fullScreen) {
         // For <iron-list> scrollToIndex() and _viewportSize to work in IE11,
         // we need to use #dropdownContent as scroller element.
         return this.$.dropdownContent;
@@ -176,6 +187,22 @@
 
     _allowOutsideScroll: function(fullScreen) {
       return !fullScreen;
+    },
+
+    _scrollerChanged: function(scroller) {
+      var list = Polymer.dom(this).querySelector('iron-list');
+
+      if (list) {
+        // Trigger detached and attached event handlers of the iron-list
+        // in order to refresh its internal _scroller property.
+        list.detached();
+        list.classList.remove('has-scroller'); // TODO: Send a PR to <iron-list/>
+        list.attached();
+      }
+    },
+
+    _computeMediaQuery: function(forceFullScreen, responsiveWidth) {
+      return forceFullScreen ? '' : '(max-width: ' + responsiveWidth + ')';
     },
 
     _computePositionTarget: function(fullScreen) {
@@ -224,9 +251,11 @@
     },
 
     _verticalAlignChanged: function() {
-      this.close();
-      this.$.dropdown.resetFit();
-      this.async(this.open);
+      if (this.opened) {
+        this.close();
+        this.$.dropdown.resetFit();
+        this.async(this.open);
+      }
     },
 
     /**
@@ -251,6 +280,13 @@
      * Open the overlay.
      */
     open: function() {
+      // Check if the overlay should be opened in full screen
+      this._setFullScreen(
+        window.matchMedia(
+          this._computeMediaQuery(this.forceFullScreen, this.responsiveWidth)
+        ).matches
+      );
+
       this.$.dropdown.open();
     },
 
@@ -269,7 +305,7 @@
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
       } else {
         window.addEventListener('resize', this._resizeHandler);
-        this.async(this._updateOverlayAlignment);
+        this.$.dropdown.addEventListener('iron-resize', this._resizeHandler);
       }
 
       this._iOSOpened();
@@ -286,9 +322,9 @@
         var rect = this.getBoundingClientRect();
         this.$.dropdown.style.left = -rect.left + 'px';
         this.$.dropdown.style.top = -rect.top + 'px';
-
-        this._iOSReposition();
       }
+
+      this._iOSReposition();
     },
 
     /**
@@ -299,6 +335,7 @@
         this._viewportInfo.content = this._viewportInfo._originalContent;
       } else {
         window.removeEventListener('resize', this._resizeHandler);
+        this.$.dropdown.removeEventListener('iron-resize', this._resizeHandler);
       }
     },
 
@@ -314,14 +351,25 @@
     },
 
     _updateOverlayAlignment: function() {
+      if (!this.$.dropdown.positionTarget) return;
+
+      if (this.ios && !this.fullScreen) {
+        // trigger rendering to fix iOS Safari disappearing items issue
+        this.$.dropdown.offsetWidth;
+      }
+
       var rect = this.$.dropdown.positionTarget.getBoundingClientRect();
       var spaceBelow = window.innerHeight - rect.bottom;
       var alignedToBottom = spaceBelow < this.alignThreshold && spaceBelow < rect.top;
-      this._verticalAlign = alignedToBottom ? 'bottom' : 'top';
+      // Always open the dropdown at the bottom on iOS. iOS scrolls the focused
+      // inputs into view, so there’s alsways more space below the input.
+      this._verticalAlign = alignedToBottom && !this.ios ? 'bottom' : 'top';
+
+      this.$.dropdown.fit();
     },
 
     _iOSRepositionAsync: function() {
-      if (this.fullScreen && this.ios && this.opened) {
+      if (this.ios && this.opened) {
         this._iOSReposition();
         // Also reposition asynchronously as the scroll shift might
         // be delayed due to orientation change or focus animation.
@@ -330,7 +378,9 @@
     },
 
     _iOSReposition: function() {
-      if (this.fullScreen && this.ios && this.opened) {
+      if (!this.ios || !this.opened) return;
+
+      if (this.fullScreen) {
         // Scroll back to the dropdown (scroll might have shifted due to input focus for example)
         var rect = this.$.dropdown.getBoundingClientRect();
         window.scrollBy(rect.left, rect.top);
@@ -345,6 +395,8 @@
           backdrop.style.left = -rect.left + 'px';
           backdrop.style.top = -rect.top + 'px';
         });
+      } else {
+        this._updateOverlayAlignment();
       }
     }
   });

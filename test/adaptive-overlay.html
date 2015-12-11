@@ -42,9 +42,14 @@
       describe('fullscreen', function() {
 
         beforeEach(function(done) {
-          overlay.fullScreen = true;
+          overlay.responsiveWidth = '600px';
+          overlay.forceFullScreen = true;
           overlay.open();
           Polymer.Base.async(done);
+        });
+
+        it('should open in fullscreen mode when forced', function() {
+          expect(overlay.fullScreen).to.be.true;
         });
 
         it('should have correct dimensions', function() {
@@ -89,9 +94,14 @@
       describe('non-fullscreen', function() {
 
         beforeEach(function(done) {
-          overlay.fullScreen = false;
+          overlay.responsiveWidth = '0px';
+          overlay.forceFullScreen = false;
           overlay.open();
           Polymer.Base.async(done);
+        });
+
+        it('should not open in fullscreen mode', function() {
+          expect(overlay.fullScreen).to.be.false;
         });
 
         it('should have correct target elements', function() {
@@ -140,6 +150,33 @@
           overlay.open();
         });
 
+      });
+
+    });
+
+    describe('responsiveWidth property', function() {
+      var overlay;
+
+      beforeEach(function(done) {
+        overlay = fixture('overlay').firstElementChild;
+      });
+
+      it('should open in fullscreen mode if responsiveWidth is >= viewport', function(done) {
+        overlay.responsiveWidth = window.innerWidth + 'px';
+        overlay.open();
+        Polymer.Base.async(function() {
+          expect(overlay.fullScreen).to.be.true;
+          done();
+        });
+      });
+
+      it('should open in non-fullscreen mode if responsiveWidth is < viewport', function(done) {
+        overlay.responsiveWidth = (window.innerWidth - 1) + 'px';
+        overlay.open();
+        Polymer.Base.async(function() {
+          expect(overlay.fullScreen).to.be.false;
+          done();
+        });
       });
 
     });

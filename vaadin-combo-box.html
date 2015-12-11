@@ -207,10 +207,10 @@ enable usage within an `iron-form`.
 
     <!-- Having spaces between elements inside <content> template in vaadin-adaptive-overlay causes scrolling throw errors when using Shadow DOM or IE11. See https://github.com/PolymerElements/iron-dropdown/issues/27 -->
     <vaadin-adaptive-overlay id='overlay' role="listbox"
-         focus-target=[[_getFocusTarget()]] opened={{opened}} data-selection$='[[_getAriaActiveIndex(_focusedIndex)]]'><paper-input-container opened$=[[opened]]>
+        focus-target=[[_focusTarget]] opened={{opened}} data-selection$='[[_getAriaActiveIndex(_focusedIndex)]]' full-screen={{_fullScreen}}><paper-input-container class="toolbar" opened$=[[opened]]>
         <label>[[label]]</label><input id='fullScreenInput' autocomplete='off' is='iron-input' bind-value='[[value]]' on-bind-value-changed='_fullScreenInputValueChanged' on-blur='_onBlur'>
         <div suffix on-tap='close'><iron-icon icon='arrow-drop-down'></iron-icon><paper-ripple class='circle' center></paper-ripple></div>
-      </paper-input-container><iron-list id='selector' on-touchend="_preventDefault" on-down='_blurFullScreenInput' items='[[items]]' selected-item='[[value]]' on-selected-item-changed='_selectedItemChanged' selection-enabled>
+      </paper-input-container><iron-list id='selector' on-touchend="_preventDefault" on-down='_iOSBlurInput' items='[[items]]' selected-item='[[value]]' on-selected-item-changed='_selectedItemChanged' selection-enabled>
         <template>
           <div class='item'
           id$="it[[index]]"
@@ -272,6 +272,15 @@ enable usage within an `iron-form`.
         type: Number,
         value: -1,
         observer: '_focusedIndexChanged'
+      },
+
+      _focusTarget: {
+        type: Object,
+        computed: '_computeFocusTarget(_fullScreen)'
+      },
+
+      _fullScreen: {
+        type: Boolean
       }
     },
 
@@ -280,8 +289,8 @@ enable usage within an `iron-form`.
       Polymer.IronA11yAnnouncer.requestAvailability();
     },
 
-    _getFocusTarget: function() {
-      return this.$.overlay.fullScreen ? this.$.fullScreenInput : this.$.input;
+    _computeFocusTarget: function(fullScreen) {
+      return fullScreen ? this.$.fullScreenInput : this.$.input;
     },
 
     /**
@@ -447,8 +456,15 @@ enable usage within an `iron-form`.
       }
     },
 
-    _blurFullScreenInput: function() {
-      this.$.fullScreenInput.blur();
+    _iOSBlurInput: function() {
+      if (this.$.overlay.ios) {
+        // On iOS the input fields have to be defocused to hide the virtual
+        // keyboard that might overlay the dropdown. No need to hide the
+        // virtual keyboard on Android though: the viewport size is correct in
+        // that case, it doesn't include the virtual keyboard.
+        this.$.input.blur();
+        this.$.fullScreenInput.blur();
+      }
     },
 
     _setItems: function(items) {
@@ -485,7 +501,7 @@ enable usage within an `iron-form`.
     },
 
     _openedChanged: function() {
-      var fullScreen = this.$.overlay.fullScreen;
+      var fullScreen = this._fullScreen;
       this.$.input.tabIndex = fullScreen && this.opened ? -1 : 0;
 
       if (this.opened) {
