@@ -13,9 +13,13 @@
     }
 
     #dropdown[fullscreen],
+    #dropdown[fullscreen]::content #contentWrapper {
+      height: 100vh;
+    }
+
+    #dropdown[fullscreen],
     #dropdown[fullscreen]::content #contentWrapper,
     #dropdown[fullscreen] .dropdown-content {
-      height: 100vh;
       max-height: 100vh;
       width: 100vw;
       max-width: 100vw;
