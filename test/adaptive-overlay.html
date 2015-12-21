@@ -119,10 +119,12 @@
 
           overlay.parentElement.style.float = 'left'; // disables margins collapsing
 
-          overlay.open();
+          var interval = setInterval(function() {
+            if (overlay.$.dropdown._openChangedAsync) {
+              return;
+            }
 
-          Polymer.Base.async(function() {
-            var target = overlay.$.dropdown._verticalAlignTargetValue;
+            var target = overlay.$.dropdown.getBoundingClientRect().top;
 
             // When multiplied by `devicePixelRatio`, target should be integer
             expect(target * (window.devicePixelRatio || 1) % 1).to.be.equal(0);
@@ -131,8 +133,11 @@
             overlay.parentElement.style.removeProperty('margin-top');
             overlay.parentElement.style.removeProperty('float');
 
+            clearInterval(interval);
             done();
-          });
+          }, 100);
+
+          overlay.open();
         });
 
       });
