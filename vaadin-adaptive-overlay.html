@@ -306,6 +306,9 @@
       } else {
         window.addEventListener('resize', this._resizeHandler);
         this.$.dropdown.addEventListener('iron-resize', this._resizeHandler);
+
+        this.$.dropdownContent.style.minHeight = '0';
+        this.$.dropdownContent.style.minHeight = Math.min(this.scroller.scrollHeight, 300) + 'px';
       }
 
       this._iOSOpened();
