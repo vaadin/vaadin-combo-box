@@ -134,6 +134,18 @@
         }
       },
 
+      _touchDevice: {
+        readOnly: true,
+        value: function() {
+          try {
+            document.createEvent('TouchEvent');
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+      },
+
       /**
        * The pixel value that being compared with bottom offset of the input element will
        * make the popup be shown above the input.
@@ -376,16 +388,16 @@
     },
 
     _iOSRepositionAsync: function() {
-      if (this.ios && this.opened) {
+      if (this._touchDevice && this.opened) {
         this._iOSReposition();
         // Also reposition asynchronously as the scroll shift might
         // be delayed due to orientation change or focus animation.
-        this.async(this._iOSReposition, 500);
+        this.async(this._iOSReposition, 1000);
       }
     },
 
     _iOSReposition: function() {
-      if (!this.ios || !this.opened) return;
+      if (!this._touchDevice || !this.opened) return;
 
       if (this.fullScreen) {
         // Scroll back to the dropdown (scroll might have shifted due to input focus for example)
