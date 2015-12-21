@@ -512,7 +512,7 @@ enable usage within an `iron-form`.
           this._scrollIntoView(this._focusedIndex);
         }, 1);
 
-        this._temporaryListenerNameThisBetterAfterwards = this._blurInput.bind(this);
+        this._temporaryListenerNameThisBetterAfterwards = this._iOSBlurInput.bind(this);
         document.addEventListener('touchstart', this._temporaryListenerNameThisBetterAfterwards);
 
       } else {
