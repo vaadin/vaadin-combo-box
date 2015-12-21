@@ -35,6 +35,11 @@
       position: absolute;
     }
 
+    #dropdown:not([fullscreen]) {
+      position: absolute;
+      left: 0px !important;
+    }
+
     /* Override the conflicting top/bottom values not cleared by iron-dropdown */
     #dropdown[vertical-align='top'] {
       bottom: auto !important;
@@ -56,6 +61,7 @@
       on-tap="_tapped"
       on-iron-overlay-closed="_closed"
       on-iron-overlay-opened="_opened"
+      allow-outside-scroll="[[_allowOutsideScroll(fullScreen)]]"
       on-iron-resize="_iOSRepositionAsync">
       <div id="dropdownContent" class="dropdown-content" on-touchend="_iOSRepositionAsync">
         <content>
@@ -168,6 +174,10 @@
       }
     },
 
+    _allowOutsideScroll: function(fullScreen) {
+      return !fullScreen;
+    },
+
     _computePositionTarget: function(fullScreen) {
       return fullScreen ? document.documentElement : this.domHost || this.parentElement;
     },
@@ -189,11 +199,11 @@
     },
 
     _computeVerticalOffset: function(opened, positionTarget, fullScreen, _verticalAlign) {
-      var verticalOffset = 0;
+      var verticalOffset = _verticalAlign == 'top' ? 0 : positionTarget.clientHeight;
+
+      var target = 0;
 
       if (!fullScreen && positionTarget) {
-        verticalOffset = positionTarget.clientHeight;
-
         // In Safari, when dropdown is positioned on non-integer vertical
         // coordinate, the items text is sometimes rendered 1 device pixel line
         // outside the dropdown during vertical scrolling.
@@ -202,7 +212,7 @@
         // offset by a small error-correcting value, to make the vertical
         // coordinate of the dropdown an integer number of device pixels.
 
-        var target = this._computeVerticalAlignTargetValue(positionTarget, _verticalAlign);
+        target = this._computeVerticalAlignTargetValue(positionTarget, _verticalAlign);
         // We can't use the <iron-dropdown/>’s _verticalAlignTargetValue
         // property getter instead, because it depends on the verticalOffset.
 
@@ -210,7 +220,7 @@
         verticalOffset += Math.round(target * devicePixelRatio) / devicePixelRatio - target;
       }
 
-      return verticalOffset;
+      return verticalOffset - target;
     },
 
     _verticalAlignChanged: function() {
@@ -258,8 +268,7 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
       } else {
-        window.addEventListener('resize', this._resizeHandler);
-        this.async(this._updateOverlayAlignment);
+        this.$.dropdown.addEventListener('iron-resize', this._resizeHandler);
       }
 
       this._iOSOpened();
@@ -288,7 +297,7 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._originalContent;
       } else {
-        window.removeEventListener('resize', this._resizeHandler);
+        this.$.dropdown.removeEventListener('iron-resize', this._resizeHandler);
       }
     },
 
