@@ -512,7 +512,15 @@ enable usage within an `iron-form`.
           this._scrollIntoView(this._focusedIndex);
         }, 1);
 
+        this._temporaryListenerNameThisBetterAfterwards = this._blurInput.bind(this);
+        document.addEventListener('touchstart', this._temporaryListenerNameThisBetterAfterwards);
+
       } else {
+        if (this._temporaryListenerNameThisBetterAfterwards) {
+          document.removeEventListener('touchstart', this._temporaryListenerNameThisBetterAfterwards);
+          this._temporaryListenerNameThisBetterAfterwards = undefined;
+        }
+
         this.$.input.bindValue = this.value;
         this.$.fullScreenInput.bindValue = this.value;
         if (fullScreen) {
