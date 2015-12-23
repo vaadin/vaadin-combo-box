@@ -24,6 +24,15 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="scrollable-overlay">
+    <template>
+      <div style="width: 100px; height: 100px;">
+        <vaadin-adaptive-overlay>
+          <div class="content" style="height:10000px">content</div>
+        </vaadin-adaptive-overlay>
+      </div>
+    </template>
+  </test-fixture>
 
   <script>
     describe('overlay modes', function() {
@@ -140,9 +149,92 @@
 
           overlay.open();
         });
-
       });
 
+      describe('scrolling in fullscreen mode', function() {
+          beforeEach(function(done) {
+            overlay = fixture('scrollable-overlay').firstElementChild;
+            overlay.fullScreen = true;
+
+            overlay.open();
+            Polymer.Base.async(done);
+          });
+
+          it('should disallow outside scroll', function() {
+            expect(overlay.$.dropdown.allowOutsideScroll).to.equal(false);
+          });
+      });
+
+      describe('scrolling in desktop mode', function() {
+        var overlay;
+
+        function createWheelEvent(deltaY) {
+          var e = new WheelEvent('wheel', {deltaY: deltaY});
+          sinon.spy(e, 'preventDefault');
+
+          return e;
+        }
+
+        function scrollUp(node) {
+          var e = createWheelEvent(-1);
+          node.dispatchEvent(e);
+
+          return e;
+        }
+
+        function scrollDown(node) {
+          var e = createWheelEvent(1);
+          node.dispatchEvent(e);
+
+          return e;
+        }
+
+        beforeEach(function(done) {
+          overlay = fixture('scrollable-overlay').firstElementChild;
+          overlay.fullScreen = false;
+
+          overlay.open();
+          Polymer.Base.async(done);
+        });
+
+        it('should allow outside scroll', function() {
+          expect(overlay.$.dropdown.allowOutsideScroll).to.equal(true);
+        });
+
+        it('should prevent scrolling the body when at the top', function() {
+          overlay.scroller.scrollTop = 0;
+
+          var e = scrollUp(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(1);
+        });
+
+        it('should not prevent scrolling the contents contents up', function() {
+          overlay.scroller.scrollTop = 1;
+
+          var e = scrollUp(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(0);
+        });
+
+        it('should prevent scrolling the body when at the bottom', function() {
+          // this is actually more than it's possible to scroll down,
+          // but wanted to keep the test simple and not take the viewport height into account.
+          overlay.scroller.scrollTop = 10000;
+
+          var e = scrollDown(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(1);
+        });
+
+        it('should not prevent scrolling the contents contents down', function() {
+          overlay.scroller.scrollTop = 1;
+
+          var e = scrollDown(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(0);
+        });
+      });
     });
   </script>
 

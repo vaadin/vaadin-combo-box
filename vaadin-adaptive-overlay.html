@@ -193,6 +193,26 @@
       }
     },
 
+    /**
+    * We want to prevent the kinetic scrolling energy from being transferred from the overlay contents over to the parent.
+    * Further improvement ideas: after the contents have been scrolled to the top or bottom and scrolling has stopped, it could allow
+    * scrolling the parent similarily to touch scrolling.
+    */
+    _patchWheelOverScrolling: function() {
+      if(this.$.dropdown.allowOutsideScroll && this.scroller) {
+        this.addEventListener('wheel', function(e) {
+          var scrolledToTop = this.scroller.scrollTop === 0;
+          var scrolledToBottom = (this.scroller.scrollHeight - this.scroller.scrollTop - this.scroller.clientHeight) === 0;
+
+          if (scrolledToTop && e.deltaY < 0) {
+            e.preventDefault();
+          } else if (scrolledToBottom && e.deltaY > 0) {
+            e.preventDefault();
+          }
+        }.bind(this));
+      }
+    },
+
     _allowOutsideScroll: function(fullScreen) {
       return !fullScreen;
     },
@@ -248,6 +268,7 @@
 
     ready: function() {
       this._patchIronFitBehavior();
+      this._patchWheelOverScrolling();
     },
 
     /**
