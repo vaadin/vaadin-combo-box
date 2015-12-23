@@ -103,7 +103,8 @@
         });
 
         it('should have the height as content has', function() {
-          expect(overlay.$.dropdown.clientHeight).to.equal(content.clientHeight);
+          // we have a 8px margin for the overlay.
+          expect(overlay.$.dropdown.clientHeight).to.equal(content.clientHeight + 8);
         });
 
         it('should not alter the viewport info', function() {

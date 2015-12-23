@@ -27,8 +27,22 @@
       @apply(--dropdown-content);
     }
 
+    #dropdown[vertical-align='bottom']:not([fullscreen]) .dropdown-content {
+      margin-top: 8px;
+    }
+
+    #dropdown[vertical-align='top']:not([fullscreen]) .dropdown-content {
+      margin-bottom: 8px;
+    }
+
     #dropdown[vertical-align='bottom'] .dropdown-content {
       @apply(--dropdown-content-bottom-align);
+    }
+
+    #dropdown:not([ios])[fullscreen] {
+      position: fixed !important;
+      top: 0;
+      left: 0;
     }
 
     #dropdown[ios][fullscreen] {
