@@ -9,6 +9,7 @@
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="common.html">
+  <script src="../../promise-polyfill/Promise.js"></script>
   <script src="common.js"></script>
 </head>
 
@@ -50,26 +51,27 @@
 
       describe('fullscreen', function() {
 
-        beforeEach(function(done) {
+        beforeEach(function() {
           overlay.fullScreen = true;
           overlay.open();
-          Polymer.Base.async(done);
+
+          return waitUntilOpen(overlay);
         });
 
         it('should have correct dimensions', function() {
           var rect = overlay.$.dropdown.getBoundingClientRect();
-          expect(rect.left).to.equal(0);
-          expect(rect.top).to.equal(0);
+          expect(rect.left).to.equal(0, 'left');
+          expect(rect.top).to.equal(0, 'top');
           expect(dropdownContent.clientWidth).to.equal(document.documentElement.clientWidth);
           expect(dropdownContent.clientHeight).to.equal(document.documentElement.clientHeight);
         });
 
-        it('should alter the viewport info', function(done) {
+        it('should alter the viewport info', function() {
           expect(viewportInfo.content).to.equal(overlay._viewportInfo._fullScreenContent);
           overlay.close();
-          Polymer.Base.async(function() {
+
+          return waitUntilClosed(overlay).then(function() {
             expect(viewportInfo.content).not.to.equal(overlay._viewportInfo._fullScreenContent);
-            done();
           });
         });
 
@@ -97,10 +99,11 @@
 
       describe('non-fullscreen', function() {
 
-        beforeEach(function(done) {
+        beforeEach(function() {
           overlay.fullScreen = false;
           overlay.open();
-          Polymer.Base.async(done);
+
+          return waitUntilOpen(overlay);
         });
 
         it('should have correct target elements', function() {
@@ -152,12 +155,13 @@
       });
 
       describe('scrolling in fullscreen mode', function() {
-          beforeEach(function(done) {
+          beforeEach(function() {
             overlay = fixture('scrollable-overlay').firstElementChild;
             overlay.fullScreen = true;
 
             overlay.open();
-            Polymer.Base.async(done);
+
+            return waitUntilOpen(overlay);
           });
 
           it('should disallow outside scroll', function() {
@@ -189,12 +193,13 @@
           return e;
         }
 
-        beforeEach(function(done) {
+        beforeEach(function() {
           overlay = fixture('scrollable-overlay').firstElementChild;
           overlay.fullScreen = false;
 
           overlay.open();
-          Polymer.Base.async(done);
+
+          return waitUntilOpen(overlay);
         });
 
         it('should allow outside scroll', function() {

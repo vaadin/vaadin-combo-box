@@ -190,7 +190,7 @@
       it('should close the overlay with enter', function() {
         enter();
 
-        return waitUntilClosed(function() {
+        return waitUntilClosed().then(function() {
           expect(comboBox.opened).to.equal(false);
         });
       });
@@ -198,7 +198,7 @@
       it('should close the overlay with escape', function() {
         esc();
 
-        return waitUntilClosed(function() {
+        return waitUntilClosed().then(function() {
           expect(comboBox.opened).to.equal(false);
         });
       });
@@ -208,7 +208,7 @@
 
         esc();
 
-        return waitUntilClosed(function() {
+        return waitUntilClosed().then(function() {
           expect(comboBox.value).to.equal('bar');
         });
       });
@@ -218,7 +218,7 @@
 
         enter();
 
-        return waitUntilClosed(function() {
+        return waitUntilClosed().then(function() {
           expect(comboBox.value).to.equal('baz');
         });
       });
