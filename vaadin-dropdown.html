@@ -71,10 +71,12 @@
 
     /**
      * Fired after the `vaadin-dropdown` opens.
+     *
      * @event vaadin-dropdown-opened
      */
     /**
      * Fired after the `vaadin-dropdown` closes.
+     *
      * @event vaadin-dropdown-closed
      */
 
@@ -85,7 +87,7 @@
       // to blur the input.
       this._outsideTapListener = document.addEventListener('tap', function(event) {
         var eventPath = Polymer.dom(event).path;
-        if(eventPath.indexOf(this) === -1 && eventPath.indexOf(this.$.overlay) === -1) {
+        if (eventPath.indexOf(this) === -1 && eventPath.indexOf(this.$.overlay) === -1) {
           this.opened = false;
           this.focusTarget.blur();
         }
@@ -97,7 +99,7 @@
     },
 
     _openedChanged: function(opened) {
-      if(opened) {
+      if (opened) {
         this._open();
       } else {
         this._close();
