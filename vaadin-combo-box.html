@@ -378,6 +378,9 @@ enable usage within an `iron-form`.
     toggle: function() {
       if (this.opened) {
         this.close();
+
+        // Refocus input field after clicking the toggle button.
+        this.$.dropdown.focusTarget.focus();
       } else {
         this.open();
       }
