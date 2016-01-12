@@ -121,7 +121,8 @@
     _open: function() {
       //this.$.overlay.root.scroller = this.$.overlay;
       document.body.appendChild(this.$.overlay);
-      var list = this.children[1];
+      var list = this.$.overlay.$.scroller.children[0]
+
       var styles = list.domHost.querySelectorAll('style');
       Polymer.dom(this.$.overlay.root).querySelector('#scroller').appendChild(list);
       for (var i=0;i<styles.length;i++) {
