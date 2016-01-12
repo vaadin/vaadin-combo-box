@@ -14,11 +14,19 @@
       @apply(--shadow-elevation-2dp);
       background: #fff;
       border-radius: 0 0 2px 2px;
+      overflow: auto;
+    }
+
+    #scroller {
+      max-height: 65vh;
+      overflow: auto;
     }
   </style>
 
   <template>
-    <content></content>
+    <div id="scroller" scroller=[[_getScroller()]]>
+      <content></content>
+    </div>
   </template>
 </dom-module>
 
@@ -35,15 +43,6 @@
        * The element to position/align the dropdown by.
        */
       positionTarget: {
-        type: Object
-      },
-      /**
-       * Returns the scrollable element.
-       *
-       * @property scroller
-       * @type Object
-       */
-      scroller: {
         type: Object
       },
 
@@ -78,6 +77,10 @@
           }
         }.bind(this));
       }
+    },
+
+    _getScroller: function() {
+      return this.$.scroller;
     },
 
     ready: function() {

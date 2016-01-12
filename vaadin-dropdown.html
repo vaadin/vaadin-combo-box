@@ -23,7 +23,7 @@
 
   <template>
     <content select='.dropdown-input'></content>
-    <vaadin-overlay id='overlay' position-target='[[_positionTarget]]' scroller='[[_scroller]]' vertical-offset=[[overlayVerticalOffset]]>
+    <vaadin-overlay id='overlay' position-target='[[_positionTarget]]'>
       <content select='.dropdown-content'></content>
     </vaadin-overlay>
   </template>
@@ -69,11 +69,11 @@
         }
       },
 
-      _scroller: {
-          type: Object,
-          value: function() {
-            return Polymer.dom(this).querySelector('.dropdown-content');
-          }
+      scroller: {
+        type: Object,
+        value: function() {
+          return this.$.overlay;
+        }
       }
     },
 
@@ -114,8 +114,20 @@
       }
     },
 
+    ready: function() {
+      this.children = this.$.overlay.getEffectiveChildren();
+    },
+
     _open: function() {
+      //this.$.overlay.root.scroller = this.$.overlay;
       document.body.appendChild(this.$.overlay);
+      var list = this.children[1];
+      var styles = list.domHost.querySelectorAll('style');
+      Polymer.dom(this.$.overlay.root).querySelector('#scroller').appendChild(list);
+      for (var i=0;i<styles.length;i++) {
+        Polymer.dom(this.$.overlay.root).appendChild((styles.cloneNode(true)));
+      }
+
       this.focusTarget.focus();
 
       this.fire('vaadin-dropdown-opened');

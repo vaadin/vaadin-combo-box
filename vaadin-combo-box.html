@@ -359,6 +359,14 @@ enable usage within an `iron-form`.
     },
 
     _onOpened: function() {
+      var styles = Polymer.dom(this.root).querySelectorAll('style');
+
+      for (var i=0;i<styles.length;i++) {
+        Polymer.dom(this.$.dropdown.$.overlay.root).appendChild(document.importNode(styles[i], true));
+      }
+
+      //Polymer.dom(this.$.dropdown.$.overlay.root).appendChild(Polymer.dom(this.$.dropdown.$.overlay.root).querySelector('iron-list'));
+
       this._setItems(this.items);
       this._scrollIntoView(this._focusedIndex);
 
