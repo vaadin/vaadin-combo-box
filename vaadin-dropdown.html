@@ -119,25 +119,16 @@
     },
 
     _open: function() {
-      //this.$.overlay.root.scroller = this.$.overlay;
-      document.body.appendChild(this.$.overlay);
-      var list = this.$.overlay.$.scroller.children[0]
-
-      var styles = list.domHost.querySelectorAll('style');
-      Polymer.dom(this.$.overlay.root).querySelector('#scroller').appendChild(list);
-      for (var i=0;i<styles.length;i++) {
-        Polymer.dom(this.$.overlay.root).appendChild((styles.cloneNode(true)));
+      if (this.$.overlay.parentElement != document.body) {
+        document.body.appendChild(this.$.overlay);
+        this.focusTarget.focus();
+        this.fire('vaadin-dropdown-opened');
       }
-
-      this.focusTarget.focus();
-
-      this.fire('vaadin-dropdown-opened');
     },
 
     _close: function() {
       if (this.$.overlay.parentElement == document.body) {
         document.body.removeChild(this.$.overlay);
-
         this.fire('vaadin-dropdown-closed');
       }
     }
