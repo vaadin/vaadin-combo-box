@@ -39,16 +39,15 @@ var asyncDone = function(cb, done, timeout) {
   }, timeout || 1);
 };
 
-function _waitUntilOpened(open) {
+function _waitUntilOpened(open, overlay) {
   if (!window.Promise) {
     window.Promise = MakePromise(Polymer.Base.async);
   }
 
   return new Promise(function(resolve, reject) {
     var handle = setInterval(function() {
-      var combobox = document.querySelector('vaadin-combo-box');
-
-      if (combobox.opened == open && !combobox.$.overlay.$.dropdown._openChangedAsync) {
+      overlay = overlay || document.querySelector('vaadin-combo-box').$.overlay;
+      if (overlay.opened === open && !overlay.$.dropdown._openChangedAsync) {
         clearInterval(handle);
         resolve();
       }
@@ -56,12 +55,12 @@ function _waitUntilOpened(open) {
   });
 }
 
-var waitUntilOpen = function() {
-  return _waitUntilOpened(true);
+var waitUntilOpen = function(overlay) {
+  return _waitUntilOpened(true, overlay);
 };
 
-var waitUntilClosed = function() {
-  return _waitUntilOpened(false);
+var waitUntilClosed = function(overlay) {
+  return _waitUntilOpened(false, overlay);
 };
 
 var getItemArray = function(length) {

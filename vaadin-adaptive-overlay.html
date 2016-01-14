@@ -27,12 +27,31 @@
       @apply(--dropdown-content);
     }
 
+    #dropdown[vertical-align='bottom']:not([fullscreen]) .dropdown-content {
+      margin-top: 8px;
+    }
+
+    #dropdown[vertical-align='top']:not([fullscreen]) .dropdown-content {
+      margin-bottom: 8px;
+    }
+
     #dropdown[vertical-align='bottom'] .dropdown-content {
       @apply(--dropdown-content-bottom-align);
     }
 
+    #dropdown:not([ios])[fullscreen] {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+    }
+
     #dropdown[ios][fullscreen] {
-      position: absolute;
+      position: absolute !important;
+    }
+
+    #dropdown:not([fullscreen]) {
+      position: absolute !important;
+      left: 0px !important;
     }
 
     /* Override the conflicting top/bottom values not cleared by iron-dropdown */
@@ -50,12 +69,13 @@
       focus-target=[[focusTarget]]
       fullscreen$=[[fullScreen]]
       with-backdrop=[[fullScreen]]
-      position-target=[[positionTarget]]
+      position-target="null"
       vertical-align=[[_verticalAlign]]
-      vertical-offset=[[_computeVerticalOffset(opened,positionTarget,fullScreen,_verticalAlign)]]
+      vertical-offset=[[_verticalOffset]]
       on-tap="_tapped"
       on-iron-overlay-closed="_closed"
       on-iron-overlay-opened="_opened"
+      allow-outside-scroll="[[_allowOutsideScroll(fullScreen)]]"
       on-iron-resize="_iOSRepositionAsync">
       <div id="dropdownContent" class="dropdown-content" on-touchend="_iOSRepositionAsync">
         <content>
@@ -140,6 +160,11 @@
         observer: '_verticalAlignChanged'
       },
 
+      _verticalOffset: {
+        type: Number,
+        computed: '_computeVerticalOffset(opened,positionTarget,fullScreen,_verticalAlign)'
+      },
+
       /**
        * True if running on an iOS device
        */
@@ -168,48 +193,56 @@
       }
     },
 
+    /**
+    * We want to prevent the kinetic scrolling energy from being transferred from the overlay contents over to the parent.
+    * Further improvement ideas: after the contents have been scrolled to the top or bottom and scrolling has stopped, it could allow
+    * scrolling the parent similarily to touch scrolling.
+    */
+    _patchWheelOverScrolling: function() {
+      if(this.$.dropdown.allowOutsideScroll && this.scroller) {
+        this.addEventListener('wheel', function(e) {
+          var scrolledToTop = this.scroller.scrollTop === 0;
+          var scrolledToBottom = (this.scroller.scrollHeight - this.scroller.scrollTop - this.scroller.clientHeight) === 0;
+
+          if (scrolledToTop && e.deltaY < 0) {
+            e.preventDefault();
+          } else if (scrolledToBottom && e.deltaY > 0) {
+            e.preventDefault();
+          }
+        }.bind(this));
+      }
+    },
+
+    _allowOutsideScroll: function(fullScreen) {
+      return !fullScreen;
+    },
+
     _computePositionTarget: function(fullScreen) {
       return fullScreen ? document.documentElement : this.domHost || this.parentElement;
     },
 
-    // Computes the vertical coordinate of positionTarget, to be used for
-    // the dropdown alignment. Made after <iron-dropdown/>’s computation in
-    // _verticalAlignTargetValue property getter.
-    _computeVerticalAlignTargetValue: function(positionTarget, _verticalAlign) {
-      var target;
-      var positionRect = positionTarget.getBoundingClientRect();
-
-      if (_verticalAlign === 'bottom') {
-        target = document.documentElement.clientHeight - positionRect.bottom;
-      } else {
-        target = positionRect.top;
+    // In Safari, when dropdown is positioned on non-integer vertical
+    // coordinate, the items text is sometimes rendered 1 device pixel line
+    // outside the dropdown during vertical scrolling. We predict the vertical
+    // coordinate of the dropdown and shift its offset by a small
+    // error-correcting value, to make the vertical coordinate of the dropdown
+    // an integer number of device pixels.
+    _computeVerticalAdjustment: function(opened, positionTarget, fullScreen, _verticalAlign) {
+      if (fullScreen) {
+        return 0; // The adjustment is not necessary in the fullscreen mode
       }
 
-      return target;
+      var positionRect = positionTarget.getBoundingClientRect();
+      var positionValue = positionRect[_verticalAlign] + window.pageYOffset;
+      var devicePixelRatio = window.devicePixelRatio || 1;
+      var adjustment = Math.round(positionValue * devicePixelRatio) / devicePixelRatio - positionValue;
+      return _verticalAlign === 'top' ? adjustment : -adjustment;
     },
 
     _computeVerticalOffset: function(opened, positionTarget, fullScreen, _verticalAlign) {
-      var verticalOffset = 0;
-
-      if (!fullScreen && positionTarget) {
-        verticalOffset = positionTarget.clientHeight;
-
-        // In Safari, when dropdown is positioned on non-integer vertical
-        // coordinate, the items text is sometimes rendered 1 device pixel line
-        // outside the dropdown during vertical scrolling.
-        //
-        // We predict the vertical coordinate of the dropdown and shift its
-        // offset by a small error-correcting value, to make the vertical
-        // coordinate of the dropdown an integer number of device pixels.
-
-        var target = this._computeVerticalAlignTargetValue(positionTarget, _verticalAlign);
-        // We can't use the <iron-dropdown/>’s _verticalAlignTargetValue
-        // property getter instead, because it depends on the verticalOffset.
-
-        var devicePixelRatio = window.devicePixelRatio || 1;
-        verticalOffset += Math.round(target * devicePixelRatio) / devicePixelRatio - target;
-      }
-
+      var verticalOffset = (fullScreen || _verticalAlign == 'top') ? 0 : positionTarget.clientHeight;
+      // Adjust vertical offset to make the position device pixel accurate integer
+      verticalOffset += this._computeVerticalAdjustment(opened, positionTarget, fullScreen, _verticalAlign);
       return verticalOffset;
     },
 
@@ -226,7 +259,7 @@
       var sd = this.$.dropdown._sizeDimension.bind(this.$.dropdown);
       this.$.dropdown._sizeDimension = function(rect, positionedBy, start, end, extent) {
         if (extent === 'Width') {
-          this.$.dropdown.sizingTarget.style.maxWidth = this.$.dropdown.positionTarget.clientWidth + 'px';
+          this.$.dropdown.sizingTarget.style.maxWidth = this.positionTarget.clientWidth + 'px';
         } else {
           sd(rect, positionedBy, start, end, extent);
         }
@@ -235,6 +268,7 @@
 
     ready: function() {
       this._patchIronFitBehavior();
+      this._patchWheelOverScrolling();
     },
 
     /**
@@ -258,8 +292,7 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._fullScreenContent;
       } else {
-        window.addEventListener('resize', this._resizeHandler);
-        this.async(this._updateOverlayAlignment);
+        this.$.dropdown.addEventListener('iron-resize', this._resizeHandler);
       }
 
       this._iOSOpened();
@@ -269,10 +302,20 @@
       this._closed();
     },
 
+    _updateOverlayPosition: function() {
+      this.$.dropdown.style[this._verticalAlign] = this._verticalOffset + 'px';
+
+      // Memoize the inline style for `IronFitBehavior`.
+      if (this.$.dropdown._fitInfo) {
+        this.$.dropdown._fitInfo.inlineStyle[this._verticalAlign] =
+          this.$.dropdown.style[this._verticalAlign];
+      }
+
+      this.$.dropdown.refit();
+    },
+
     _iOSOpened: function() {
       if (this.fullScreen && this.ios) {
-        this.$.dropdown.positionTarget = undefined;
-
         var rect = this.getBoundingClientRect();
         this.$.dropdown.style.left = -rect.left + 'px';
         this.$.dropdown.style.top = -rect.top + 'px';
@@ -288,7 +331,7 @@
       if (this.fullScreen) {
         this._viewportInfo.content = this._viewportInfo._originalContent;
       } else {
-        window.removeEventListener('resize', this._resizeHandler);
+        this.$.dropdown.removeEventListener('iron-resize', this._resizeHandler);
       }
     },
 
@@ -304,10 +347,11 @@
     },
 
     _updateOverlayAlignment: function() {
-      var rect = this.$.dropdown.positionTarget.getBoundingClientRect();
+      var rect = this.positionTarget.getBoundingClientRect();
       var spaceBelow = window.innerHeight - rect.bottom;
       var alignedToBottom = spaceBelow < this.alignThreshold && spaceBelow < rect.top;
       this._verticalAlign = alignedToBottom ? 'bottom' : 'top';
+      this._updateOverlayPosition();
     },
 
     _iOSRepositionAsync: function() {

@@ -72,7 +72,7 @@
     return comboBox.$.inputContainer.getBoundingClientRect();
   }
   function expectAlmostEqual(tolerance, a, b)  {
-    expect(tolerance).to.be.above(Math.abs(a - b));
+    expect(Math.abs(a - b)).to.be.below(tolerance);
   }
 
   describe('overlay', function() {
@@ -156,28 +156,28 @@
 
         asyncDone(function() {
           var top = dropContentRect().top;
-          expectAlmostEqual(1, wh, top + dropContent().clientHeight);
+          expectAlmostEqual(1, wh, top + dropContent().clientHeight + 8); // we have a 8px margin at the bottom.
           moveComboBox(horiCenter, vertTop + 40, 100);
           asyncDone(function() {
             var newTop = dropContentRect().top;
             expect(newTop).to.be.equal(top + 40);
-            expectAlmostEqual(1, wh, newTop + dropContent().clientHeight);
+            expectAlmostEqual(1, wh, newTop + dropContent().clientHeight + 8);
           }, done);
         }, null);
       });
     });
 
-    describeSkipIf(fullScreen || isFF, 'overlay resizing at top', function() {
+    describeSkipIf(fullScreen, 'overlay resizing at top', function() {
       it('when window resizes popup should resize in order not overflow window edges', function(done) {
         openComboboxBottom();
         asyncDone(function() {
           var bottom = dropContentRect().bottom;
-          expectAlmostEqual(1, bottom, dropContent().clientHeight);
+          expectAlmostEqual(1, bottom, dropContent().clientHeight + 8);
           moveComboBox(horiCenter, vertBottom - 40, 100);
           asyncDone(function() {
             var newBottom = dropContentRect().bottom;
             expect(newBottom).to.be.equal(bottom - 40);
-            expectAlmostEqual(1, newBottom, dropContent().clientHeight);
+            expectAlmostEqual(1, newBottom, dropContent().clientHeight + 8);
           }, done);
         }, null);
       });

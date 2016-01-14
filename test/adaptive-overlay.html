@@ -9,6 +9,7 @@
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="common.html">
+  <script src="../../promise-polyfill/Promise.js"></script>
   <script src="common.js"></script>
 </head>
 
@@ -24,6 +25,15 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="scrollable-overlay">
+    <template>
+      <div style="width: 100px; height: 100px;">
+        <vaadin-adaptive-overlay>
+          <div class="content" style="height:10000px">content</div>
+        </vaadin-adaptive-overlay>
+      </div>
+    </template>
+  </test-fixture>
 
   <script>
     describe('overlay modes', function() {
@@ -41,32 +51,33 @@
 
       describe('fullscreen', function() {
 
-        beforeEach(function(done) {
+        beforeEach(function() {
           overlay.fullScreen = true;
           overlay.open();
-          Polymer.Base.async(done);
+
+          return waitUntilOpen(overlay);
         });
 
         it('should have correct dimensions', function() {
           var rect = overlay.$.dropdown.getBoundingClientRect();
-          expect(rect.left).to.equal(0);
-          expect(rect.top).to.equal(0);
+          expect(rect.left).to.equal(0, 'left');
+          expect(rect.top).to.equal(0, 'top');
           expect(dropdownContent.clientWidth).to.equal(document.documentElement.clientWidth);
           expect(dropdownContent.clientHeight).to.equal(document.documentElement.clientHeight);
         });
 
-        it('should alter the viewport info', function(done) {
+        it('should alter the viewport info', function() {
           expect(viewportInfo.content).to.equal(overlay._viewportInfo._fullScreenContent);
           overlay.close();
-          Polymer.Base.async(function() {
+
+          return waitUntilClosed(overlay).then(function() {
             expect(viewportInfo.content).not.to.equal(overlay._viewportInfo._fullScreenContent);
-            done();
           });
         });
 
         describeIf(ios, 'fullscreen ios', function() {
           it('should have correct target elements', function() {
-            expect(overlay.$.dropdown.positionTarget).to.equal(undefined);
+            expect(overlay.$.dropdown.positionTarget).to.equal(null);
           });
 
           it('should have position absolute', function() {
@@ -80,7 +91,7 @@
           });
 
           it('should have correct target elements', function() {
-            expect(overlay.$.dropdown.positionTarget).to.equal(document.documentElement);
+            expect(overlay.$.dropdown.positionTarget).to.equal(null);
           });
         });
 
@@ -88,14 +99,15 @@
 
       describe('non-fullscreen', function() {
 
-        beforeEach(function(done) {
+        beforeEach(function() {
           overlay.fullScreen = false;
           overlay.open();
-          Polymer.Base.async(done);
+
+          return waitUntilOpen(overlay);
         });
 
         it('should have correct target elements', function() {
-          expect(overlay.$.dropdown.positionTarget).to.equal(overlay.parentElement);
+          expect(overlay.$.dropdown.positionTarget).to.equal(null);
         });
 
         it('should have the same width as container has', function() {
@@ -103,7 +115,8 @@
         });
 
         it('should have the height as content has', function() {
-          expect(overlay.$.dropdown.clientHeight).to.equal(content.clientHeight);
+          // we have a 8px margin for the overlay.
+          expect(overlay.$.dropdown.clientHeight).to.equal(content.clientHeight + 8);
         });
 
         it('should not alter the viewport info', function() {
@@ -119,10 +132,12 @@
 
           overlay.parentElement.style.float = 'left'; // disables margins collapsing
 
-          overlay.open();
+          var interval = setInterval(function() {
+            if (overlay.$.dropdown._openChangedAsync) {
+              return;
+            }
 
-          Polymer.Base.async(function() {
-            var target = overlay.$.dropdown._verticalAlignTargetValue;
+            var target = overlay.$.dropdown.getBoundingClientRect().top;
 
             // When multiplied by `devicePixelRatio`, target should be integer
             expect(target * (window.devicePixelRatio || 1) % 1).to.be.equal(0);
@@ -131,12 +146,100 @@
             overlay.parentElement.style.removeProperty('margin-top');
             overlay.parentElement.style.removeProperty('float');
 
+            clearInterval(interval);
             done();
-          });
-        });
+          }, 100);
 
+          overlay.open();
+        });
       });
 
+      describe('scrolling in fullscreen mode', function() {
+          beforeEach(function() {
+            overlay = fixture('scrollable-overlay').firstElementChild;
+            overlay.fullScreen = true;
+
+            overlay.open();
+
+            return waitUntilOpen(overlay);
+          });
+
+          it('should disallow outside scroll', function() {
+            expect(overlay.$.dropdown.allowOutsideScroll).to.equal(false);
+          });
+      });
+
+      describe('scrolling in desktop mode', function() {
+        var overlay;
+
+        function createWheelEvent(deltaY) {
+          var e = new WheelEvent('wheel', {deltaY: deltaY});
+          sinon.spy(e, 'preventDefault');
+
+          return e;
+        }
+
+        function scrollUp(node) {
+          var e = createWheelEvent(-1);
+          node.dispatchEvent(e);
+
+          return e;
+        }
+
+        function scrollDown(node) {
+          var e = createWheelEvent(1);
+          node.dispatchEvent(e);
+
+          return e;
+        }
+
+        beforeEach(function() {
+          overlay = fixture('scrollable-overlay').firstElementChild;
+          overlay.fullScreen = false;
+
+          overlay.open();
+
+          return waitUntilOpen(overlay);
+        });
+
+        it('should allow outside scroll', function() {
+          expect(overlay.$.dropdown.allowOutsideScroll).to.equal(true);
+        });
+
+        it('should prevent scrolling the body when at the top', function() {
+          overlay.scroller.scrollTop = 0;
+
+          var e = scrollUp(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(1);
+        });
+
+        it('should not prevent scrolling the contents contents up', function() {
+          overlay.scroller.scrollTop = 1;
+
+          var e = scrollUp(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(0);
+        });
+
+        it('should prevent scrolling the body when at the bottom', function() {
+          // this is actually more than it's possible to scroll down,
+          // but wanted to keep the test simple and not take the viewport height into account.
+          overlay.scroller.scrollTop = 10000;
+
+          var e = scrollDown(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(1);
+        });
+
+        it('should not prevent scrolling the contents contents down', function() {
+          overlay.scroller.scrollTop = 1;
+
+          var e = scrollDown(overlay);
+
+          expect(e.preventDefault.callCount).to.equal(0);
+        });
+      });
     });
   </script>
 
