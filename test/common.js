@@ -8,6 +8,9 @@ var fullScreen = (function() {
   }
 })();
 
+// Set the test runner window width to trigger fullscreen mode
+window.parent.document.querySelector('#subsuites').style.width = fullScreen ? '500px' : '700px';
+
 var describeSkipIf = function(bool, title, callback) {
   bool = typeof bool == 'function' ? bool() : bool;
   if (bool) {

@@ -59,7 +59,7 @@
 
       describeIf(fullScreen, 'fullscreen', function() {
         beforeEach(function() {
-          combobox.$.overlay.fullScreen = true;
+          combobox.$.overlay.forceFullScreen = true;
           combobox.open();
 
           return waitUntilOpen();
@@ -89,7 +89,7 @@
 
     describe('closing', function() {
       it('should close fullscreen popup when tapping on modal curtain', function() {
-        combobox.$.overlay.fullScreen = true;
+        combobox.$.overlay.forceFullScreen = true;
         combobox.open();
 
         return waitUntilOpen()

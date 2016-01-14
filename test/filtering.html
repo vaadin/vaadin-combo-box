@@ -52,7 +52,7 @@
     [false, true].forEach(function(isFullScreen) {
       describe('setting the input field value in ' + (isFullScreen === true ? 'fullscreen' : 'desktop'), function() {
         beforeEach(function() {
-          comboBox.$.overlay.fullScreen = isFullScreen;
+          comboBox.$.overlay.forceFullScreen = isFullScreen;
         });
 
         it('should open the popup if closed', function() {
