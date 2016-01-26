@@ -71,6 +71,11 @@ enable usage within an `iron-form`.
       height: 24px;
     }
 
+    paper-input-container label {
+      /* Prevent label from overflowing in iOS and causing zoom level changes. */
+      max-width: 100%;
+    }
+
     paper-input-container iron-icon {
       fill: rgba(0, 0, 0, .26);
       cursor: pointer;
