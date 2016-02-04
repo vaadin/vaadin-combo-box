@@ -137,7 +137,7 @@ enable usage within an `iron-form`.
         _selected-item="{{_selectedItem}}"
         position-target="[[_positionTarget]]"
         _focused-index="[[_focusedIndex]]"
-        on-down="_blurInput"
+        on-down="_focusOverlay"
         vertical-offset="2">
     </vaadin-combo-box-overlay>
   </template>
@@ -312,8 +312,8 @@ enable usage within an `iron-form`.
       }, 1);
     },
 
-    _blurInput: function() {
-      this.$.input.blur();
+    _focusOverlay: function() {
+      this.$.overlay.$.scroller.focus();
     },
 
     /**
