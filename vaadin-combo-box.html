@@ -343,6 +343,7 @@ enable usage within an `iron-form`.
      */
     clear: function() {
       this.value = '';
+      this.$.overlay.$.selector.clearSelection();
     },
 
     /**
