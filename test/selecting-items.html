@@ -76,6 +76,14 @@
       combobox.$.overlay.$.selector.toggleSelectionForItem('foo');
       expect(valueChangedSpy.callCount).to.equal(0);
     });
+
+    it('should focus on overlay when items are clicked on', function() {
+      combobox.open();
+
+      var item = combobox.$.overlay.fire('down');
+
+      expect(document.activeElement).to.eql(combobox.$.overlay.$.scroller);
+    });
   });
 
   describe('clearing a selection', function() {
