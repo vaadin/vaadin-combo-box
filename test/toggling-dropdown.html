@@ -15,8 +15,8 @@
 <body>
 
 <test-fixture id="combobox">
-  <template>
-    <vaadin-combo-box></vaadin-combo-box>
+  <template is='dom-template'>
+    <vaadin-combo-box disabled="[[disabled]]" readonly="[[readonly]]"></vaadin-combo-box>
   </template>
 </test-fixture>
 
@@ -162,6 +162,38 @@
           expect(combobox.opened).to.equal(false);
           done();
         }, 1);
+      });
+    });
+
+    describe('disabled', function() {
+
+      beforeEach(function() {
+        combobox.disabled = true;
+      });
+
+      it('toggleIcon should be hidden when disabled', function() {
+        expect(combobox.$.toggleIcon.hidden).to.be.true;
+      });
+
+      it('dropdown should not be shown when disabled', function() {
+        combobox.$$('paper-input-container input').fire('tap');
+        expect(combobox.opened).to.be.false;
+      });
+    });
+
+    describe('read-only', function() {
+
+      beforeEach(function() {
+        combobox.readonly = true;
+      });
+
+      it('toggleIcon should be hidden when read-only', function() {
+        expect(combobox.$.toggleIcon.hidden).to.be.true;
+      });
+
+      it('dropdown should not be shown when read-only', function() {
+        combobox.$$('paper-input-container input').fire('tap');
+        expect(combobox.opened).to.be.false;
       });
     });
   });

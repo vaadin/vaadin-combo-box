@@ -16,7 +16,7 @@
 
   <test-fixture id='combobox'>
     <template is='dom-template'>
-      <vaadin-combo-box name=[[name]] required=[[required]]></vaadin-combo-box>
+      <vaadin-combo-box name=[[name]] required=[[required]] disabled="[[disabled]]" readonly="[[readonly]]"></vaadin-combo-box>
     </template>
   </test-fixture>
 
@@ -53,6 +53,16 @@
       it('should not be required', function() {
         var comboBox = fixture('combobox');
         expect(comboBox.$$('input').getAttribute('required')).to.equal(null);
+      });
+
+      it('should be disabled', function() {
+        var comboBox = fixture('combobox', {disabled: 'true'});
+        expect(comboBox.$$('input').getAttribute('disabled')).to.equal('true');
+      });
+
+      it('should be read-only', function() {
+        var comboBox = fixture('combobox', {readonly: 'true'});
+        expect(comboBox.$$('input').getAttribute('readonly')).to.equal('true');
       });
 
       it('should validate correctly', function() {

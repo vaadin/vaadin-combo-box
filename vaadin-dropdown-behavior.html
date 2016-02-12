@@ -20,6 +20,11 @@
         type: Boolean,
         value: false
       },
+
+      readonly: {
+        type: Boolean,
+        value: false
+      }
     },
 
     /**
@@ -37,6 +42,10 @@
      * Opens the dropdown list.
      */
     open: function() {
+      // Prevent _open() beign called when input is disabled or read-only
+      if(this.disabled || this.readonly) {
+        return;
+      }
       this.opened = true;
     },
 
