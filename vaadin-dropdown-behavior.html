@@ -82,6 +82,8 @@
     _open: function() {
       document.body.appendChild(this.$.overlay);
 
+      this._setOverlayAlignment();
+
       this._addOutsideClickListener();
 
       // For touch devices, we don't want to popup virtual keyboard on touch devices unless input
@@ -91,6 +93,12 @@
       }
 
       this.fire('vaadin-dropdown-opened');
+    },
+
+    _setOverlayAlignment: function() {
+       var spaceBelow = (window.innerHeight - this.$.input.getBoundingClientRect().bottom) / window.innerHeight;
+
+       this.$.overlay.alignAbove = spaceBelow < 0.30;
     },
 
     _close: function() {
