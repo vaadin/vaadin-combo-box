@@ -484,6 +484,10 @@ enable usage within an `iron-form`.
       this.$.overlay.notifyResize();
 
       this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
+
+      this.async(function() {
+        this.$.overlay.notifyResize();
+      }.bind(this));
     },
 
     _indexOf: function(value) {

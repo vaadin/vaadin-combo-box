@@ -119,6 +119,15 @@
 
         expect(dropContentRect().bottom).to.equal(inputContentRect().top);
       });
+
+      it('should reposition after filtering', function() {
+        dropContent().alignAbove = true;
+
+        comboBox.$.input.bindValue = 'item 1';
+        comboBox.$.input.fire('input');
+
+        expect(dropContentRect().bottom).to.equal(inputContentRect().top);
+      });
     });
   });
 </script>
