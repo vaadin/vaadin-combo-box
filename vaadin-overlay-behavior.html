@@ -21,6 +21,14 @@
       verticalOffset: {
         type: Number,
         value: 0
+      },
+
+      /**
+       * If `true`, overlay is aligned above the `positionTarget`
+       */
+      alignAbove: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -43,6 +51,14 @@
       window.removeEventListener('scroll', this._boundSetOverlayPosition, true);
     },
 
+    _verticalOffset: function(overlayRect, targetRect) {
+      if (this.alignAbove) {
+        return -overlayRect.height;
+      } else {
+        return targetRect.height + this.verticalOffset;
+      }
+    },
+
     _setOverlayPosition: function() {
       if (this.parentElement === document.body) {
         var overlayRect = this.getBoundingClientRect();
@@ -50,7 +66,7 @@
 
         this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
         this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
-          this.positionTarget.clientHeight + this.verticalOffset;
+          this._verticalOffset(overlayRect, targetRect);
 
         this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
 

@@ -110,6 +110,16 @@
         expect(dropContentRect().width).to.equal(inputContentRect().width);
       });
     });
+
+    describe('overlay alignment', function() {
+      it('should be above input', function() {
+        dropContent().alignAbove = true;
+
+        comboBox.open();
+
+        expect(dropContentRect().bottom).to.equal(inputContentRect().top);
+      });
+    });
   });
 </script>
 
