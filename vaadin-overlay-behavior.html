@@ -59,10 +59,25 @@
       }
     },
 
+    _maxHeight: function(targetRect) {
+      var margin = 8;
+      var minHeight = 100; // not necessary, but felt the right thing to do :-)
+
+      if (this.alignAbove) {
+        return Math.max(targetRect.top - margin, minHeight) + 'px';
+      } else {
+        return Math.max(window.innerHeight - targetRect.bottom - margin, minHeight) + 'px';
+      }
+    },
+
     _setOverlayPosition: function() {
       if (this.parentElement === document.body) {
-        var overlayRect = this.getBoundingClientRect();
         var targetRect = this.positionTarget.getBoundingClientRect();
+
+        this.style.maxHeight = this._maxHeight(targetRect);
+        this.$.selector.style.maxHeight = this._maxHeight(targetRect);
+
+        var overlayRect = this.getBoundingClientRect();
 
         this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
         this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
