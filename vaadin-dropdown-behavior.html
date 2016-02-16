@@ -82,7 +82,7 @@
     _open: function() {
       document.body.appendChild(this.$.overlay);
 
-      this._setOverlayAlignment();
+      this.$.overlay._setOverlayAlignment(this.$.input);
 
       this._addOutsideClickListener();
 
@@ -93,16 +93,6 @@
       }
 
       this.fire('vaadin-dropdown-opened');
-    },
-
-    _setOverlayAlignment: function() {
-      if (this.$.overlay.iosDevice) {
-        return false;
-      } else {
-        var spaceBelow = (window.innerHeight - this.$.input.getBoundingClientRect().bottom) / window.innerHeight;
-
-        this.$.overlay.alignAbove = spaceBelow < 0.30;
-      }
     },
 
     _close: function() {
