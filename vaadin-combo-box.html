@@ -129,7 +129,6 @@ enable usage within an `iron-form`.
           aria-labelledby="label"
           aria-autocomplete="list" aria-owns="overlay"
           autocomplete="off"
-          bind-value="[[value]]"
           name$="[[name]]"
           type="text"
           required$="[[required]]"
@@ -150,9 +149,10 @@ enable usage within an `iron-form`.
     <vaadin-combo-box-overlay
         id="overlay"
         _aria-active-index="{{_ariaActiveIndex}}"
-        _selected-item="{{_selectedItem}}"
         position-target="[[_positionTarget]]"
         _focused-index="[[_focusedIndex]]"
+        _item-label-path="[[itemLabelPath]]"
+        _item-value-path="[[itemValuePath]]"
         on-down="_blurInput"
         vertical-offset="2">
     </vaadin-combo-box-overlay>
@@ -172,7 +172,8 @@ enable usage within an `iron-form`.
 
     properties: {
       /**
-       * An array of `String` values to be displayed as options in the dropdown.
+       * An array of values to be displayed as options in the dropdown. The
+       * options could be either `String` or `Object`.
        */
       items: {
         type: Array,
@@ -180,12 +181,29 @@ enable usage within an `iron-form`.
       },
 
       /**
-       * The value for this element.
+       * The `String` value for the selected item of the combo box. Provides
+       * the value for `iron-form`.
+       *
+       * When there’s no item selected, the value is an empty string.
+       *
+       * Use `selectedItem` property to get the raw selected item from
+       * the `items` array.
        */
       value: {
         type: String,
         observer: '_valueChanged',
         value: ''
+      },
+
+      /**
+       * If `true`, user can input a value that is not present in the items list.
+       * `value` property will be set to the input value in this case.
+       * Also, when `value` is set programmatically, the input value will be set
+       * to reflect that value.
+       */
+      allowCustomValue: {
+        type: Boolean,
+        value: false
       },
 
       /**
@@ -211,6 +229,40 @@ enable usage within an `iron-form`.
       _filter: {
         type: String,
         value: ''
+      },
+
+      /**
+       * The seletected item from the `items` array.
+       */
+      selectedItem: {
+        type: Object,
+        notify: true
+      },
+
+      /**
+       * Path for label of the item. If `items` is an array of objects, the
+       * `itemLabelPath` is used to fetch the displayed string label for each
+       * item.
+       *
+       * The item label is also used for matching items when processing user
+       * input, i. e., for filtering and selecting items.
+       */
+      itemLabelPath: {
+        type: String,
+        value: 'label'
+      },
+
+      /**
+       * Path for value of the item. If `items` is an array of objects, the
+       * `itemValuePath:` is used to fetch the string value for the selected
+       * item.
+       *
+       * The item value is to be used in the `value` property of the combo box,
+       * to provide the form value.
+       */
+      itemValuePath: {
+        type: String,
+        value: 'value'
       }
     },
 
@@ -266,14 +318,19 @@ enable usage within an `iron-form`.
       return Polymer.IronA11yKeysBehavior.keyboardEventMatchesKeys(e, k);
     },
 
+    _getItemLabel: function(item) {
+      return this.$.overlay._getItemLabel(item);
+    },
+
+    _getItemValue: function(item) {
+      return this.$.overlay._getItemValue(item);
+    },
+
     _onArrowDown: function() {
       if (this.opened) {
         if (this.$.overlay._items) {
           this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
-          if (this._focusedIndex > -1) {
-            this.$.input.bindValue = this.$.overlay._items[this._focusedIndex];
-            this._setSelectionRange();
-          }
+          this._prefillFocusedItemLabel();
         }
       } else {
         this.open();
@@ -290,17 +347,21 @@ enable usage within an `iron-form`.
           }
         }
 
-        if (this._focusedIndex > -1) {
-          this.$.input.bindValue = this.$.overlay._items[this._focusedIndex];
-          this._setSelectionRange();
-        }
+        this._prefillFocusedItemLabel();
       } else {
         this.open();
       }
     },
 
+    _prefillFocusedItemLabel: function() {
+      if (this._focusedIndex > -1) {
+        this.$.input.bindValue = this._getItemLabel(this.$.overlay._focusedItem);
+        this._setSelectionRange();
+      }
+    },
+
     _onEnter: function(e) {
-      if (this.opened) {
+      if (this.opened && (this.allowCustomValue || this.$.input.bindValue === '' || this._focusedIndex > -1)) {
         this.close();
 
         // Do not submit the surrounding form.
@@ -368,7 +429,7 @@ enable usage within an `iron-form`.
      * Reverts back to original value.
      */
     cancel: function() {
-      this.$.input.bindValue = this.value;
+      this.$.input.bindValue = this._getItemLabel(this.selectedItem);
       this.close();
     },
 
@@ -382,13 +443,22 @@ enable usage within an `iron-form`.
     },
 
     _onClosed: function() {
-      this._focusedIndex = this._indexOf(this.$.input.bindValue);
+      this._focusedIndex = this.$.overlay._indexOfLabel(this.$.input.bindValue);
 
       if (this._focusedIndex > -1) {
         this.$.overlay._selectItem(this._focusedIndex);
-        this.$.input.bindValue = this.value;
+        this.$.input.bindValue = this._getItemLabel(this.selectedItem);
+      } else if (this.$.input.bindValue === '') {
+        this._clear();
       } else {
-        this.value = this.$.input.bindValue;
+        var e = this.fire('custom-value', this.$.input.bindValue, { cancelable: true });
+        if (!e.isDefaultPrevented) {
+          if (this.allowCustomValue) {
+            this.value = this.$.input.bindValue;
+          } else {
+            this.$.input.bindValue = this._getItemLabel(this.selectedItem);
+          }
+        }
       }
 
       this._clearSelectionRange();
@@ -410,7 +480,7 @@ enable usage within an `iron-form`.
 
     _inputValueChanged: function(e) {
       this._filter = this.$.input.bindValue;
-      this._focusedIndex = this._indexOf(this.$.input.bindValue);
+      this._focusedIndex = this.$.overlay._indexOfLabel(this.$.input.bindValue);
 
       if (!this.opened) {
         this.open();
@@ -421,7 +491,7 @@ enable usage within an `iron-form`.
       if (this._filter !== '') {
         this.$.input.bindValue = this._filter;
       } else {
-        this.$.input.bindValue = this.value;
+        this.$.input.bindValue = this._getItemLabel(this.selectedItem);
       }
 
       this._clearSelectionRange();
@@ -457,13 +527,13 @@ enable usage within an `iron-form`.
     },
 
     _filterItems: function(arr, filter) {
-      return arr.filter(function(item) {
-        filter = filter || '';
+      return arr.filter((function(item) {
+        filter = filter.toString().toLowerCase() || '';
 
         // Check if item contains input value.
-        return item.toString().toLowerCase()
-                .indexOf(filter.toString().toLowerCase()) > -1;
-      });
+        return this._getItemLabel(item).toString().toLowerCase()
+          .indexOf(filter) > -1;
+      }).bind(this));
     },
 
     _setItems: function(items) {
@@ -475,9 +545,9 @@ enable usage within an `iron-form`.
       this.$.overlay.notifyPath('_items');
       this.$.overlay.set('_items', items);
 
-      if (this.$.overlay._items && this.$.overlay._items.indexOf(this.value) > -1) {
-        this.$.overlay._selectItem(this.value);
-        this._focusedIndex = this._indexOf(this.value);
+      if (this.$.overlay._items && this.$.overlay._items.indexOf(this.selectedItem) > -1) {
+        this.$.overlay._selectItem(this.selectedItem);
+        this._focusedIndex = this.items.indexOf(this.selectedItem);
       }
 
       this.$.overlay.hidden = (items === undefined || items === null || items.length === 0);
@@ -486,11 +556,10 @@ enable usage within an `iron-form`.
       this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
     },
 
-    _indexOf: function(value) {
-      if (this.$.overlay._items && value) {
-        for (var i = 0; i < this.$.overlay._items.length; i++) {
-          if (this.$.overlay._items[i].toString().toLowerCase() ===
-              this.$.input.bindValue.toString().toLowerCase()) {
+    _indexOfValue: function(value) {
+      if (this.items && value) {
+        for (var i = 0; i < this.items.length; i++) {
+          if (this._getItemValue(this.items[i]) === value) {
             return i;
           }
         }
@@ -499,10 +568,14 @@ enable usage within an `iron-form`.
       return -1;
     },
 
-    _selectedItemChanged: function(event, selectedItem) {
-      if (selectedItem.value !== null) {
-        this.value = selectedItem.value;
-      } else if (this.opened) {
+    _selectedItemChanged: function(event, detail) {
+      if (detail.value !== null) {
+        this.selectedItem = detail.value;
+        this.$.input.bindValue = this._getItemLabel(this.selectedItem);
+        this.value = this._getItemValue(this.selectedItem);
+      }
+
+      if (this.opened) {
         this.close();
       }
     },
@@ -512,13 +585,17 @@ enable usage within an `iron-form`.
         this.value = '';
       }
 
-      if (this.$.overlay._items && this.$.overlay._items.indexOf(value) > -1) {
-        this.$.overlay._selectItem(value);
+      var valueIndex = this._indexOfValue(value);
+      var item = valueIndex > -1 && this.items[valueIndex];
+      if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
+        this.$.overlay._selectItem(item);
       } else {
+        this.$.input.bindValue = this.allowCustomValue ? value : '';
+        this.selectedItem = null;
         this.$.overlay.$.selector.clearSelection();
       }
 
-      this._focusedIndex = this._indexOf(value);
+      this._focusedIndex = valueIndex;
 
       this.close();
     },
