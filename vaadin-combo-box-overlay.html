@@ -110,7 +110,7 @@
       /**
        * True if the device is an iOS device.
        */
-      iosDevice: {
+      _iosDevice: {
         type: Boolean,
         value: function() {
           return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -225,6 +225,23 @@
 
     _preventDefault: function(e) {
       e.preventDefault();
+    },
+
+    _setOverlayAlignment: function(input) {
+      if (this._iosDevice) {
+        return false;
+      } else {
+        var spaceBelow = (window.innerHeight - input.getBoundingClientRect().bottom) / window.innerHeight;
+
+        this.alignAbove = spaceBelow < 0.30;
+
+        if (this.alignAbove) {
+          // Prevent overlay resize when window resized from bottom
+          this.$.scroller.style.maxHeight = '100vh';
+        } else {
+          this.$.scroller.style.maxHeight = '65vh';
+        }
+      }
     }
   });
 </script>
