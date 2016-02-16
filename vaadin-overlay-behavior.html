@@ -61,13 +61,16 @@
 
     _maxHeight: function(targetRect) {
       var margin = 8;
-      var minHeight = 100; // not necessary, but felt the right thing to do :-)
+      var minHeight = 116; // Height of two items in combo-box
+      var height;
 
       if (this.alignAbove) {
-        return Math.max(targetRect.top - margin, minHeight) + 'px';
+        height = targetRect.top - margin;
       } else {
-        return Math.max(window.innerHeight - targetRect.bottom - margin, minHeight) + 'px';
+        height = window.innerHeight - targetRect.bottom - margin;
       }
+
+      return Math.min(Math.max(height, minHeight), window.innerHeight * .65) + 'px';
     },
 
     _setOverlayPosition: function() {

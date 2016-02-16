@@ -25,7 +25,7 @@
 
     #scroller {
       overflow: auto;
-      max-height: 65vh;
+      max-height: 100%;
 
       /* Fixes item background from getting on top of scrollbars on Safari */
       transform: translate3d(0,0,0);
@@ -110,7 +110,7 @@
       /**
        * True if the device is an iOS device.
        */
-      iosDevice: {
+      _iosDevice: {
         type: Boolean,
         value: function() {
           return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -225,6 +225,16 @@
 
     _preventDefault: function(e) {
       e.preventDefault();
+    },
+
+    _setOverlayAlignment: function(input) {
+      if (this._iosDevice) {
+        return false;
+      } else {
+        var spaceBelow = (window.innerHeight - input.getBoundingClientRect().bottom) / window.innerHeight;
+
+        this.alignAbove = spaceBelow < 0.30;
+      }
     }
   });
 </script>

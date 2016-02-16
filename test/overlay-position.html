@@ -111,26 +111,31 @@
       });
     });
 
-    if (!ios) {
-      describe('overlay alignment', function() {
-        it('should be above input', function() {
-          moveComboBox(horiCenter, vertBottom, 300);
+    describeSkipIf(!ios, 'overlay alignment', function() {
+      it('should be above input', function(done) {
+        moveComboBox(horiCenter, vertBottom, 300);
 
-          comboBox.open();
+        comboBox.open();
+
+        Polymer.Base.async(function() {
           expect(dropContent().alignAbove).to.be.true;
-          expect(dropContentRect().bottom).to.equal(inputContentRect().top);
-        });
-
-        it('should reposition after filtering', function() {
-          moveComboBox(horiCenter, vertBottom, 300);
-
-          comboBox.$.input.bindValue = 'item 1';
-          comboBox.$.input.fire('input');
-
-          expect(dropContentRect().bottom).to.equal(inputContentRect().top);
-        });
+          expect(dropContentRect().bottom).to.closeTo(inputContentRect().top, 0.1);
+          done();
+        }, 1);
       });
-    }
+
+      it('should reposition after filtering', function(done) {
+        moveComboBox(horiCenter, vertBottom, 300);
+
+        comboBox.$.input.bindValue = 'item 1';
+        comboBox.$.input.fire('input');
+
+        Polymer.Base.async(function() {
+          expect(dropContentRect().bottom).to.closeTo(inputContentRect().top, 0.1);
+          done();
+        }, 1);
+      });
+    });
 
     describe('overlay resizing', function() {
       var minHeight = 100;
