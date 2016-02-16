@@ -18,37 +18,31 @@
   </style>
 </head>
 <body>
-  <section onclick="clickHandler(event)">
-    <paper-button data-dialog="dialog">plain dialog</paper-button>
-    <paper-button data-dialog="modal">modal dialog</paper-button>
+  <section>
+    <paper-button onclick="openDialog('dialog')">plain dialog</paper-button>
+    <paper-button onclick="openDialog('modal')">modal dialog</paper-button>
 
     <paper-dialog id="dialog">
-      <vaadin-combo-box></vaadin-combo-box>
+      <vaadin-combo-box id="combobox1"></vaadin-combo-box>
     </paper-dialog>
     <paper-dialog id="modal" modal>
-      <!--<vaadin-combo-box></vaadin-combo-box>-->
+      <vaadin-combo-box id="combobox2"></vaadin-combo-box>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+      </div>
     </paper-dialog>
   </section>
   <script>
     window.addEventListener('WebComponentsReady', function(e) {
-      var combobox = document.querySelector('vaadin-combo-box');
-      // The elements is an array of String values.
-      combobox.items = elements;
+      var combobox1 = document.querySelector('#combobox1');
+      var combobox2 = document.querySelector('#combobox2');
+
+      combobox1.items = combobox2.items = elements;
     });
 
-    function clickHandler(e) {
-      var button = e.target;
-      while (!button.hasAttribute('data-dialog') && button !== document.body) {
-        button = button.parentElement;
-      }
-      if (!button.hasAttribute('data-dialog')) {
-        return;
-      }
-      var id = button.getAttribute('data-dialog');
+    function openDialog(id) {
       var dialog = document.getElementById(id);
-      if (dialog) {
-        dialog.open();
-      }
+      dialog.open();
     }
   </script>
 </body>
