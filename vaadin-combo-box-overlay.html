@@ -72,7 +72,7 @@
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
               focused$="[[_isItemFocused(_focusedIndex,index)]]">
-              [[item]]
+              [[_getItemLabel(item)]]
           </div>
         </template>
       </iron-list>
@@ -131,6 +131,16 @@
         type: Number,
         notify: true,
         computed: '_getAriaActiveIndex(_focusedIndex)'
+      },
+
+      _itemLabelPath: {
+        type: String,
+        value: 'label'
+      },
+
+      _itemValuePath: {
+        type: String,
+        value: 'value'
       }
     },
 
@@ -142,6 +152,35 @@
       if (focusedIndex >= 0) {
         return this._items[focusedIndex];
       }
+    },
+
+    _indexOfLabel: function(label) {
+      if (this._items && label) {
+        for (var i = 0; i < this._items.length; i++) {
+          if (this._getItemLabel(this._items[i]).toString().toLowerCase() ===
+              label.toString().toLowerCase()) {
+            return i;
+          }
+        }
+      }
+
+      return -1;
+    },
+
+    _getItemLabel: function(item) {
+      var label = this.get(this._itemLabelPath, item);
+      if (label === undefined || label === null) {
+        label = item ? item.toString() : '';
+      }
+      return label;
+    },
+
+    _getItemValue: function(item) {
+      var value = this.get(this._itemValuePath, item);
+      if (value === undefined || value === null) {
+        value = item ? item.toString() : '';
+      }
+      return value;
     },
 
     _isItemFocused: function(focusedIndex, itemIndex) {
