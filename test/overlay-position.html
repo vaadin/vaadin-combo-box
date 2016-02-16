@@ -111,24 +111,26 @@
       });
     });
 
-    describe('overlay alignment', function() {
-      it('should be above input', function() {
-        moveComboBox(horiCenter, vertBottom, 300);
+    if (!ios) {
+      describe('overlay alignment', function() {
+        it('should be above input', function() {
+          moveComboBox(horiCenter, vertBottom, 300);
 
-        comboBox.open();
-        expect(dropContent().alignAbove).to.be.true;
-        expect(dropContentRect().bottom).to.equal(inputContentRect().top);
+          comboBox.open();
+          expect(dropContent().alignAbove).to.be.true;
+          expect(dropContentRect().bottom).to.equal(inputContentRect().top);
+        });
+
+        it('should reposition after filtering', function() {
+          moveComboBox(horiCenter, vertBottom, 300);
+
+          comboBox.$.input.bindValue = 'item 1';
+          comboBox.$.input.fire('input');
+
+          expect(dropContentRect().bottom).to.equal(inputContentRect().top);
+        });
       });
-
-      it('should reposition after filtering', function() {
-        moveComboBox(horiCenter, vertBottom, 300);
-
-        comboBox.$.input.bindValue = 'item 1';
-        comboBox.$.input.fire('input');
-
-        expect(dropContentRect().bottom).to.equal(inputContentRect().top);
-      });
-    });
+    }
 
     describe('overlay resizing', function() {
       var minHeight = 100;
