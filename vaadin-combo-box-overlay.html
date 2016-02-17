@@ -225,16 +225,6 @@
 
     _preventDefault: function(e) {
       e.preventDefault();
-    },
-
-    _setOverlayAlignment: function(input) {
-      if (this._iosDevice) {
-        return false;
-      } else {
-        var spaceBelow = (window.innerHeight - input.getBoundingClientRect().bottom) / window.innerHeight;
-
-        this.alignAbove = spaceBelow < 0.30;
-      }
     }
   });
 </script>
