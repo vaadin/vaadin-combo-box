@@ -82,7 +82,7 @@
     _open: function() {
       document.body.appendChild(this.$.overlay);
 
-      this.$.overlay._setOverlayAlignment(this.$.input);
+      this._setOverlayAlignment();
 
       this._addOutsideClickListener();
 
@@ -91,6 +91,8 @@
       if (!this.$.overlay.touchDevice) {
         this.$.input.focus();
       }
+
+      this.$.overlay.addEventListener('iron-resize', this._setOverlayAlignment.bind(this), true);
 
       this.fire('vaadin-dropdown-opened');
     },
@@ -104,6 +106,8 @@
       if (this.$.overlay.touchDevice) {
         this.$.input.blur();
       }
+
+      this.$.overlay.removeEventListener('iron-resize', this._setOverlayAlignment.bind(this), true);
 
       this.fire('vaadin-dropdown-closed');
     },
@@ -137,6 +141,16 @@
        document.removeEventListener('tap', this._outsideClickListener.bind(this), true);
       } else {
        document.removeEventListener('click', this._outsideClickListener.bind(this), true);
+      }
+    },
+
+    _setOverlayAlignment: function() {
+      if (this.$.overlay._iosDevice) {
+        return false;
+      } else {
+        var spaceBelow = (window.innerHeight - this.$.input.getBoundingClientRect().bottom) / window.innerHeight;
+
+        this.$.overlay.alignAbove = spaceBelow < 0.30;
       }
     }
   };
