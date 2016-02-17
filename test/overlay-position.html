@@ -111,7 +111,7 @@
       });
     });
 
-    describeSkipIf(!ios, 'overlay alignment', function() {
+    describeSkipIf(ios, 'overlay alignment', function() {
       it('should be above input', function(done) {
         moveComboBox(horiCenter, vertBottom, 300);
 
@@ -138,7 +138,7 @@
     });
 
     describe('overlay resizing', function() {
-      var minHeight = 100;
+      var minHeight = 116;
       var inputUnderline = 2;
 
       it('should resize to bottom of the screen', function() {
