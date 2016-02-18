@@ -1,0 +1,228 @@
+<!doctype html>
+<!--
+title: Object Items
+order: 3
+layout: page
+-->
+<html>
+
+<head>
+  <title>vaadin-combo-box Code Examples - Object Items</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="common.html">
+  <link rel="import" href="../../iron-form/iron-form.html">
+
+  <style is="custom-style">
+    :root {
+      --default-primary-color: #2899f2;
+      --secondary-text-color: rgba(0,0,0,.12);
+    }
+  </style>
+</head>
+
+<body>
+
+  <script>
+
+    var elementsJson = [
+      { name: 'Hydrogen', symbol: 'H', value: 1 },
+      { name: 'Helium', symbol: 'He', value: 2 },
+      { name: 'Lithium', symbol: 'Li', value: 3 },
+      { name: 'Beryllium', symbol: 'Be', value: 4 },
+      { name: 'Boron', symbol: 'B', value: 5 },
+      { name: 'Carbon', symbol: 'C', value: 6 },
+      { name: 'Nitrogen', symbol: 'N', value: 7 },
+      { name: 'Oxygen', symbol: 'O', value: 8 },
+      { name: 'Fluorine', symbol: 'F', value: 9 },
+      { name: 'Neon', symbol: 'Ne', value: 10 },
+      { name: 'Sodium', symbol: 'Na', value: 11 },
+      { name: 'Magnesium', symbol: 'Mg', value: 12 },
+      { name: 'Aluminum', symbol: 'Al', value: 13 },
+      { name: 'Silicon', symbol: 'Si', value: 14 },
+      { name: 'Phosphorus', symbol: 'P', value: 15 },
+      { name: 'Sulfur', symbol: 'S', value: 16 },
+      { name: 'Chlorine', symbol: 'Cl', value: 17 },
+      { name: 'Argon', symbol: 'Ar', value: 18 },
+      { name: 'Potassium', symbol: 'K', value: 19 },
+      { name: 'Calcium', symbol: 'Ca', value: 20 },
+      { name: 'Scandium', symbol: 'Sc', value: 21 },
+      { name: 'Titanium', symbol: 'Ti', value: 22 },
+      { name: 'Vanadium', symbol: 'V', value: 23 },
+      { name: 'Chromium', symbol: 'Cr', value: 24 },
+      { name: 'Manganese', symbol: 'Mn', value: 25 },
+      { name: 'Iron', symbol: 'Fe', value: 26 },
+      { name: 'Cobalt', symbol: 'Co', value: 27 },
+      { name: 'Nickel', symbol: 'Ni', value: 28 },
+      { name: 'Copper', symbol: 'Cu', value: 29 },
+      { name: 'Zinc', symbol: 'Zn', value: 30 },
+      { name: 'Gallium', symbol: 'Ga', value: 31 },
+      { name: 'Germanium', symbol: 'Ge', value: 32 },
+      { name: 'Arsenic', symbol: 'As', value: 33 },
+      { name: 'Selenium', symbol: 'Se', value: 34 },
+      { name: 'Bromine', symbol: 'Br', value: 35 },
+      { name: 'Krypton', symbol: 'Kr', value: 36 },
+      { name: 'Rubidium', symbol: 'Rb', value: 37 },
+      { name: 'Strontium', symbol: 'Sr', value: 38 },
+      { name: 'Yttrium', symbol: 'Y', value: 39 },
+      { name: 'Zirconium', symbol: 'Zr', value: 40 },
+      { name: 'Niobium', symbol: 'Nb', value: 41 },
+      { name: 'Molybdenum', symbol: 'Mo', value: 42 },
+      { name: 'Technetium', symbol: 'Tc', value: 43 },
+      { name: 'Ruthenium', symbol: 'Ru', value: 44 },
+      { name: 'Rhodium', symbol: 'Rh', value: 45 },
+      { name: 'Palladium', symbol: 'Pd', value: 46 },
+      { name: 'Silver', symbol: 'Ag', value: 47 },
+      { name: 'Cadmium', symbol: 'Cd', value: 48 },
+      { name: 'Indium', symbol: 'In', value: 49 },
+      { name: 'Tin', symbol: 'Sn', value: 50 },
+      { name: 'Antimony', symbol: 'Sb', value: 51 },
+      { name: 'Tellurium', symbol: 'Te', value: 52 },
+      { name: 'Iodine', symbol: 'I', value: 53 },
+      { name: 'Xenon', symbol: 'Xe', value: 54 },
+      { name: 'Cesium', symbol: 'Cs', value: 55 },
+      { name: 'Barium', symbol: 'Ba', value: 56 },
+      { name: 'Lanthanum', symbol: 'La', value: 57 },
+      { name: 'Cerium', symbol: 'Ce', value: 58 },
+      { name: 'Praseodymium', symbol: 'Pr', value: 59 },
+      { name: 'Neodymium', symbol: 'Nd', value: 60 },
+      { name: 'Promethium', symbol: 'Pm', value: 61 },
+      { name: 'Samarium', symbol: 'Sm', value: 62 },
+      { name: 'Europium', symbol: 'Eu', value: 63 },
+      { name: 'Gadolinium', symbol: 'Gd', value: 64 },
+      { name: 'Terbium', symbol: 'Tb', value: 65 },
+      { name: 'Dysprosium', symbol: 'Dy', value: 66 },
+      { name: 'Holmium', symbol: 'Ho', value: 67 },
+      { name: 'Erbium', symbol: 'Er', value: 68 },
+      { name: 'Thulium', symbol: 'Tm', value: 69 },
+      { name: 'Ytterbium', symbol: 'Yb', value: 70 },
+      { name: 'Lutetium', symbol: 'Lu', value: 71 },
+      { name: 'Hafnium', symbol: 'Hf', value: 72 },
+      { name: 'Tantalum', symbol: 'Ta', value: 73 },
+      { name: 'Tungsten', symbol: 'W', value: 74 },
+      { name: 'Rhenium', symbol: 'Re', value: 75 },
+      { name: 'Osmium', symbol: 'Os', value: 76 },
+      { name: 'Iridium', symbol: 'Ir', value: 77 },
+      { name: 'Platinum', symbol: 'Pt', value: 78 },
+      { name: 'Gold', symbol: 'Au', value: 79 },
+      { name: 'Mercury', symbol: 'Hg', value: 80 },
+      { name: 'Thallium', symbol: 'Tl', value: 81 },
+      { name: 'Lead', symbol: 'Pb', value: 82 },
+      { name: 'Bismuth', symbol: 'Bi', value: 83 },
+      { name: 'Polonium', symbol: 'Po', value: 84 },
+      { name: 'Astatine', symbol: 'At', value: 85 },
+      { name: 'Radon', symbol: 'Rn', value: 86 },
+      { name: 'Francium', symbol: 'Fr', value: 87 },
+      { name: 'Radium', symbol: 'Ra', value: 88 },
+      { name: 'Actinium', symbol: 'Ac', value: 89 },
+      { name: 'Thorium', symbol: 'Th', value: 90 },
+      { name: 'Protactinium', symbol: 'Pa', value: 91 },
+      { name: 'Uranium', symbol: 'U', value: 92 },
+      { name: 'Neptunium', symbol: 'Np', value: 93 },
+      { name: 'Plutonium', symbol: 'Pu', value: 94 },
+      { name: 'Americium', symbol: 'Am', value: 95 },
+      { name: 'Curium', symbol: 'Cm', value: 96 },
+      { name: 'Berkelium', symbol: 'Bk', value: 97 },
+      { name: 'Californium', symbol: 'Cf', value: 98 },
+      { name: 'Einsteinium', symbol: 'Es', value: 99 },
+      { name: 'Fermium', symbol: 'Fm', value: 100 },
+      { name: 'Mendelevium', symbol: 'Md', value: 101 },
+      { name: 'Nobelium', symbol: 'No', value: 102 },
+      { name: 'Lawrencium', symbol: 'Lr', value: 103 },
+      { name: 'Rutherfordium', symbol: 'Rf', value: 104 },
+      { name: 'Dubnium', symbol: 'Db', value: 105 },
+      { name: 'Seaborgium', symbol: 'Sg', value: 106 },
+      { name: 'Bohrium', symbol: 'Bh', value: 107 },
+      { name: 'Hassium', symbol: 'Hs', value: 108 },
+      { name: 'Meitnerium', symbol: 'Mt', value: 109 },
+      { name: 'Ununnilium', symbol: 'Uun', value: 110 },
+      { name: 'Unununium', symbol: 'Uuu', value: 111 },
+      { name: 'Ununbium', symbol: 'Uub', value: 112 },
+      { name: 'Ununtrium', symbol: 'Uut', value: 113 },
+      { name: 'Ununquadium', symbol: 'Uuq', value: 114 },
+      { name: 'Ununpentium', symbol: 'Uup', value: 115 },
+      { name: 'Ununhexium', symbol: 'Uuh', value: 116 },
+      { name: 'Ununseptium', symbol: 'Uus', value: 117 },
+      { name: 'Ununoctium', symbol: 'Uuo', value: 118 }
+    ];
+
+  </script>
+
+  <section>
+    <h1><a href="./">vaadin-combo-box</a>
+      <span>Object Items</span>
+    </h1>
+    <table-of-contents select="h3" class="toc"></table-of-contents>
+  </section>
+
+  <section>
+    <h3>Label and Value</h3>
+    <p>
+      When using objects, <code>vaadin-combo-box</code> needs to know which properties are to be used as the display and string values.
+    </p>
+    <p>
+      By default, <code>label</code> and <code>value</code> properties are used from the item <code>Object</code> as the display value and the <code>vaadin-combo-box</code> value, respectively. In the absence of these properties, <code>toString()</code> function for the <code>Object</code> is used to translate it into a <code>String</code>.
+    </p>
+    <p>Notice that the <code>value</code> property of the <code>vaadin-combo-box</code> would always contain the string value, whenever <code>Ojbect</code>s or <code>Strings</code> are used for items. Use the <code>selectedItem</code> property to access the selected item object directly.</p>
+
+    <code-example source>
+      <vaadin-combo-box demo class="numbers-box" label="Number"></vaadin-combo-box>
+      <p>Selected item: <span id="selected-item"></span>.</p>
+      <p>Value: <span id="value"></span>.</p>
+
+      <code demo-var="combobox">
+        HTMLImports.whenReady(function() {
+          // code
+          var combobox = combobox || document.querySelector('.numbers-box');
+          combobox.items = [
+            { label: 'One', value: 1 },
+            { label: 'Two', value: 2 },
+            { label: 'Three', value: 3 }
+          ];
+
+          combobox.addEventListener('value-changed', function() {
+            document.querySelector('#selected-item').innerHTML = JSON.stringify(combobox.selectedItem);
+            document.querySelector('#value').innerHTML = combobox.value;
+          });
+          combobox.value = '1';
+          // end-code
+        });
+      </code>
+    </code-example>
+  </section>
+
+  <section>
+    <h3>Custom Properties for Item Label and Value</h3>
+    <p>
+      You can override the default property paths by defining <code>item-label-path</code> and <code>item-value-path</code> properties.
+    </p>
+
+    <code-example source>
+      <vaadin-combo-box demo class="elements-box" label="Element" item-label-path="name" item-value-path="symbol"></vaadin-combo-box>
+      <p>Selected element name: <span id="element-name"></span>.</p>
+      <p>Value: <span id="element-value"></span>.</p>
+
+      <code demo-var="combobox">
+        HTMLImports.whenReady(function() {
+          // code
+          var combobox = combobox || document.querySelector('.elements-box');
+
+          // elementsJson is an Array of Objects. Item object format:
+          //   { name: 'Hydrogen', symbol: 'H', number: 1 }
+          combobox.items = elementsJson;
+
+          combobox.addEventListener('value-changed', function() {
+            document.querySelector('#element-name').innerHTML = combobox.selectedItem && combobox.selectedItem.name;
+            document.querySelector('#element-value').innerHTML = combobox.value;
+          });
+          combobox.value = 'Carbon';
+          // end-code
+        });
+      </code>
+    </code-example>
+  </section>
+
+</body>
+
+</html>
