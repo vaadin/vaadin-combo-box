@@ -180,10 +180,14 @@ layout: page
             { label: 'Three', value: 3 }
           ];
 
-          combobox.addEventListener('value-changed', function() {
+          combobox.addEventListener('selected-item-changed', function() {
             document.querySelector('#selected-item').innerHTML = JSON.stringify(combobox.selectedItem);
+          });
+
+          combobox.addEventListener('value-changed', function() {
             document.querySelector('#value').innerHTML = combobox.value;
           });
+
           combobox.value = '1';
           // end-code
         });
@@ -211,10 +215,14 @@ layout: page
           //   { name: 'Hydrogen', symbol: 'H', number: 1 }
           combobox.items = elementsJson;
 
-          combobox.addEventListener('value-changed', function() {
+          combobox.addEventListener('selected-item-changed', function() {
             document.querySelector('#element-name').innerHTML = combobox.selectedItem && combobox.selectedItem.name;
+          });
+
+          combobox.addEventListener('value-changed', function() {
             document.querySelector('#element-value').innerHTML = combobox.value;
           });
+
           combobox.value = 'Carbon';
           // end-code
         });
