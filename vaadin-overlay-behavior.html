@@ -59,19 +59,15 @@
       }
     },
 
-    _ironResize: function() {
-      this._setOverlayAlignment();
-      this._setOverlayPosition();
-    },
-
     _maxHeight: function(targetRect) {
       var margin = 8;
       var minHeight = 116; // Height of two items in combo-box
+      var bottom = Math.min(window.innerHeight, document.body.getBoundingClientRect().bottom);
 
       if (this.alignAbove) {
         return Math.max(targetRect.top - margin, minHeight) + 'px';
       } else {
-        return Math.max(window.innerHeight - targetRect.bottom - margin, minHeight) + 'px';
+        return Math.max(bottom - targetRect.bottom - margin, minHeight) + 'px';
       }
     },
 
