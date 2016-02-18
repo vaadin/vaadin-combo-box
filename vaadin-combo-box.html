@@ -571,7 +571,7 @@ enable usage within an `iron-form`.
 
     _selectedItemChanged: function(event, detail) {
       if (detail.value !== null) {
-        this.selectedItem = detail.value;
+        this._setSelectedItem(detail.value);
         this.$.input.bindValue = this._getItemLabel(this.selectedItem);
         this.value = this._getItemValue(this.selectedItem);
       }
@@ -592,7 +592,7 @@ enable usage within an `iron-form`.
         this.$.overlay._selectItem(item);
       } else {
         this.$.input.bindValue = this.allowCustomValue ? value : '';
-        this.selectedItem = null;
+        this._setSelectedItem(null);
         this.$.overlay.$.selector.clearSelection();
       }
 
