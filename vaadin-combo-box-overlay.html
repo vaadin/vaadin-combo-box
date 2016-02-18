@@ -163,13 +163,17 @@
 
     _getItemLabel: function(item) {
       var label = this.get(this._itemLabelPath, item);
-      if (label == null) label = item != null ? item.toString() : '';
+      if (label === undefined || label === null) {
+        label = item ? item.toString() : '';
+      }
       return label;
     },
 
     _getItemValue: function(item) {
       var value = this.get(this._itemValuePath, item);
-      if (value == null) value = item != null ? item.toString() : '';
+      if (value === undefined || value === null) {
+        value = item ? item.toString() : '';
+      }
       return value;
     },
 
