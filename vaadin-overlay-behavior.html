@@ -67,22 +67,22 @@
     _maxHeight: function(targetRect) {
       var margin = 8;
       var minHeight = 116; // Height of two items in combo-box
-      var height;
 
       if (this.alignAbove) {
-        height = targetRect.top - margin;
+        return Math.max(targetRect.top - margin, minHeight) + 'px';
       } else {
-        height = window.innerHeight - targetRect.bottom - margin;
+        return Math.max(window.innerHeight - targetRect.bottom - margin, minHeight) + 'px';
       }
-
-      return Math.min(Math.max(height, minHeight), window.innerHeight * 0.65) + 'px';
     },
 
     _setOverlayPosition: function() {
       if (this.parentElement === document.body) {
         var targetRect = this.positionTarget.getBoundingClientRect();
 
+        // overlay max height is restrained by the #scroller max height which is set to 65vh in CSS.
         this.style.maxHeight = this._maxHeight(targetRect);
+
+        // we need to set height for iron-list to make its `firstVisibleIndex` work correctly.
         this.$.selector.style.maxHeight = this._maxHeight(targetRect);
 
         var overlayRect = this.getBoundingClientRect();
