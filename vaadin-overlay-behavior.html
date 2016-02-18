@@ -33,7 +33,7 @@
     },
 
     listeners: {
-      'iron-resize': '_ironResize'
+      'iron-resize': '_setOverlayPosition'
     },
 
     created: function() {
@@ -78,6 +78,7 @@
     _setOverlayPosition: function() {
       if (this.parentElement === document.body) {
         var targetRect = this.positionTarget.getBoundingClientRect();
+        this._setOverlayAlignment();
 
         // overlay max height is restrained by the #scroller max height which is set to 65vh in CSS.
         this.style.maxHeight = this._maxHeight(targetRect);
@@ -98,13 +99,9 @@
     },
 
     _setOverlayAlignment: function() {
-      if (this._iosDevice) {
-        return false;
-      } else {
-        var spaceBelow = (window.innerHeight - this.positionTarget.getBoundingClientRect().bottom) / window.innerHeight;
+      var spaceBelow = (window.innerHeight - this.positionTarget.getBoundingClientRect().bottom) / window.innerHeight;
 
-        this.alignAbove = spaceBelow < 0.30;
-      }
+      this.alignAbove = spaceBelow < 0.30;
     }
   };
 

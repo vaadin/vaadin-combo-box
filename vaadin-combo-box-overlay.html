@@ -107,16 +107,6 @@
         }
       },
 
-      /**
-       * True if the device is an iOS device.
-       */
-      _iosDevice: {
-        type: Boolean,
-        value: function() {
-          return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        }
-      },
-
       _selectedItem: {
         type: String,
         notify: true
