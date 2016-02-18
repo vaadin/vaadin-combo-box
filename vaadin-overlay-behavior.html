@@ -71,7 +71,7 @@
       if (this.alignAbove) {
         return Math.max(targetRect.top - margin, minHeight) + 'px';
       } else {
-        return Math.max(window.innerHeight - targetRect.bottom - margin, minHeight) + 'px';
+        return Math.max(document.body.getBoundingClientRect().bottom - targetRect.bottom - margin, minHeight) + 'px';
       }
     },
 
