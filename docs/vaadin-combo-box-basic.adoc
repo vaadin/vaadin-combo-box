@@ -27,9 +27,8 @@ combobox.value = 'Bromine';
 
 == Events
 
-The [vaadinelement]#vaadin-combo-box# element dispatches events when the value changes.
+The [vaadinelement]#vaadin-combo-box# element dispatches events when the selection value changes.
 An event contains the [propertyname]#value# property in the [propertyname]#event.detail# object.
-
 
 [source,javascript]
 ----
@@ -64,7 +63,7 @@ When using the element inside another Polymer element, you can use the declarati
 
 == Forms
 
-In addition to other features mentioned earlier, the [vaadinelement]#vaadin-combo-box# implements the [classname]#IronFormElementBehavior#, so it can be used as a field in an [elementname]#iron-form#.
+The [vaadinelement]#vaadin-combo-box# implements the [classname]#IronFormElementBehavior#, so it can be used as a field in an [elementname]#iron-form#.
 
 [source,html]
 ----
