@@ -639,6 +639,19 @@ enable usage within an `iron-form`.
    */
 
   /**
+   * Fired when selected item changes.
+   *
+   * This is different to `value-changed` in the sense that the timing when both events
+   * are fired might not be the same and they reflect changes in different properties.
+   * While `value-changed` is related to changes in the data input value, `selected-item-changed`
+   * refers to the selected item. Also, we offer different events for easily binding to
+   * each property.
+   *
+   * @event selected-item-changed
+   * @param {Object} the item selected
+   */
+
+  /**
    * Fired when the user sets a custom value.
    * @event custom-value-set
    * @param {String} detail the custom value
