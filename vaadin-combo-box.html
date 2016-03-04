@@ -591,7 +591,8 @@ enable usage within an `iron-form`.
 
     _valueChanged: function(value) {
       if (value === undefined || value === null) {
-        this.value = '';
+        // Use 'set' instead of assign to avoid loop.
+        this.set('value', '');
       }
 
       var valueIndex = this._indexOfValue(value);
