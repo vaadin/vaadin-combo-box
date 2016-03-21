@@ -106,7 +106,7 @@ enable usage within an `iron-form`.
   </style>
 
   <template>
-    <paper-input-container disabled$="[[disabled]]" class="dropdown-input" id="inputContainer" opened$="[[opened]]">
+    <paper-input-container disabled$="[[disabled]]" always-float-label$="[[alwaysFloatLabel]]" class="dropdown-input" id="inputContainer" opened$="[[opened]]">
       <label id="label" on-tap="open">[[label]]</label>
       <input
           is="iron-input"
