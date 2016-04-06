@@ -558,7 +558,11 @@ Custom property | Description | Default
         this.$.overlay._selectItem(valueIndex);
       }
 
+      var wasHidden = this.$.overlay.hidden;
       this.$.overlay.hidden = (items === undefined || items === null || items.length === 0);
+      if (wasHidden && !this.$.overlay.hidden) {
+        this.$.overlay.attachedCallback();
+      }
     },
 
     _indexOfValue: function(value, items) {
