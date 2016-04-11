@@ -53,6 +53,10 @@
       Polymer.dom(target).appendChild(this);
       if (oldParentNode) {
         this._processPendingMutationObserversFor(oldParentNode);
+        if (oldParentNode.host) {
+          // When moving from local DOM, ensure to remove the old style scope
+          Polymer.StyleTransformer.dom(this, oldParentNode.host.is, this._scopeCssViaAttr, true);
+        }
       }
       this._processPendingMutationObserversFor(this);
 

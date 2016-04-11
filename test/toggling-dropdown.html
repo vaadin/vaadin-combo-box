@@ -91,6 +91,19 @@
         expect(combobox.$.overlay.hidden).to.be.true;
       });
 
+      // When using Shadow DOM polyfill, the style scope of the combobox might
+      // not get removed from the overlay after it's moved to the body. The
+      // following test ensures that the overlay doesn't keep the style scope
+      // of the combobox when moved during open.
+      it('should not leak combobox style scope to the overlay', function() {
+        // Test only when style scoping is used
+        if (combobox.$.overlay.matches('.style-scope.vaadin-combo-box')) {
+          combobox.open();
+
+          expect(combobox.$.overlay.matches('.style-scope.vaadin-combo-box')).to.be.false;
+        }
+      });
+
       describe('after opening', function() {
         beforeEach(function() {
           combobox.open();
