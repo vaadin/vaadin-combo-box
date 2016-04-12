@@ -8,6 +8,7 @@
   <script src="../../web-component-tester/browser.js"></script>
 
   <link rel="import" href="common.html">
+  <script src="common.js"></script>
 </head>
 
 <body>
@@ -38,7 +39,7 @@
   </test-fixture>
 
   <script>
-    describe('data binding', function() {
+    describeIf(chrome, 'data binding', function() {
       var valueNull, comboBox;
 
       beforeEach(function() {
@@ -60,7 +61,7 @@
         Polymer.Base.async(function() {
           expect(i).to.be.equal(1);
           done();
-        }, 1);
+        }, 1000);
 
         // Setting value to null makes the component enter in a loop, for instance
         // iron-localstorage sets it to null when the key does not exist.
