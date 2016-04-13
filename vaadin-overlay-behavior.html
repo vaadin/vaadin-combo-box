@@ -113,9 +113,12 @@
         this.$.selector.style.maxHeight = this._maxHeight(targetRect);
 
         var overlayRect = this.getBoundingClientRect();
+        var _devicePixelRatio = window.devicePixelRatio || 1;
+        var _targetLeft = Math.round(targetRect.left * _devicePixelRatio) / _devicePixelRatio;
+        var _targetTop = Math.round(targetRect.top * _devicePixelRatio) / _devicePixelRatio;
 
-        this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
-        this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
+        this._translateX = _targetLeft - overlayRect.left + (this._translateX || 0);
+        this._translateY = _targetTop - overlayRect.top + (this._translateY || 0) +
           this._verticalOffset(overlayRect, targetRect);
 
         this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
