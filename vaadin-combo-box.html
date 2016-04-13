@@ -135,7 +135,7 @@ Custom property | Description | Default
         <iron-icon icon="clear"></iron-icon>
         <paper-ripple class="circle" center></paper-ripple>
       </div>
-      <div suffix id="toggleIcon" on-tap="_toggle" on-touchend="_preventDefault" hidden$="[[_hideToggleIcon(disabled, readonly)]]">
+      <div suffix id="toggleIcon" on-tap="_toggle" on-down="_preventCloseOnInputBlur" on-touchend="_preventDefault" hidden$="[[_hideToggleIcon(disabled, readonly)]]">
         <iron-icon icon="menu" aria-controls="overlay"></iron-icon>
         <paper-ripple class="circle" center></paper-ripple>
       </div>
@@ -376,21 +376,24 @@ Custom property | Description | Default
      * Opening and closing related functionality
      */
 
-    _onBlur: function() {
-      // Async needed to access the new activeElement reliably.
-      this.async(function() {
-        var focusInsideCombobox = this.contains(document.activeElement);
-
-        // When grabbing the scroll handle, the activeElement will become
-        // the body on some browsers, so check for it also.
-        if (!focusInsideCombobox && document.activeElement !== document.body) {
-          this.close();
-        }
-      }, 1);
+    _preventCloseOnInputBlur: function() {
+      this._closeOnBlurIsPrevented = true;
+      Polymer.Base.async(function(){
+        this._closeOnBlurIsPrevented = false;
+      }.bind(this), 1);
     },
 
-    _blurInput: function() {
-      this.$.input.blur();
+    _onBlur: function() {
+      if (!this._closeOnBlurIsPrevented) {
+        this.close();
+      }
+    },
+
+    _blurInput: function(event) {
+      this._preventCloseOnInputBlur();
+      if (event.target !== this.$.overlay.$.scroller) {
+        this.$.input.blur();
+      }
     },
 
     /**
