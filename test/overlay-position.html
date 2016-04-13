@@ -135,6 +135,17 @@
 
         expect(dropContentRect().width).to.equal(inputContentRect().width);
       });
+
+      it('should not translate in sub-pixels', function() {
+        moveComboBox(0.75, 0.75, 150);
+
+        comboBox.open();
+
+        var _devicePixelRatio = window.devicePixelRatio || 1;
+
+        expect(dropContentRect().top * _devicePixelRatio % 1).to.closeTo(0, 0.1);
+        expect(dropContentRect().left * _devicePixelRatio % 1).to.closeTo(0, 0.1);
+      });
     });
 
     describeSkipIf(ios, 'overlay alignment', function() {
@@ -151,7 +162,7 @@
 
         Polymer.Base.async(function() {
           expect(dropContent()._alignedAbove).to.be.true;
-          expect(dropContentRect().bottom).to.closeTo(inputContentRect().top, 0.1);
+          expect(dropContentRect().bottom).to.closeTo(inputContentRect().top, 1);
           done();
         }, 1);
       });
@@ -163,7 +174,7 @@
         comboBox.$.input.fire('input');
 
         Polymer.Base.async(function() {
-          expect(dropContentRect().bottom).to.closeTo(inputContentRect().top, 0.1);
+          expect(dropContentRect().bottom).to.closeTo(inputContentRect().top, 1);
           done();
         }, 1);
       });
