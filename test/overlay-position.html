@@ -32,10 +32,7 @@
 <script>
   var comboBox;
 
-  var wh = window.innerHeight;
-  var ww = window.innerWidth;
-  var horiCenter =  ww * 0.5;
-  var vertTop = 0, vertBottom = wh;
+  var wh, ww, horiCenter, vertTop, vertBottom;
 
   // The ideal test would be to resize the window, but testing system disallows
   // resizing the iframe, but moving the combo-box using styles and firing
@@ -70,6 +67,12 @@
     beforeEach(function(done) {
       comboBox = fixture('combobox');
       comboBox.items = getItemArray(20);
+
+      wh = window.innerHeight;
+      ww = window.innerWidth;
+      horiCenter =  ww * 0.5;
+      vertTop = 0;
+      vertBottom = wh;
 
       // <paper-input-container> adds floated-label-placeholder div asynchronously,
       // we want to wait that out so that the dropdown clientHeight is calculated correctly.
