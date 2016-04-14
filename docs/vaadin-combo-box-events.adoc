@@ -1,0 +1,49 @@
+---
+title: Events
+order: 3
+layout: page
+---
+
+
+[[vaadin-combo-box.events]]
+= Events
+
+The [vaadinelement]#vaadin-combo-box# element dispatches events when the selection changes.
+An event contains the [propertyname]#value# property in the [propertyname]#event.detail# object.
+
+Since there are two selection properties, namely [propertyname]#value# and [propertyname]#selectedItem#,
+an event is fired for each. [propertyname]#value-changed# event contains the selection as a String value,
+whereas [propertyname]#selected-item-changed# contains the selection as an Object.
+
+Note that the order in which these two events are fired might vary depending on the situation.
+
+[source,javascript]
+----
+var combobox = document.querySelector('vaadin-combo-box');
+combobox.addEventListener('value-changed', function(event) {
+  console.log(event.detail.value);
+});
+
+combobox.addEventListener('selected-item-changed', function(event) {
+  console.log(event.detail.value);
+});
+----
+
+When using the element inside another Polymer element, you can use the declarative binding syntax to subscribe for an event:
+
+[source,html]
+----
+<dom-module id="my-element">
+  <template>
+    <vaadin-combo-box on-value-change="valueChanged"></vaadin-combo-box>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'my-element',
+    valueChanged: function(event) {
+      alert(event.detail.value);
+    }
+  });
+</script>
+----
