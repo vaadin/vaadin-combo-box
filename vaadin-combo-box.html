@@ -33,7 +33,9 @@ There are custom properties and mixins you can use to style the component:
 
 Custom property | Description | Default
 ----------------|-------------|-------------
-`--vaadin-combo-box-overlay-max-height` | Property that determines the max height of overlay | `65vh`
+`--vaadin-combo-box-toggle-icon` | Mixin that can be used to change the toggle button icon (use background-image) | `{}`
+`--vaadin-combo-box-clear-icon` | Mixin that can be used to change the clear button icon (use background-image) | `{}`
+`--vaadin-combo-box-overlay-max-height` | Property that determines the max height of the dropdown list overlay | `65vh`
 
 @element vaadin-combo-box
 -->
@@ -42,8 +44,6 @@ Custom property | Description | Default
 <link rel="import" href="../paper-input/paper-input-container.html">
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
@@ -54,8 +54,8 @@ Custom property | Description | Default
 <dom-module id="vaadin-combo-box">
   <style>
     :host {
-       display: block;
-       padding: 8px 0;
+      display: block;
+      padding: 8px 0;
     }
 
     :host > #overlay {
@@ -72,37 +72,47 @@ Custom property | Description | Default
       z-index: 20;
     }
 
-    paper-input-container div[suffix] {
+    paper-input-container .icon-button {
       position: absolute;
       bottom: -4px;
       right: -4px;
-
       width: 24px;
       height: 24px;
       padding: 4px;
       text-align: center;
-    }
-
-    paper-input-container iron-icon {
-      fill: rgba(0, 0, 0, .26);
       cursor: pointer;
-      --iron-icon-width: 20px;
-      --iron-icon-height: 20px;
-      margin-top: -1px;
-      transition: fill 0.2s;
     }
 
-    paper-input-container paper-ripple {
-      color: rgba(0, 0, 0, .54);
+    paper-input-container .icon-button::before {
+      content: "";
+      display: block;
+      width: 24px;
+      height: 24px;
+      opacity: 0.26;
+      transition: opacity 0.2s;
     }
 
-    paper-input-container iron-icon:hover,
-    paper-input-container[opened] iron-icon {
-      fill: rgba(0, 0, 0, .54);
+    #toggleIcon::before {
+      /* Need to use base64 encoding because of IE11 and https://github.com/Polymer/polymer/issues/1276 */
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgbWVldCI+PHBhdGggZD0iTTcgMTBsNSA1IDUtNXoiLz48L3N2Zz4=');
+      @apply(--vaadin-combo-box-toggle-icon);
     }
 
-    paper-input-container[opened] iron-icon:hover {
-      fill: rgba(0, 0, 0, .86);
+    #clearIcon::before {
+      width: 20px;
+      height: 20px;
+      margin: 2px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgbWVldCI+PHBhdGggZD0iTTE5IDYuNDFMMTcuNTkgNSAxMiAxMC41OSA2LjQxIDUgNSA2LjQxIDEwLjU5IDEyIDUgMTcuNTkgNi40MSAxOSAxMiAxMy40MSAxNy41OSAxOSAxOSAxNy41OSAxMy40MSAxMnoiLz48L3N2Zz4=');
+      @apply(--vaadin-combo-box-clear-icon);
+    }
+
+    paper-input-container .icon-button:hover::before,
+    paper-input-container[opened] .icon-button::before {
+      opacity: 0.54;
+    }
+
+    paper-input-container[opened] .icon-button:hover::before {
+      opacity: 0.86;
     }
 
     #clearIcon {
@@ -147,7 +157,8 @@ Custom property | Description | Default
           aria-activedescendant$="[[_ariaActiveIndex]]"
           aria-expanded$="[[_getAriaExpanded(opened)]]"
           aria-labelledby="label"
-          aria-autocomplete="list" aria-owns="overlay"
+          aria-autocomplete="list"
+          aria-owns="overlay"
           autocomplete="off"
           name$="[[name]]"
           type="text"
@@ -156,12 +167,22 @@ Custom property | Description | Default
           on-blur="_onBlur"
           on-tap="open"
           key-event-target>
-      <div suffix id="clearIcon" on-tap="_clear" on-touchend="_preventDefault">
-        <iron-icon icon="clear"></iron-icon>
+      <div
+          suffix
+          id="clearIcon"
+          class="icon-button"
+          on-tap="_clear"
+          on-touchend="_preventDefault">
         <paper-ripple class="circle" center></paper-ripple>
       </div>
-      <div suffix id="toggleIcon" on-tap="_toggle" hidden$="[[_hideToggleIcon(disabled, readonly)]]" on-touchend="_preventDefault">
-        <iron-icon icon="menu" aria-controls="overlay"></iron-icon>
+      <div
+          suffix
+          id="toggleIcon"
+          class="icon-button"
+          on-tap="_toggle"
+          hidden$="[[_hideToggleIcon(disabled, readonly)]]"
+          on-touchend="_preventDefault"
+          aria-controls="overlay">
         <paper-ripple class="circle" center></paper-ripple>
       </div>
     </paper-input-container>
@@ -636,10 +657,10 @@ Custom property | Description | Default
     },
 
     /**
-    * Validates the input element and sets an error style if needed.
-    *
-    * @return {boolean}
-    */
+     * Validates the input element and sets an error style if needed.
+     *
+     * @return {boolean}
+     */
     _getValidity: function() {
       return this.$.input.validate();
     }

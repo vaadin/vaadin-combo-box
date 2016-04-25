@@ -22,8 +22,6 @@
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.3",
     "iron-form": "polymerelements/iron-form#^1.0.10",
     "iron-form-element-behavior": "polymerelements/iron-form-element-behavior#^1.0.4",
-    "iron-icon": "PolymerElements/iron-icon#^1.0.4",
-    "iron-icons": "PolymerElements/iron-icons#^1.0.3",
     "iron-input": "polymerelements/iron-input#^1.0.5",
     "iron-list": "polymerelements/iron-list#^1.0.0",
     "iron-validatable-behavior": "polymerelements/iron-validatable-behavior#^1.0.5",
