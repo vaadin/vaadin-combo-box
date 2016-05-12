@@ -144,7 +144,7 @@ Custom property | Description | Default
         disabled$="[[disabled]]"
         invalid="[[invalid]]"
         opened$="[[opened]]"
-        hideclear$="[[_hideClearIcon(value, opened)]]"
+        hideclear$="[[_hideClearIcon(value, opened, hideClearIcon)]]"
         on-down="_preventDefault">
       <label id="label" on-tap="open">[[label]]</label>
       <input
@@ -241,6 +241,14 @@ Custom property | Description | Default
       label: {
         type: String,
         reflectToAttribute: true
+      },
+      
+      /**
+       * Always hide the clear icon.
+       */ 
+      hideClearIcon: {
+        type: Boolean,
+        value: false
       },
 
       _positionTarget: {
@@ -637,8 +645,8 @@ Custom property | Description | Default
       this.close();
     },
 
-    _hideClearIcon: function(value, opened) {
-      return value === '' || !opened;
+    _hideClearIcon: function(value, opened, hideClearIcon) {
+      return value === '' || !opened || hideClearIcon;
     },
 
     _hideToggleIcon: function(disabled, readonly) {

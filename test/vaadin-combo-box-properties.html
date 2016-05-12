@@ -25,6 +25,15 @@
         comboBox = fixture('combobox');
       });
 
+      function getInput() {
+        return comboBox.$.input;
+      }
+
+      function setInputValue(value) {
+        getInput().bindValue = value;
+        getInput().fire('input');
+      }
+      
       describe('items property', function() {
         it('should have undefined by default', function() {
           expect(comboBox.items).to.be.undefined;
@@ -160,7 +169,6 @@
 
         it('should default back to null when value set to undefined', function() {
           comboBox.value = undefined;
-
           expect(comboBox.selectedItem).to.be.null;
         });
 
@@ -179,6 +187,24 @@
           expect(comboBox.selectedItem).to.be.null;
         });
       });
+      
+      describe('hideClearIcon property',function () {
+        it('should not be hidden by default',function () {
+          comboBox.value = 'just a placeholder';
+          comboBox.open();
+          var computedClearIcon = window.getComputedStyle(comboBox.$.clearIcon);
+          expect(computedClearIcon.display).to.not.equal('none');
+        });
+        
+        it('should be hidden when hide-clear-icon is set to true',function () {
+          comboBox.hideClearIcon = true;
+          comboBox.value = 'just a placeholder';
+          comboBox.open();
+          var computedClearIcon = window.getComputedStyle(comboBox.$.clearIcon);
+          expect(computedClearIcon.display).to.equal('none');
+        });
+      });
+      
     });
   </script>
 
