@@ -24,15 +24,6 @@
       beforeEach(function() {
         comboBox = fixture('combobox');
       });
-
-      function getInput() {
-        return comboBox.$.input;
-      }
-
-      function setInputValue(value) {
-        getInput().bindValue = value;
-        getInput().fire('input');
-      }
       
       describe('items property', function() {
         it('should have undefined by default', function() {
@@ -204,7 +195,6 @@
           expect(computedClearIcon.display).to.equal('none');
         });
       });
-      
     });
   </script>
 
