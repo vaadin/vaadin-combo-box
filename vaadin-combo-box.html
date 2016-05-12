@@ -205,7 +205,8 @@ Custom property | Description | Default
        * options could be either `String` or `Object`.
        */
       items: {
-        type: Array
+        type: Array,
+        observer: '_itemsPropertyChanged'
       },
 
       /**
@@ -329,11 +330,11 @@ Custom property | Description | Default
       }
       Polymer.IronA11yAnnouncer.requestAvailability();
     },
-
+    
+   
     /**
      * Keyboard navigation
      */
-
     _onKeyDown: function(e) {
       if (this._isEventKey(e, 'down')) {
         this._onArrowDown();
@@ -583,6 +584,14 @@ Custom property | Description | Default
       }
     },
 
+    _itemsPropertyChanged: function (items) {
+      var item = items ? items[0] : null;
+      if (item) {
+        this._value = this._getItemValue(item);
+        this.$.input.bindValue = this._getItemLabel(item);
+      }
+    },
+    
     _filterItems: function(arr, filter) {
       if (!arr) {
         return arr;
@@ -607,9 +616,6 @@ Custom property | Description | Default
       var valueIndex = this._indexOfValue(this.value, items);
       if (valueIndex > -1) {
         this.$.overlay._selectItem(valueIndex);
-      }
-      else if(this.required && items && items.length) {
-        this.$.overlay._selectItem(0);
       }
 
       this.$.overlay.hidden = !this._hasItems(items);
