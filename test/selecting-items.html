@@ -12,151 +12,151 @@
 
 <body>
 
-<test-fixture id="combobox">
-  <template>
-    <vaadin-combo-box></vaadin-combo-box>
-  </template>
-</test-fixture>
+  <test-fixture id="combobox">
+    <template>
+      <vaadin-combo-box></vaadin-combo-box>
+    </template>
+  </test-fixture>
 
 
-<script>
-  describe('selecting a value', function() {
-    var combobox;
-    var input;
-    var selector;
-    var valueChangedSpy;
+  <script>
+    describe('selecting a value', function () {
+      var combobox;
+      var input;
+      var selector;
+      var valueChangedSpy;
 
-    beforeEach(function() {
-      combobox = fixture('combobox');
-      combobox.items = ['foo', 'bar'];
-      input = combobox.$$('input');
-      selector = combobox.$.overlay.$.selector;
-      valueChangedSpy = sinon.spy();
-      combobox.addEventListener('value-changed', valueChangedSpy);
-    });
-
-    it('should select by using the selector', function() {
-      selector.selectedItem = 'foo';
-      expect(combobox.value).to.equal('foo');
-      expect(input.bindValue).to.equal('foo');
-    });
-
-    it('should select by using JS api', function() {
-      combobox.value = 'foo';
-
-      combobox.open();
-
-      expect(selector.selectedItem).to.equal('foo');
-      expect(input.bindValue).to.equal('foo');
-    });
-
-    it('should close the dropdown on selection', function() {
-      combobox.open();
-      combobox.value = 'foo';
-      expect(combobox.opened).to.equal(false);
-    });
-
-    it('should fire exactly one value change event', function() {
-      combobox.value = 'foo';
-      expect(valueChangedSpy.callCount).to.equal(1);
-    });
-
-    it('should close the dropdown when reselecting the current value', function() {
-      combobox.value = 'foo';
-      combobox.open();
-      combobox.$.overlay.$.selector.toggleSelectionForItem('foo');
-      expect(combobox.opened).to.be.false;
-    });
-
-    it('should not fire an event when reselecting the current value', function() {
-      combobox.value = 'foo';
-      valueChangedSpy.reset();
-      combobox.$.overlay.$.selector.toggleSelectionForItem('foo');
-      expect(valueChangedSpy.callCount).to.equal(0);
-    });
-  });
-
-  describe('clearing a selection', function() {
-    var combobox;
-    var clearIcon;
-    beforeEach(function() {
-      combobox = fixture('combobox');
-      combobox.items = ['foo', 'bar'];
-
-      combobox.value = 'foo';
-
-      clearIcon = combobox.$.clearIcon;
-    });
-
-    it('should show the clearing icon only when dropdown is open', function() {
-      expect(window.getComputedStyle(clearIcon).display).to.eql('none');
-
-      combobox.open();
-
-      expect(window.getComputedStyle(clearIcon).display).to.eql('block');
-    });
-
-    it('should not show clearing icon when nothing is selected', function() {
-      combobox.open();
-
-      combobox.value = '';
-
-      expect(window.getComputedStyle(clearIcon).display).to.eql('none');
-    });
-
-    it('should clear the selection when tapping on the icon', function() {
-      combobox.open();
-
-      Polymer.Base.fire('tap', {}, {
-        bubbles: true,
-        node: clearIcon
+      beforeEach(function () {
+        combobox = fixture('combobox');
+        combobox.items = ['foo', 'bar'];
+        input = combobox.$$('input');
+        selector = combobox.$.overlay.$.selector;
+        valueChangedSpy = sinon.spy();
+        combobox.addEventListener('value-changed', valueChangedSpy);
       });
 
-      expect(combobox.value).to.eql('');
-      expect(combobox.$.overlay.$.selector.selectedItem).to.be.null;
-    });
-
-    it('should close the dropdown after clearing a selection', function() {
-      combobox.open();
-
-      Polymer.Base.fire('tap', {}, {
-        bubbles: true,
-        node: clearIcon
+      it('should select by using the selector', function () {
+        selector.selectedItem = 'foo';
+        expect(combobox.value).to.equal('foo');
+        expect(input.bindValue).to.equal('foo');
       });
 
-      expect(combobox.opened).to.eql(false);
+      it('should select by using JS api', function () {
+        combobox.value = 'foo';
+
+        combobox.open();
+
+        expect(selector.selectedItem).to.equal('foo');
+        expect(input.bindValue).to.equal('foo');
+      });
+
+      it('should close the dropdown on selection', function () {
+        combobox.open();
+        combobox.value = 'foo';
+        expect(combobox.opened).to.equal(false);
+      });
+
+      it('should fire exactly one value change event', function () {
+        combobox.value = 'foo';
+        expect(valueChangedSpy.callCount).to.equal(1);
+      });
+
+      it('should close the dropdown when reselecting the current value', function () {
+        combobox.value = 'foo';
+        combobox.open();
+        combobox.$.overlay.$.selector.toggleSelectionForItem('foo');
+        expect(combobox.opened).to.be.false;
+      });
+
+      it('should not fire an event when reselecting the current value', function () {
+        combobox.value = 'foo';
+        valueChangedSpy.reset();
+        combobox.$.overlay.$.selector.toggleSelectionForItem('foo');
+        expect(valueChangedSpy.callCount).to.equal(0);
+      });
     });
-  });
 
-  describe('selecting a custom value', function() {
-    var combobox;
-    beforeEach(function() {
-      combobox = fixture('combobox');
-      combobox.allowCustomValue = true;
-      combobox.items = ['foo', 'bar', 'barbar'];
+    describe('clearing a selection', function () {
+      var combobox;
+      var clearIcon;
+      beforeEach(function () {
+        combobox = fixture('combobox');
+        combobox.items = ['foo', 'bar'];
 
-      combobox.open();
+        combobox.value = 'foo';
+
+        clearIcon = combobox.$.clearIcon;
+      });
+
+      it('should show the clearing icon only when dropdown is open', function () {
+        expect(window.getComputedStyle(clearIcon).display).to.eql('none');
+
+        combobox.open();
+
+        expect(window.getComputedStyle(clearIcon).display).to.eql('block');
+      });
+
+      it('should not show clearing icon when nothing is selected', function () {
+        combobox.open();
+
+        combobox.value = '';
+
+        expect(window.getComputedStyle(clearIcon).display).to.eql('none');
+      });
+
+      it('should clear the selection when tapping on the icon', function () {
+        combobox.open();
+
+        Polymer.Base.fire('tap', {}, {
+          bubbles: true,
+          node: clearIcon
+        });
+
+        expect(combobox.value).to.eql('');
+        expect(combobox.$.overlay.$.selector.selectedItem).to.be.null;
+      });
+
+      it('should close the dropdown after clearing a selection', function () {
+        combobox.open();
+
+        Polymer.Base.fire('tap', {}, {
+          bubbles: true,
+          node: clearIcon
+        });
+
+        expect(combobox.opened).to.eql(false);
+      });
     });
 
-    it('should select a value when closing when having a single exact match', function() {
-      combobox.$.input.bindValue = 'barbar';
-      combobox.$.input.fire('input');
+    describe('selecting a custom value', function () {
+      var combobox;
+      beforeEach(function () {
+        combobox = fixture('combobox');
+        combobox.allowCustomValue = true;
+        combobox.items = ['foo', 'bar', 'barbar'];
 
-      combobox.close();
+        combobox.open();
+      });
 
-      expect(combobox.value).to.eql('barbar');
-    });
+      it('should select a value when closing when having a single exact match', function () {
+        combobox.$.input.bindValue = 'barbar';
+        combobox.$.input.fire('input');
 
-    it('should select a value when closing when having multiple matches', function() {
-      combobox.$.input.bindValue = 'BAR';
-      combobox.$.input.fire('input');
+        combobox.close();
 
-      combobox.close();
+        expect(combobox.value).to.eql('barbar');
+      });
 
-      expect(combobox.value).to.eql('bar');
-    });
+      it('should select a value when closing when having multiple matches', function () {
+        combobox.$.input.bindValue = 'BAR';
+        combobox.$.input.fire('input');
 
-    it('should clear the selection when closing the overlay and input is cleared', function() {
+        combobox.close();
+
+        expect(combobox.value).to.eql('bar');
+      });
+
+      it('should clear the selection when closing the overlay and input is cleared', function () {
         combobox.value = 'foo';
 
         combobox.$.input.bindValue = '';
@@ -166,9 +166,63 @@
 
         expect(combobox.value).to.be.empty;
         expect(combobox.$.overlay.$.selector.selectedItem).to.be.null;
+      });
     });
-  });
-</script>
+
+    describe('input empty strings with required attribute and string items', function () {
+      var combobox;
+      beforeEach(function () {
+        combobox = fixture('combobox');
+        combobox.allowCustomValue = false;
+        combobox.items = ['foo', 'bar', 'barbar'];
+        combobox.required = true;
+        combobox.open();
+      });
+
+      it('should select the first value when input is empty', function () {
+        combobox.$.input.bindValue = '';
+        combobox.$.input.fire('input');
+        combobox._onBlur();
+        expect(combobox.value).to.equal('foo');
+      });
+
+      it('should select the first value when input is empty and allow custom value is true', function () {
+        combobox.allowCustomValue = true;
+        combobox.$.input.bindValue = '';
+        combobox.$.input.fire('input');
+        combobox._onBlur();
+        expect(combobox.value).to.equal('foo');
+      });
+    });
+
+    describe('input empty strings with required attribute and object items', function () {
+      var combobox;
+      beforeEach(function () {
+        combobox = fixture('combobox');
+        combobox.allowCustomValue = false;
+        combobox.items = [{label: 'foo', value: 'fooValue'}, {label: 'bar', value: 'barValue'}];
+        combobox.itemLabelPath = 'label';
+        combobox.itemValuePath = 'value';
+        combobox.required = true;
+        combobox.open();
+      });
+
+      it('should select the first value when input is empty', function () {
+        combobox.$.input.bindValue = '';
+        combobox.$.input.fire('input');
+        combobox._onBlur();
+        expect(combobox.value).to.equal('fooValue');
+      });
+
+      it('should select the first value when input is empty and allow custom value is true', function () {
+        combobox.allowCustomValue = true;
+        combobox.$.input.bindValue = '';
+        combobox.$.input.fire('input');
+        combobox._onBlur();
+        expect(combobox.value).to.equal('fooValue');
+      });
+    });
+  </script>
 
 </body>
 

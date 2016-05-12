@@ -293,6 +293,11 @@ Custom property | Description | Default
       itemValuePath: {
         type: String,
         value: 'value'
+      },
+
+      required: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -449,7 +454,15 @@ Custom property | Description | Default
      * Clears the current value.
      */
     _clear: function() {
-      this.value = '';
+      if (this.required) {
+        var item = this.$.overlay._items[0];
+        this.$.input.bindValue = this._getItemLabel(item);
+        this.$.overlay._selectItem(item);
+        this.value= this._getItemValue(item);
+      }
+      else {
+        this.value = '';
+      }
     },
 
     /**
@@ -587,6 +600,9 @@ Custom property | Description | Default
       if (valueIndex > -1) {
         this.$.overlay._selectItem(valueIndex);
       }
+      else if(this.required && items && items.length) {
+        this.$.overlay._selectItem(0);
+      }
 
       this.$.overlay.hidden = !this._hasItems(items);
       this.$.overlay.notifyResize();
@@ -628,7 +644,7 @@ Custom property | Description | Default
       if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
         this.$.overlay._selectItem(item);
       } else {
-        this.$.input.bindValue = this.allowCustomValue ? value : '';
+        this.$.input.bindValue = value;
         this._setSelectedItem(null);
         this._focusedIndex = -1;
         this.$.overlay.$.selector.clearSelection();
