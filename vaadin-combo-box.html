@@ -586,7 +586,7 @@ Custom property | Description | Default
 
     _itemsPropertyChanged: function (items) {
       var item = items ? items[0] : null;
-      if (item) {
+      if (item && this.required) {
         this._value = this._getItemValue(item);
         this.$.input.bindValue = this._getItemLabel(item);
       }
