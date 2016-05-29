@@ -145,7 +145,8 @@ Custom property | Description | Default
         invalid="[[invalid]]"
         opened$="[[opened]]"
         hideclear$="[[_hideClearIcon(value, opened)]]"
-        on-down="_preventDefault">
+        on-down="_preventDefault"
+        no-label-float$="[[noLabelFloat]]">
       <label id="label" on-tap="open">[[label]]</label>
       <input
           is="iron-input"
@@ -241,6 +242,11 @@ Custom property | Description | Default
       label: {
         type: String,
         reflectToAttribute: true
+      },
+      
+      noLabelFloat: {
+        type: Boolean,
+        value: false
       },
 
       _positionTarget: {
