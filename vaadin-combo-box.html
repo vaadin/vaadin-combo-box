@@ -439,8 +439,8 @@ Custom property | Description | Default
       if (!this._closeOnBlurIsPrevented) {
         this.close();
       }
-      
-      if ((!(typeof this.value == 'string') || this.value.trim() == '') && this.required) {
+
+      if((!this.value || (typeof this.value == 'string') && this.value.trim() == '') && this.required) {
         this._clear();
       }
     },
