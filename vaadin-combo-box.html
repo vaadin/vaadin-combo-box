@@ -54,8 +54,8 @@ Custom property | Description | Default
 <dom-module id="vaadin-combo-box">
   <style>
     :host {
-       display: block;
-       padding: 8px 0;
+      display: block;
+      padding: 8px 0;
     }
 
     :host > #overlay {
@@ -139,34 +139,34 @@ Custom property | Description | Default
 
   <template>
     <paper-input-container
-        class="dropdown-input"
-        id="inputContainer"
-        disabled$="[[disabled]]"
-        invalid="[[invalid]]"
-        opened$="[[opened]]"
-        hideclear$="[[_hideClearIcon(value, opened)]]"
-        on-down="_preventDefault">
+            class="dropdown-input"
+            id="inputContainer"
+            disabled$="[[disabled]]"
+            invalid="[[invalid]]"
+            opened$="[[opened]]"
+            hideclear$="[[_hideClearIcon(value, opened, hideClearIcon)]]"
+            on-down="_preventDefault">
       <label id="label" on-tap="open">[[label]]</label>
       <input
-          is="iron-input"
-          id="input"
-          role="combobox"
-          disabled$="[[disabled]]"
-          readonly$="[[readonly]]"
-          invalid="{{invalid}}"
-          aria-activedescendant$="[[_ariaActiveIndex]]"
-          aria-expanded$="[[_getAriaExpanded(opened)]]"
-          aria-labelledby="label"
-          aria-autocomplete="list" aria-owns="overlay"
-          autocomplete="off"
-          name$="[[name]]"
-          type="text"
-          required$="[[required]]"
-          on-input="_inputValueChanged"
-          on-blur="_onBlur"
-          on-tap="open"
-          key-event-target>
-      <div suffix id="clearIcon" on-tap="_clear" on-touchend="_preventDefault">
+              is="iron-input"
+              id="input"
+              role="combobox"
+              disabled$="[[disabled]]"
+              readonly$="[[readonly]]"
+              invalid="{{invalid}}"
+              aria-activedescendant$="[[_ariaActiveIndex]]"
+              aria-expanded$="[[_getAriaExpanded(opened)]]"
+              aria-labelledby="label"
+              aria-autocomplete="list" aria-owns="overlay"
+              autocomplete="off"
+              name$="[[name]]"
+              type="text"
+              required$="[[required]]"
+              on-input="_inputValueChanged"
+              on-blur="_onBlur"
+              on-tap="open"
+              key-event-target>
+      <div suffix id="clearIcon" on-tap="_handleClearIconTab" on-touchend="_preventDefault">
         <iron-icon icon="clear"></iron-icon>
         <paper-ripple class="circle" center></paper-ripple>
       </div>
@@ -177,13 +177,13 @@ Custom property | Description | Default
     </paper-input-container>
 
     <vaadin-combo-box-overlay
-        id="overlay"
-        _aria-active-index="{{_ariaActiveIndex}}"
-        position-target="[[_positionTarget]]"
-        _focused-index="[[_focusedIndex]]"
-        _item-label-path="[[itemLabelPath]]"
-        on-down="_onOverlayDown"
-        vertical-offset="2">
+            id="overlay"
+            _aria-active-index="{{_ariaActiveIndex}}"
+            position-target="[[_positionTarget]]"
+            _focused-index="[[_focusedIndex]]"
+            _item-label-path="[[itemLabelPath]]"
+            on-down="_onOverlayDown"
+            vertical-offset="2">
     </vaadin-combo-box-overlay>
   </template>
 </dom-module>
@@ -205,7 +205,8 @@ Custom property | Description | Default
        * options could be either `String` or `Object`.
        */
       items: {
-        type: Array
+        type: Array,
+        observer: '_itemsPropertyChanged'
       },
 
       /**
@@ -243,9 +244,17 @@ Custom property | Description | Default
         reflectToAttribute: true
       },
 
+      /**
+       * Always hide the clear icon.
+       */
+      hideClearIcon: {
+        type: Boolean,
+        value: false
+      },
+
       _positionTarget: {
         type: Object,
-        value: function() {
+        value: function () {
           return this.$.inputContainer;
         }
       },
@@ -293,6 +302,11 @@ Custom property | Description | Default
       itemValuePath: {
         type: String,
         value: 'value'
+      },
+
+      required: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -308,7 +322,7 @@ Custom property | Description | Default
       'keydown': '_onKeyDown'
     },
 
-    ready: function() {
+    ready: function () {
       // The value property is also defined in IronFormElementBehavior, which
       // will mix up the default value if set in the property.
       if (this.value === undefined) {
@@ -317,37 +331,40 @@ Custom property | Description | Default
       Polymer.IronA11yAnnouncer.requestAvailability();
     },
 
+
     /**
      * Keyboard navigation
      */
-
-    _onKeyDown: function(e) {
+    _onKeyDown: function (e) {
       if (this._isEventKey(e, 'down')) {
         this._onArrowDown();
 
         // prevent caret from moving
         e.preventDefault();
-      } else if (this._isEventKey(e, 'up')) {
+      }
+      else if (this._isEventKey(e, 'up')) {
         this._onArrowUp();
 
         // prevent caret from moving
         e.preventDefault();
-      } else if (this._isEventKey(e, 'enter')) {
+      }
+      else if (this._isEventKey(e, 'enter')) {
         this._onEnter(e);
-      } else if (this._isEventKey(e, 'esc')) {
+      }
+      else if (this._isEventKey(e, 'esc')) {
         this._onEscape();
       }
     },
 
-    _isEventKey: function(e, k) {
+    _isEventKey: function (e, k) {
       return Polymer.IronA11yKeysBehavior.keyboardEventMatchesKeys(e, k);
     },
 
-    _getItemLabel: function(item) {
+    _getItemLabel: function (item) {
       return this.$.overlay.getItemLabel(item);
     },
 
-    _getItemValue: function(item) {
+    _getItemValue: function (item) {
       var value = this.get(this.itemValuePath, item);
       if (value === undefined || value === null) {
         value = item ? item.toString() : '';
@@ -355,41 +372,44 @@ Custom property | Description | Default
       return value;
     },
 
-    _onArrowDown: function() {
+    _onArrowDown: function () {
       if (this.opened) {
         if (this.$.overlay._items) {
           this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
           this._prefillFocusedItemLabel();
         }
-      } else {
+      }
+      else {
         this.open();
       }
     },
 
-    _onArrowUp: function() {
+    _onArrowUp: function () {
       if (this.opened) {
         if (this._focusedIndex > -1) {
           this._focusedIndex = Math.max(0, this._focusedIndex - 1);
-        } else {
+        }
+        else {
           if (this.$.overlay._items) {
             this._focusedIndex = this.$.overlay._items.length - 1;
           }
         }
 
         this._prefillFocusedItemLabel();
-      } else {
+      }
+      else {
         this.open();
       }
     },
 
-    _prefillFocusedItemLabel: function() {
+    _prefillFocusedItemLabel: function () {
       if (this._focusedIndex > -1) {
         this.$.input.bindValue = this._getItemLabel(this.$.overlay._focusedItem);
         this._setSelectionRange();
       }
     },
 
-    _onEnter: function(e) {
+    _onEnter: function (e) {
       // should close on enter when custom values are allowed, input field is cleared, or when an existing
       // item is focused with keyboard.
       if (this.opened && (this.allowCustomValue || this.$.input.bindValue === '' || this._focusedIndex > -1)) {
@@ -400,12 +420,13 @@ Custom property | Description | Default
       }
     },
 
-    _onEscape: function() {
+    _onEscape: function () {
       if (this.opened) {
         if (this._focusedIndex > -1) {
           this._focusedIndex = -1;
           this._revertInputValue();
-        } else {
+        }
+        else {
           this.cancel();
         }
       }
@@ -414,14 +435,17 @@ Custom property | Description | Default
     /**
      * Opening and closing related functionality
      */
-
-    _onBlur: function() {
+    _onBlur: function () {
       if (!this._closeOnBlurIsPrevented) {
         this.close();
       }
+
+      if ((!this.value || (typeof this.value == 'string') && this.value.trim() == '') && this.required) {
+        this._clear();
+      }
     },
 
-    _onOverlayDown: function(event) {
+    _onOverlayDown: function (event) {
       // Prevent the focus transfer when user scrolls inside the overlay with mouse drag
       event.preventDefault();
 
@@ -437,48 +461,69 @@ Custom property | Description | Default
     /**
      * Opens and closes the dropdown list.
      */
-    _toggle: function() {
+    _toggle: function () {
       if (this.opened) {
         this.close();
-      } else {
+      }
+      else {
         this.open();
       }
+    },
+
+    _handleClearIconTab: function () {
+      this._isClearing = true;
+      this.value = '';
+      this.$.input.bindValue = '';
+      this._isClearing = false;
     },
 
     /**
      * Clears the current value.
      */
-    _clear: function() {
-      this.value = '';
+    _clear: function () {
+      if (this.required) {
+        var item = this.$.overlay._items[0];
+        this.$.input.bindValue = this._getItemLabel(item);
+        this.$.overlay._selectItem(item);
+        this.value = this._getItemValue(item);
+      }
+      else {
+        this.value = '';
+      }
     },
 
     /**
      * Reverts back to original value.
      */
-    cancel: function() {
+    cancel: function () {
       this.$.input.bindValue = this._getItemLabel(this.selectedItem);
       this.close();
     },
 
-    _onOpened: function() {
+    _onOpened: function () {
       this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
       this.$.overlay.notifyResize();
       this.$.overlay.adjustScrollPosition();
     },
 
-    _onClosed: function() {
+    _onClosed: function () {
       if (this._focusedIndex > -1) {
         this.$.overlay._selectItem(this._focusedIndex);
         this.$.input.bindValue = this._getItemLabel(this.selectedItem);
-      } else if (this.$.input.bindValue === '') {
-        this._clear();
-      } else {
+      }
+      else if (this.$.input.bindValue === '') {
+        if (!this._isClearing) {
+          this._clear();
+        }
+      }
+      else {
         if (this.allowCustomValue) {
           var e = this.fire('custom-value-set', this.$.input.bindValue, {cancelable: true});
           if (!e.defaultPrevented) {
             this.value = this.$.input.bindValue;
           }
-        } else {
+        }
+        else {
           this.$.input.bindValue = this._getItemLabel(this.selectedItem);
         }
       }
@@ -492,7 +537,7 @@ Custom property | Description | Default
      * WAI-ARIA
      */
 
-    _getAriaExpanded: function(value) {
+    _getAriaExpanded: function (value) {
       return value.toString();
     },
 
@@ -500,13 +545,14 @@ Custom property | Description | Default
      *  Filtering and items handling
      */
 
-    _inputValueChanged: function(e) {
+    _inputValueChanged: function (e) {
       if (this._filter === this.$.input.bindValue) {
         // Filter and input value might get out of sync, while keyboard navigating for example.
         // Afterwards, input value might be changed to the same value as used in filtering.
         // In situation like these, we need to make sure all the filter changes handlers are run.
         this._filterChanged(this._filter);
-      } else {
+      }
+      else {
         this._filter = this.$.input.bindValue;
       }
 
@@ -515,26 +561,27 @@ Custom property | Description | Default
       }
     },
 
-    _revertInputValue: function() {
+    _revertInputValue: function () {
       if (this._filter !== '') {
         this.$.input.bindValue = this._filter;
-      } else {
+      }
+      else {
         this.$.input.bindValue = this._getItemLabel(this.selectedItem);
       }
 
       this._clearSelectionRange();
     },
 
-    _setSelectionRange: function() {
+    _setSelectionRange: function () {
       this.$.input.setSelectionRange(0, this.$.input.bindValue.length);
     },
 
     // document.activeElement doesn't return elements from inside shadow root
-    _focusedInput: function() {
+    _focusedInput: function () {
       return Polymer.dom(this.root).querySelector('input:focus');
     },
 
-    _clearSelectionRange: function() {
+    _clearSelectionRange: function () {
       // Setting selection range focuses and/or moves the caret in some browsers,
       // and there's no need to modify the selection range if the input isn't focused anyway.
       if (this._focusedInput() === this.$.input) {
@@ -542,7 +589,7 @@ Custom property | Description | Default
       }
     },
 
-    _filterChanged: function(filter) {
+    _filterChanged: function (filter) {
       this.unlisten(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
 
       this._setItems(this._filterItems(this.items, filter));
@@ -551,32 +598,48 @@ Custom property | Description | Default
       this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
 
       // async needed to reposition correctly after filtering
-      this.async(function() {
+      this.async(function () {
         this.$.overlay.notifyResize();
       }.bind(this));
     },
 
-    _itemsChanged: function(change) {
+    _itemsChanged: function (change) {
       if (change && change.indexSplices) {
         this._setItems(change.indexSplices[0].object);
       }
     },
 
-    _filterItems: function(arr, filter) {
+    _itemsPropertyChanged: function (items) {
+      var valueIndex = this._indexOfValue(this.value);
+
+      if (valueIndex >= 0) {
+          this.value = this._getItemValue(items[valueIndex]);
+          this.$.input.bindValue = this._getItemLabel(items[valueIndex]);
+      }
+      else {
+        var item = items ? items[0] : null;
+        if (item && this.required && !this.selectedItem) {
+          this.value = this._getItemValue(item);
+          this.$.input.bindValue = this._getItemLabel(item);
+        }
+      }
+    },
+
+    _filterItems: function (arr, filter) {
       if (!arr) {
         return arr;
       }
 
-      return arr.filter((function(item) {
+      return arr.filter((function (item) {
         filter = filter.toString().toLowerCase() || '';
 
         // Check if item contains input value.
         return this._getItemLabel(item).toString().toLowerCase()
-          .indexOf(filter) > -1;
+                        .indexOf(filter) > -1;
       }).bind(this));
     },
 
-    _setItems: function(items) {
+    _setItems: function (items) {
       //TODO: There is something wrong with observers and using set function
       // see here: https://github.com/Polymer/polymer/issues/3254
       //As a workaround setting/notifying the observer with the value undefined helps
@@ -592,11 +655,11 @@ Custom property | Description | Default
       this.$.overlay.notifyResize();
     },
 
-    _hasItems: function(array) {
+    _hasItems: function (array) {
       return array && array.length;
     },
 
-    _indexOfValue: function(value, items) {
+    _indexOfValue: function (value, items) {
       items = items || this.items;
       if (items && value) {
         for (var i = 0; i < items.length; i++) {
@@ -609,7 +672,7 @@ Custom property | Description | Default
       return -1;
     },
 
-    _selectedItemChanged: function(event, detail) {
+    _selectedItemChanged: function (event, detail) {
       if (detail.value !== null) {
         this._setSelectedItem(detail.value);
         this.$.input.bindValue = this._getItemLabel(this.selectedItem);
@@ -622,13 +685,14 @@ Custom property | Description | Default
       }
     },
 
-    _valueChanged: function(value) {
+    _valueChanged: function (value) {
       var valueIndex = this._indexOfValue(value);
       var item = valueIndex > -1 && this.items[valueIndex];
       if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
         this.$.overlay._selectItem(item);
-      } else {
-        this.$.input.bindValue = this.allowCustomValue ? value : '';
+      }
+      else {
+        this.$.input.bindValue = value;
         this._setSelectedItem(null);
         this._focusedIndex = -1;
         this.$.overlay.$.selector.clearSelection();
@@ -637,24 +701,24 @@ Custom property | Description | Default
       this.close();
     },
 
-    _hideClearIcon: function(value, opened) {
-      return value === '' || !opened;
+    _hideClearIcon: function (value, opened, hideClearIcon) {
+      return value === '' || !opened || hideClearIcon;
     },
 
-    _hideToggleIcon: function(disabled, readonly) {
+    _hideToggleIcon: function (disabled, readonly) {
       return readonly || disabled;
     },
 
-    _preventDefault: function(e) {
+    _preventDefault: function (e) {
       e.preventDefault();
     },
 
     /**
-    * Validates the input element and sets an error style if needed.
-    *
-    * @return {boolean}
-    */
-    _getValidity: function() {
+     * Validates the input element and sets an error style if needed.
+     *
+     * @return {boolean}
+     */
+    _getValidity: function () {
       return this.$.input.validate();
     }
   });
