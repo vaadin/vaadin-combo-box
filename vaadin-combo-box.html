@@ -67,7 +67,7 @@ Custom property | Description | Default
       padding: 0;
     }
 
-    paper-input-container[opened] {
+    :host([opened]) paper-input-container {
       /* Keep the paper-input-container above the dropdown. */
       z-index: 20;
     }
@@ -95,15 +95,15 @@ Custom property | Description | Default
     }
 
     paper-input-container iron-icon:hover,
-    paper-input-container[opened] iron-icon {
+    :host([opened]) paper-input-container iron-icon {
       fill: rgba(0, 0, 0, .54);
     }
 
-    paper-input-container[opened] iron-icon:hover {
+    :host([opened]) paper-input-container iron-icon:hover {
       fill: rgba(0, 0, 0, .86);
     }
 
-    paper-input-container[opened] #toggleIcon iron-icon {
+    :host([opened]) paper-input-container #toggleIcon iron-icon {
       -webkit-transform: rotate(180deg);
       transform: rotate(180deg);
     }
@@ -117,7 +117,13 @@ Custom property | Description | Default
       --iron-icon-height: 20px;
     }
 
-    [hideclear] #clearIcon {
+    :host(:not([opened])) #clearIcon,
+    :host(:not([has-value])) #clearIcon {
+      display: none;
+    }
+
+    :host([readonly]) #toggleIcon,
+    :host([disabled]) #toggleIcon {
       display: none;
     }
 
@@ -130,7 +136,7 @@ Custom property | Description | Default
       padding-right: 28px;
     }
 
-    #inputContainer[opened]:not([hideclear]) #input {
+    :host([opened][has-value]) #input {
       padding-right: 60px;
       margin-right: -32px;
     }
@@ -144,8 +150,6 @@ Custom property | Description | Default
             id="inputContainer"
             disabled$="[[disabled]]"
             invalid="[[invalid]]"
-            opened$="[[opened]]"
-            hideclear$="[[_hideClearIcon(value, opened)]]"
             on-down="_preventDefault">
           <label id="label" on-tap="open">[[label]]</label>
           <input
@@ -171,7 +175,7 @@ Custom property | Description | Default
             <iron-icon icon="clear"></iron-icon>
             <paper-ripple class="circle" center></paper-ripple>
           </div>
-          <div suffix id="toggleIcon" hidden$="[[_hideToggleIcon(disabled, readonly)]]" on-touchend="_preventDefault">
+          <div suffix id="toggleIcon" on-touchend="_preventDefault">
             <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
             <paper-ripple class="circle" center></paper-ripple>
           </div>
@@ -228,6 +232,16 @@ Custom property | Description | Default
         type: String,
         // notify: true already set in IronFormBehavior, setting this to true will make two value-changed events(?)
         notify: false
+      },
+
+      /**
+       * A read-only property indicating whether this combo box has a value
+       * selected or not. Can be used for example in styling of the component.
+       */
+      hasValue: {
+        type: Boolean,
+        readonly: true,
+        reflectToAttribute: true
       },
 
       /**
@@ -659,16 +673,9 @@ Custom property | Description | Default
         this._focusedIndex = -1;
         this.$.overlay.$.selector.clearSelection();
       }
+      this.hasValue = !!value;
 
       this.close();
-    },
-
-    _hideClearIcon: function(value, opened) {
-      return value === '' || !opened;
-    },
-
-    _hideToggleIcon: function(disabled, readonly) {
-      return readonly || disabled;
     },
 
     _preventDefault: function(e) {

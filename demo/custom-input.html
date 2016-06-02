@@ -58,6 +58,12 @@ layout: page
     </p>
 
     <code-example source>
+      <style>
+        /* Hide the clear button if there is no value to clear. */
+        vaadin-combo-box:not([has-value]) .clear-button {
+          display: none;
+        }
+      </style>
       <vaadin-combo-box demo class="advanced" attr-for-value="value">
         <paper-input label="Elements" class="input">
           <iron-icon icon="toll" prefix></iron-icon>
