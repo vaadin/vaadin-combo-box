@@ -346,11 +346,12 @@ Custom property | Description | Default
     },
 
     _onTap: function(e) {
-      if (this._clearElement.contains(e.target)) {
+      var target = Polymer.dom(e).rootTarget;
+      if (this._clearElement.contains(target)) {
         this._clear();
-      } else if (this._toggleElement.contains(e.target)) {
+      } else if (this._toggleElement.contains(target)) {
         this._toggle();
-      } else if (this._inputElement.contains(e.target)) {
+      } else if (this._inputElement.contains(target)) {
         this.open();
       }
     },
