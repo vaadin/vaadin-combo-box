@@ -175,10 +175,12 @@ Custom property | Description | Default
             <iron-icon icon="clear"></iron-icon>
             <paper-ripple class="circle" center></paper-ripple>
           </div>
-          <div suffix id="toggleIcon" on-touchend="_preventDefault">
-            <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
-            <paper-ripple class="circle" center></paper-ripple>
-          </div>
+          <content select=".toggle-button">
+            <div suffix id="toggleIcon" on-touchend="_preventDefault">
+              <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
+              <paper-ripple class="circle" center></paper-ripple>
+            </div>
+          </content>
         </paper-input-container>
     </content>
 
