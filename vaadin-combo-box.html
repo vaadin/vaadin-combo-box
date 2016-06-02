@@ -252,7 +252,7 @@ Custom property | Description | Default
       _positionTarget: {
         type: Object,
         value: function() {
-          return Polymer.dom(this.root).querySelector('#inputContainer') || this._inputElement;
+          return this._hasCustomInput ? this._inputElement : this.$.inputContainer;
         }
       },
 
@@ -684,6 +684,10 @@ Custom property | Description | Default
       if (this._inputElement.validate) {
         return this._inputElement.validate();
       }
+    },
+
+    get _hasCustomInput() {
+      return Polymer.dom(this).querySelector('.input') !== null;
     },
 
     get _inputElement() {
