@@ -334,6 +334,8 @@ Custom property | Description | Default
         this._clear();
       } else if (this._toggleElement.contains(e.target)) {
         this._toggle();
+      } else if (this._inputElement.contains(e.target)) {
+        this.open();
       }
     },
 
