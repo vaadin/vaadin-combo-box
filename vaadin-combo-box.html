@@ -576,7 +576,8 @@ Custom property | Description | Default
 
     // document.activeElement doesn't return elements from inside shadow root
     _focusedInput: function() {
-      return Polymer.dom(this.root).querySelector('input:focus');
+      return Polymer.dom(this.root).querySelector('input:focus') ||
+             Polymer.dom(this).querySelector('input:focus');
     },
 
     _clearSelectionRange: function() {
