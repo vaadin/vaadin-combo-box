@@ -226,8 +226,7 @@ Custom property | Description | Default
        */
       value: {
         type: String,
-        observer: '_valueChanged',
-        //notify: true already set in IronFormBehavior, setting this to true will make two value-changed events(?)
+        // notify: true already set in IronFormBehavior, setting this to true will make two value-changed events(?)
         notify: false
       },
 
@@ -306,7 +305,11 @@ Custom property | Description | Default
     observers: [
       '_filterChanged(_filter, itemValuePath, itemLabelPath)',
       '_itemsChanged(items.splices)',
-      '_setItems(items, itemValuePath, itemLabelPath)'
+      '_setItems(items, itemValuePath, itemLabelPath)',
+
+      // We need to be sure that attrForValue is defined in order to
+      // correctly set the _inputElementValue inside the observer.
+      '_valueChanged(value, attrForValue)'
     ],
 
     listeners: {
