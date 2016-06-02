@@ -253,8 +253,7 @@ Custom property | Description | Default
       _positionTarget: {
         type: Object,
         value: function() {
-          console.log(Polymer.dom(this.root).querySelector('#contentNode').getDestinationInsertionPoints());
-          return Polymer.dom(this).querySelector('#inputContainer') || this._inputElement;
+          return Polymer.dom(this.root).querySelector('#inputContainer') || this._inputElement;
         }
       },
 
