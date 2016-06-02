@@ -171,10 +171,12 @@ Custom property | Description | Default
               on-blur="_onBlur"
               key-event-target>
           <content select="[prefix]"></content>
-          <div suffix id="clearIcon" on-touchend="_preventDefault">
-            <iron-icon icon="clear"></iron-icon>
-            <paper-ripple class="circle" center></paper-ripple>
-          </div>
+          <content select=".clear-button">
+            <div suffix id="clearIcon" on-touchend="_preventDefault">
+              <iron-icon icon="clear"></iron-icon>
+              <paper-ripple class="circle" center></paper-ripple>
+            </div>
+          </content>
           <content select=".toggle-button">
             <div suffix id="toggleIcon" on-touchend="_preventDefault">
               <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>

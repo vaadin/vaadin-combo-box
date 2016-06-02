@@ -94,10 +94,6 @@ layout: page
 
     <code-example source>
       <style is="custom-style">
-        / Hide the clear button if there is no value to clear. /
-        vaadin-combo-box:not([has-value]) .clear-button {
-          display: none;
-        }
         vaadin-combo-box paper-icon-button {
           color: rgba(0, 0, 0, .38);
           position: absolute;
@@ -107,9 +103,17 @@ layout: page
           height: 32px;
           padding: 4px;
         }
+        vaadin-combo-box paper-icon-button.clear-button {
+          right: 28px;
+        }
+        / Hide the clear button if there is no value to clear. /
+        vaadin-combo-box:not([has-value]) .clear-button {
+          display: none;
+        }
       </style>
       <vaadin-combo-box demo label="Custom Icons" class="custom">
-        <paper-icon-button suffix icon="icons:view-list" class="toggle-button"></paper-icon-button>
+        <paper-icon-button suffix icon="icons:remove-circle" class="clear-button"></paper-icon-button>
+        <paper-icon-button suffix icon="icons:search" class="toggle-button"></paper-icon-button>
       </vaadin-combo-box>
 
       <code demo-var="combobox">
