@@ -151,39 +151,39 @@ Custom property | Description | Default
             disabled$="[[disabled]]"
             invalid="[[invalid]]"
             on-down="_preventDefault">
-          <label id="label" on-tap="open">[[label]]</label>
-          <input
-              is="iron-input"
-              id="input"
-              class="input"
-              role="combobox"
-              disabled$="[[disabled]]"
-              readonly$="[[readonly]]"
-              invalid="{{invalid}}"
-              aria-activedescendant$="[[_ariaActiveIndex]]"
-              aria-expanded$="[[_getAriaExpanded(opened)]]"
-              aria-labelledby="label"
-              aria-autocomplete="list" aria-owns="overlay"
-              autocomplete="off"
-              name$="[[name]]"
-              type="text"
-              required$="[[required]]"
-              on-blur="_onBlur"
-              key-event-target>
-          <content select="[prefix]"></content>
-          <content select=".clear-button">
-            <div suffix id="clearIcon" on-touchend="_preventDefault">
-              <iron-icon icon="clear"></iron-icon>
-              <paper-ripple class="circle" center></paper-ripple>
-            </div>
-          </content>
-          <content select=".toggle-button">
-            <div suffix id="toggleIcon" on-touchend="_preventDefault">
-              <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
-              <paper-ripple class="circle" center></paper-ripple>
-            </div>
-          </content>
-        </paper-input-container>
+        <label id="label" on-tap="open">[[label]]</label>
+        <input
+            is="iron-input"
+            id="input"
+            class="input"
+            role="combobox"
+            disabled$="[[disabled]]"
+            readonly$="[[readonly]]"
+            invalid="{{invalid}}"
+            aria-activedescendant$="[[_ariaActiveIndex]]"
+            aria-expanded$="[[_getAriaExpanded(opened)]]"
+            aria-labelledby="label"
+            aria-autocomplete="list" aria-owns="overlay"
+            autocomplete="off"
+            name$="[[name]]"
+            type="text"
+            required$="[[required]]"
+            on-blur="_onBlur"
+            key-event-target>
+        <content select="[prefix]"></content>
+        <content select=".clear-button">
+          <div suffix id="clearIcon" on-touchend="_preventDefault">
+            <iron-icon icon="clear"></iron-icon>
+            <paper-ripple class="circle" center></paper-ripple>
+          </div>
+        </content>
+        <content select=".toggle-button">
+          <div suffix id="toggleIcon" on-touchend="_preventDefault">
+            <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
+            <paper-ripple class="circle" center></paper-ripple>
+          </div>
+        </content>
+      </paper-input-container>
     </content>
 
     <vaadin-combo-box-overlay
