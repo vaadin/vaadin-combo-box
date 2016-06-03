@@ -544,17 +544,20 @@ Custom property | Description | Default
      */
 
     _inputValueChanged: function(e) {
-      if (this._filter === this._inputElementValue) {
-        // Filter and input value might get out of sync, while keyboard navigating for example.
-        // Afterwards, input value might be changed to the same value as used in filtering.
-        // In situation like these, we need to make sure all the filter changes handlers are run.
-        this._filterChanged(this._filter);
-      } else {
-        this._filter = this._inputElementValue;
-      }
+      // Handle only input events from our _inputElement.
+      if (Polymer.dom(e).rootTarget === this._inputElement) {
+        if (this._filter === this._inputElementValue) {
+          // Filter and input value might get out of sync, while keyboard navigating for example.
+          // Afterwards, input value might be changed to the same value as used in filtering.
+          // In situation like these, we need to make sure all the filter changes handlers are run.
+          this._filterChanged(this._filter);
+        } else {
+          this._filter = this._inputElementValue;
+        }
 
-      if (!this.opened) {
-        this.open();
+        if (!this.opened) {
+          this.open();
+        }
       }
     },
 
