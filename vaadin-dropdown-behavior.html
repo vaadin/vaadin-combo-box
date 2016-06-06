@@ -55,6 +55,15 @@
     },
 
     /**
+     * Opens the dropdown list asynchronously.
+     */
+    openAsync: function() {
+      // Needed for MS Edge. Otherwise it does not pop the virtual keyboard up
+      // when tapping the combobox that has non-empty value.
+      this.async(this.open);
+    },
+
+    /**
      * Closes the dropdown list.
      */
     close: function() {
