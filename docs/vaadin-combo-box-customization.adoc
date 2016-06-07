@@ -28,10 +28,6 @@ Notice that by replacing the icons, you also take responsibility of the CSS that
   vaadin-combo-box paper-icon-button.clear-button {
     right: 28px;
   }
-  /* Hide the clear button if there is no value to clear. */
-  vaadin-combo-box:not([has-value]) .clear-button {
-    display: none;
-  }
 </style>
 <vaadin-combo-box label="Custom Icons">
   <paper-icon-button suffix icon="icons:remove-circle" class="clear-button"></paper-icon-button>
@@ -78,12 +74,6 @@ See the example below, which also uses the [propertyname]#prefix# and [propertyn
 
 [source,html]
 ----
-<style>
-  /* Hide the clear button if there is no value to clear. */
-  vaadin-combo-box:not([has-value]) .clear-button {
-    display: none;
-  }
-</style>
 <vaadin-combo-box attr-for-value="value">
   <paper-input label="Elements" class="input">
     <iron-icon icon="toll" prefix></iron-icon>
