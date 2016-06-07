@@ -88,4 +88,4 @@ See the example below, which also uses the [propertyname]#prefix# and [propertyn
     <paper-button suffix class="toggle-button">Toggle</paper-button>
   </paper-input>
 </vaadin-combo-box>
----
+----
