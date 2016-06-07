@@ -7,11 +7,19 @@ layout: page
 [[vaadin-combo-box.customization]]
 = Customization
 
+The [vaadinelement]#vaadin-combo-box# element allows you to customize parts of the user interface by replacing the content with any other elements.
+You can either replace the whole input field by adding a child element with `input` class name or replace individual icons with `clear-button` and `toggle-button` class names.
+This chapter will explain these options in more detail.
+
+[[figure.vaadin-combo-box.overview]]
+.Overview of customization options for the [vaadinelement]#vaadin-combo-box# element
+image::img/vaadin-combo-box-customization.png[]
+
 == Using Custom Icons
 
 By default the [vaadinelement]#vaadin-combo-box# has two icons, a toggle icon for opening the dropdown and a clear icon for clearing the selected value.
 You can replace these with your own custom icons or buttons by using `toggle-button` and `clear-button` class names.
-Notice that by replacing the icons, you also take responsibility of the CSS that positions the icons.
+Using any element is allowed, but a `paper-icon-button` will make life easier as it will get some default styles automatically.
 
 [source,html]
 ----
@@ -21,29 +29,18 @@ Notice that by replacing the icons, you also take responsibility of the CSS that
 </vaadin-combo-box>
 ----
 
-If you try the example above, you might notice some minor differences in the appearance compared to the default styles.
-You can use normal CSS styles to style the buttons.
-The example below would change the previous example to appear like the default icons.
+Two special class names are also available for the custom buttons.
+|===
+|Class name |Purpose
 
-[source,html]
-----
-<style is="custom-style">
-  vaadin-combo-box paper-icon-button {
-    color: rgba(0, 0, 0, .38);
-    position: absolute;
-    bottom: -4px;
-    right: -4px;
-    width: 32px;
-    height: 32px;
-    padding: 4px;
-  }
-  vaadin-combo-box paper-icon-button.clear-button {
-    right: 28px;
-  }
-</style>
-----
+|`small`
+|Makes the `paper-icon-button` slightly smaller. Used by the default `clear-button`.
 
-To help you in styling different states, the [vaadinelement]#vaadin-combo-box# reflects following properties to an attribute.
+|`rotate-on-open`
+|Rotates the `paper-icon-button` 180 degrees when the dropdown is opened. Used by the default `toggle-button`.
+|===
+
+If you would like to apply some custom styles specific to the state of the element, the [vaadinelement]#vaadin-combo-box# reflects following properties to an attribute.
 
 |===
 |Attribute |State
