@@ -1,0 +1,91 @@
+---
+title: Customization
+order: 7
+layout: page
+---
+
+[[vaadin-combo-box.customization]]
+= Customization
+
+== Using Custom Icons
+
+By default the [vaadinelement]#vaadin-combo-box# has two icons, a toggle icon for opening the dropdown and a clear icon for clearing the selected value.
+You can replace these with your own custom icons or buttons by using `toggle-button` and `clear-button` class names.
+Notice that by replacing the icons, you also take responsibility of the CSS that positions the icons.
+
+[source,html]
+----
+<style is="custom-style">
+  vaadin-combo-box paper-icon-button {
+    color: rgba(0, 0, 0, .38);
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+  }
+  vaadin-combo-box paper-icon-button.clear-button {
+    right: 28px;
+  }
+  /* Hide the clear button if there is no value to clear. */
+  vaadin-combo-box:not([has-value]) .clear-button {
+    display: none;
+  }
+</style>
+<vaadin-combo-box label="Custom Icons">
+  <paper-icon-button suffix icon="icons:remove-circle" class="clear-button"></paper-icon-button>
+  <paper-icon-button suffix icon="icons:search" class="toggle-button"></paper-icon-button>
+</vaadin-combo-box>
+----
+
+To help you in styling the icons, the [vaadinelement]#vaadin-combo-box# reflects following properties to an attribute.
+
+|===
+|Attribute |State
+
+|`has-value`
+|Attribute is present when a value is selected.
+
+|`readonly`
+|Attribute is present when the element is in read-only mode.
+
+|`disabled`
+|Attribute is present when the element is disabled.
+|===
+
+
+== Replacing the Input
+
+If changing the icons is not enough, you can also replace the whole input element by adding a child element with `input` class name.
+This element should have a property for the value, which is available for two-way data-binding.
+By default it is expected that this property is named [propertyname]#bindValue# to make it compatible with link:https://elements.polymer-project.org/elements/iron-input[[elementname]#iron-input#].
+You can change the property name with the [propertyname]#attrForValue# property.
+
+[source,html]
+----
+<vaadin-combo-box>
+  <input is="iron-input" class="input">
+</vaadin-combo-box>
+----
+
+This will result in a simple text input field without any of the control icons.
+If you wish to build something similar to the default one, you can use link:https://elements.polymer-project.org/elements/paper-input[[elementname]#paper-input#].
+See the example below, which also uses the [propertyname]#prefix# and [propertyname]#suffix# attributes to position the icon and buttons.
+
+[source,html]
+----
+<style>
+  /* Hide the clear button if there is no value to clear. */
+  vaadin-combo-box:not([has-value]) .clear-button {
+    display: none;
+  }
+</style>
+<vaadin-combo-box attr-for-value="value">
+  <paper-input label="Elements" class="input">
+    <iron-icon icon="toll" prefix></iron-icon>
+    <paper-button suffix class="clear-button">Clear</paper-button>
+    <paper-button suffix class="toggle-button">Toggle</paper-button>
+  </paper-input>
+</vaadin-combo-box>
+---
