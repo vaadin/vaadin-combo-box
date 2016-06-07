@@ -41,9 +41,9 @@ Custom property | Description | Default
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 <link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="../paper-ripple/paper-ripple.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
@@ -72,49 +72,58 @@ Custom property | Description | Default
       z-index: 20;
     }
 
-    paper-input-container div[suffix] {
+    paper-icon-button,
+    :host ::content paper-icon-button.clear-button,
+    :host ::content paper-icon-button.toggle-button {
       position: absolute;
       bottom: -4px;
       right: -4px;
 
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       padding: 4px;
       text-align: center;
-    }
 
-    paper-input-container iron-icon {
-      fill: rgba(0, 0, 0, .38);
+      color: rgba(0, 0, 0, .38);
       cursor: pointer;
       margin-top: -1px;
-      transition: all 0.2s;
+      --paper-icon-button-ink-color: rgba(0, 0, 0, .54);
     }
 
-    paper-input-container paper-ripple {
+    paper-input-container paper-icon-button.clear-button,
+    paper-input-container ::content paper-icon-button.clear-button {
+      right: 28px;
+    }
+
+    paper-input-container paper-icon-button:hover,
+    paper-input-container ::content paper-icon-button:hover,
+    :host([opened]) paper-input-container paper-icon-button,
+    :host([opened]) paper-input-container ::content paper-icon-button {
       color: rgba(0, 0, 0, .54);
     }
 
-    paper-input-container iron-icon:hover,
-    :host([opened]) paper-input-container iron-icon {
-      fill: rgba(0, 0, 0, .54);
+    :host([opened]) paper-input-container ::content paper-icon-button:hover,
+    :host([opened]) paper-input-container paper-icon-button:hover {
+      color: rgba(0, 0, 0, .86);
     }
 
-    :host([opened]) paper-input-container iron-icon:hover {
-      fill: rgba(0, 0, 0, .86);
+    .rotate-on-open,
+    :host ::content .rotate-on-open {
+      transition: all 0.2s !important;
     }
 
-    :host([opened]) paper-input-container #toggleIcon iron-icon {
+    :host([opened]) .rotate-on-open,
+    :host([opened]) ::content .rotate-on-open {
       -webkit-transform: rotate(180deg);
       transform: rotate(180deg);
     }
 
-    #clearIcon {
-      right: 28px;
-    }
-
-    #clearIcon iron-icon {
-      --iron-icon-width: 20px;
-      --iron-icon-height: 20px;
+    paper-icon-button.small,
+    :host ::content paper-icon-button.small {
+      box-sizing: content-box !important;
+      width: 20px;
+      height: 20px;
+      padding: 4px 6px 8px;
     }
 
     :host(:not([opened])) ::content .clear-button,
@@ -177,16 +186,23 @@ Custom property | Description | Default
           key-event-target>
       <content select="[prefix]"></content>
       <content select=".clear-button">
-        <div suffix id="clearIcon" class="clear-button" on-touchend="_preventDefault">
-          <iron-icon icon="clear"></iron-icon>
-          <paper-ripple class="circle" center></paper-ripple>
-        </div>
+        <paper-icon-button
+            id="clearIcon"
+            suffix
+            icon="clear"
+            on-touchend="_preventDefault"
+            class="clear-button small">
+        </paper-icon-button>
       </content>
       <content select=".toggle-button">
-        <div suffix id="toggleIcon" class="toggle-button" on-touchend="_preventDefault">
-          <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
-          <paper-ripple class="circle" center></paper-ripple>
-        </div>
+        <paper-icon-button
+            id="toggleIcon"
+            suffix
+            icon="arrow-drop-down"
+            aria-controls="overlay"
+            on-touchend="_preventDefault"
+            class="toggle-button rotate-on-open">
+        </paper-icon-button>
       </content>
     </paper-input-container>
 
