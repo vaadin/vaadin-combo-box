@@ -44,6 +44,9 @@ To help you in styling the icons, the [vaadinelement]#vaadin-combo-box# reflects
 |===
 |Attribute |State
 
+|`opened`
+|Attribute is present when the dropdown is open.
+
 |`has-value`
 |Attribute is present when a value is selected.
 
