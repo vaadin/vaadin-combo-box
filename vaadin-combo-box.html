@@ -362,12 +362,12 @@ Custom property | Description | Default
     },
 
     _onTap: function(e) {
-      var target = Polymer.dom(e).rootTarget;
-      if (this._clearElement.contains(target)) {
+      var path = Polymer.dom(e).path;
+      if (path.indexOf(this._clearElement) !== -1) {
         this._clear();
-      } else if (this._toggleElement.contains(target)) {
+      } else if (path.indexOf(this._toggleElement) !== -1) {
         this._toggle();
-      } else if (this._inputElement.contains(target)) {
+      } else if (path.indexOf(this._inputElement) !== -1) {
         this.open();
       }
     },
