@@ -7,6 +7,7 @@
   <script src='../../web-component-tester/browser.js'></script>
 
   <link rel='import' href='common.html'>
+  <script src='common.js'></script>
 </head>
 
 <body>
@@ -17,6 +18,13 @@
   </template>
 </test-fixture>
 
+<test-fixture id='custom-input'>
+  <template>
+    <vaadin-combo-box>
+      <input is="iron-input" class="input">
+    </vaadin-combo-box>
+  </template>
+</test-fixture>
 
 <script>
   describe('filtering items', function() {
@@ -27,7 +35,7 @@
     }
 
     function getInput() {
-      return comboBox.$.input;
+      return comboBox.querySelector('.input') || comboBox.$.input;
     }
 
     function setInputValue(value) {
@@ -40,7 +48,7 @@
     }
 
     beforeEach(function() {
-      comboBox = fixture('combobox');
+      comboBox = customFixture('combobox');
       comboBox.items = ['foo', 'bar', 'baz'];
     });
 
