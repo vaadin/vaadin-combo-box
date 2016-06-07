@@ -294,6 +294,16 @@ Custom property | Description | Default
       itemValuePath: {
         type: String,
         value: 'value'
+      },
+
+      /**
+       * Disable the 'clear' button.
+       *
+       * With the attribute set, the clear button will be disabled.
+       */
+      disableClear: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -648,7 +658,7 @@ Custom property | Description | Default
     },
 
     _hideClearIcon: function(value, opened) {
-      return value === '' || !opened;
+      return this.disableClear || value === '' || !opened;
     },
 
     _hideToggleIcon: function(disabled, readonly) {
