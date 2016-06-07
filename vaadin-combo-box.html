@@ -118,12 +118,20 @@ Custom property | Description | Default
     }
 
     :host(:not([opened])) #clearIcon,
-    :host(:not([has-value])) #clearIcon {
+    :host(:not([opened])) ::content .clear-button,
+    :host(:not([opened])) ::shadow .clear-button,
+    :host(:not([has-value])) #clearIcon,
+    :host(:not([has-value])) ::content .clear-button,
+    :host(:not([has-value])) ::shadow .clear-button {
       display: none;
     }
 
     :host([readonly]) #toggleIcon,
-    :host([disabled]) #toggleIcon {
+    :host([readonly]) ::content .toggle-button,
+    :host([readonly]) ::shadow .toggle-button,
+    :host([disabled]) #toggleIcon,
+    :host([disabled]) ::content .toggle-button,
+    :host([disabled]) ::shadow .toggle-button {
       display: none;
     }
 
