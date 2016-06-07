@@ -60,6 +60,27 @@
     #selector .item[selected] {
       color: var(--primary-color);
     }
+
+    .item {
+      /* prevent white space between spans */
+      font-size: 0px;
+    }
+
+    .matched-piece {
+      font-size: 13px;
+      text-overflow: ellipsis;
+      /* Prevents stripping of whitespace. */
+      white-space: pre;
+      @apply(--vaadin-combo-box-overlay-matched-text);
+    }
+
+    .unmatched-piece {
+      font-size: 13px;
+      font-weight: bold;
+      text-overflow: ellipsis;
+      white-space: pre;
+      @apply(--vaadin-combo-box-overlay-unmatched-text);
+    }
   </style>
 
   <template>
@@ -81,7 +102,11 @@
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
               focused$="[[_isItemFocused(_focusedIndex,index)]]">
-              [[getItemLabel(item)]]
+              <template is="dom-repeat"
+                items="[[_computePieces(item, _filter)]]"
+                as="piece">
+                <span class$="{{piece.styleClass}}">{{piece.content}}</span>
+              </template>
           </div>
         </template>
       </iron-list>
@@ -122,6 +147,11 @@
 
       _items: {
         type: Object
+      },
+
+      _filter: {
+        type: String,
+        value: ''
       },
 
       _focusedIndex: {
@@ -196,6 +226,62 @@
         label = item ? item.toString() : '';
       }
       return label;
+    },
+
+    _computePieces: function(text, filter) {
+      // If the filter is empty, return a single piece that contains the entire text.
+      if (!filter) {
+        // If no filter, use the matched CSS so not all items show up as unmatched.
+        return [this._createPiece(text, true)];
+      }
+
+      // This array stores wherever the text should be highlighted.
+      var highlightArray = [];
+      var startIndicesOffilterInText = this._getStartIndices(filter, text);
+      startIndicesOffilterInText.forEach((startIndex) => {
+        for (var toHighlight = startIndex; toHighlight < startIndex + filter.length; toHighlight++) {
+          highlightArray[toHighlight] = true;
+        }
+      });
+
+      var result = [];
+      var accumulatedContent = '';
+      var lastHighlightStatus = highlightArray[0];
+      for (var i = 0; i < text.length; i++) {
+        if (highlightArray[i] !== lastHighlightStatus) {
+          result.push(this._createPiece(accumulatedContent, lastHighlightStatus));
+          lastHighlightStatus = highlightArray[i];
+          accumulatedContent = '';
+        }
+        accumulatedContent += text[i];
+      }
+      // Push the remaining piece.
+      result.push(this._createPiece(accumulatedContent, lastHighlightStatus));
+
+      return result;
+    },
+
+    _createPiece: function(content, isHighlighted) {
+      var styleClass = isHighlighted ? 'matched-piece' : 'unmatched-piece';
+      return {
+        styleClass: styleClass,
+        content: content,
+      };
+    },
+
+    _getStartIndices: function(query, text) {
+      var lcQuery = query.toLowerCase();
+      var lcText = text.toLowerCase();
+      var result = [];
+      var currentIndex = 0;
+
+      var foundIndex = 0;
+      while ((foundIndex = lcText.indexOf(lcQuery, currentIndex)) > -1) {
+        result.push(foundIndex);
+        currentIndex = foundIndex + 1;
+      }
+
+      return result;
     },
 
     _isItemFocused: function(focusedIndex, itemIndex) {
