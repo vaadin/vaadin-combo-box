@@ -15,6 +15,18 @@ Notice that by replacing the icons, you also take responsibility of the CSS that
 
 [source,html]
 ----
+<vaadin-combo-box label="Custom Icons">
+  <paper-icon-button suffix icon="icons:remove-circle" class="clear-button"></paper-icon-button>
+  <paper-icon-button suffix icon="icons:search" class="toggle-button"></paper-icon-button>
+</vaadin-combo-box>
+----
+
+If you try the example above, you might notice some minor differences in the appearance compared to the default styles.
+You can use normal CSS styles to style the buttons.
+The example below would change the previous example to appear like the default icons.
+
+[source,html]
+----
 <style is="custom-style">
   vaadin-combo-box paper-icon-button {
     color: rgba(0, 0, 0, .38);
@@ -29,13 +41,9 @@ Notice that by replacing the icons, you also take responsibility of the CSS that
     right: 28px;
   }
 </style>
-<vaadin-combo-box label="Custom Icons">
-  <paper-icon-button suffix icon="icons:remove-circle" class="clear-button"></paper-icon-button>
-  <paper-icon-button suffix icon="icons:search" class="toggle-button"></paper-icon-button>
-</vaadin-combo-box>
 ----
 
-To help you in styling the icons, the [vaadinelement]#vaadin-combo-box# reflects following properties to an attribute.
+To help you in styling different states, the [vaadinelement]#vaadin-combo-box# reflects following properties to an attribute.
 
 |===
 |Attribute |State
@@ -68,7 +76,7 @@ You can change the property name with the [propertyname]#attrForValue# property.
 </vaadin-combo-box>
 ----
 
-This will result in a simple text input field without any of the control icons.
+The example above will result in a simple text input field without any of the control icons.
 If you wish to build something similar to the default one, you can use link:https://elements.polymer-project.org/elements/paper-input[[elementname]#paper-input#].
 See the example below, which also uses the [propertyname]#prefix# and [propertyname]#suffix# attributes to position the icon and buttons.
 
