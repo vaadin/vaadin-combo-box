@@ -117,21 +117,17 @@ Custom property | Description | Default
       --iron-icon-height: 20px;
     }
 
-    :host(:not([opened])) #clearIcon,
     :host(:not([opened])) ::content .clear-button,
-    :host(:not([opened])) ::shadow .clear-button,
-    :host(:not([has-value])) #clearIcon,
+    :host(:not([opened])) .clear-button,
     :host(:not([has-value])) ::content .clear-button,
-    :host(:not([has-value])) ::shadow .clear-button {
+    :host(:not([has-value])) .clear-button {
       display: none;
     }
 
-    :host([readonly]) #toggleIcon,
     :host([readonly]) ::content .toggle-button,
-    :host([readonly]) ::shadow .toggle-button,
-    :host([disabled]) #toggleIcon,
+    :host([readonly]) .toggle-button,
     :host([disabled]) ::content .toggle-button,
-    :host([disabled]) ::shadow .toggle-button {
+    :host([disabled]) .toggle-button {
       display: none;
     }
 
@@ -181,13 +177,13 @@ Custom property | Description | Default
           key-event-target>
       <content select="[prefix]"></content>
       <content select=".clear-button">
-        <div suffix id="clearIcon" on-touchend="_preventDefault">
+        <div suffix id="clearIcon" class="clear-button" on-touchend="_preventDefault">
           <iron-icon icon="clear"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </div>
       </content>
       <content select=".toggle-button">
-        <div suffix id="toggleIcon" on-touchend="_preventDefault">
+        <div suffix id="toggleIcon" class="toggle-button" on-touchend="_preventDefault">
           <iron-icon icon="arrow-drop-down" aria-controls="overlay"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </div>
