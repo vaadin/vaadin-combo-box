@@ -511,6 +511,7 @@ Custom property | Description | Default
      */
 
     _inputValueChanged: function(e) {
+      this.fire('input-value-changed', this.$.input.bindValue);
       if (this._filter === this.$.input.bindValue) {
         // Filter and input value might get out of sync, while keyboard navigating for example.
         // Afterwards, input value might be changed to the same value as used in filtering.
@@ -689,5 +690,11 @@ Custom property | Description | Default
    * Fired when the user sets a custom value.
    * @event custom-value-set
    * @param {String} detail the custom value
+   */
+
+   /**
+   * Fired when the user changes the input value.
+   * @event input-value-changed
+   * @param {String} detail the input value
    */
 </script>
