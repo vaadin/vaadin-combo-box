@@ -72,13 +72,15 @@ Custom property | Description | Default
       z-index: 20;
     }
 
-    paper-icon-button,
+    paper-icon-button.clear-button,
+    paper-icon-button.toggle-button,
     :host ::content paper-icon-button.clear-button,
     :host ::content paper-icon-button.toggle-button {
       position: absolute;
       bottom: -4px;
       right: -4px;
 
+      line-height: 18px !important;
       width: 32px;
       height: 32px;
       padding: 4px;
@@ -121,6 +123,7 @@ Custom property | Description | Default
     paper-icon-button.small,
     :host ::content paper-icon-button.small {
       box-sizing: content-box !important;
+      bottom: -6px;
       width: 20px;
       height: 20px;
       padding: 4px 6px 8px;
