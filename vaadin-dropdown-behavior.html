@@ -90,7 +90,7 @@
       // For touch devices, we don't want to popup virtual keyboard on touch devices unless input
       // is explicitly focused by the user.
       if (!this.$.overlay.touchDevice) {
-        this._inputElement.focus();
+        this.inputElement.focus();
       }
 
       this.fire('vaadin-dropdown-opened');

@@ -39,17 +39,15 @@ Custom property | Description | Default
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-input/paper-input-container.html">
 <link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
-<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
+<link rel="import" href="../paper-input/paper-input-behavior.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="vaadin-combo-box-behavior.html">
 <link rel="import" href="vaadin-combo-box-overlay.html">
-<link rel="import" href="vaadin-dropdown-behavior.html">
 
 <dom-module id="vaadin-combo-box">
   <style>
@@ -160,59 +158,81 @@ Custom property | Description | Default
   </style>
 
   <template>
-    <content select=".input"></content>
-
     <paper-input-container
-          class="dropdown-input"
           id="inputContainer"
           disabled$="[[disabled]]"
+          no-label-float="[[noLabelFloat]]"
+          always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]"
+          auto-validate$="[[autoValidate]]"
           invalid="[[invalid]]"
           on-down="_preventDefault">
-      <label id="label" on-tap="open">[[label]]</label>
+      <label id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="open">[[label]]</label>
+
+      <content select="[prefix]"></content>
+
       <input
           is="iron-input"
           id="input"
-          class="input"
+          type="text"
           role="combobox"
-          disabled$="[[disabled]]"
-          readonly$="[[readonly]]"
-          invalid="{{invalid}}"
+          autocomplete="off"
+          autocapitalize="none"
+          bind-value="{{_inputElementValue}}"
+          aria-labelledby$="[[_ariaLabelledBy]]"
+          aria-describedby$="[[_ariaDescribedBy]]"
           aria-activedescendant$="[[_ariaActiveIndex]]"
           aria-expanded$="[[_getAriaExpanded(opened)]]"
-          aria-labelledby="label"
-          aria-autocomplete="list" aria-owns="overlay"
-          autocomplete="off"
-          name$="[[name]]"
-          type="text"
+          aria-autocomplete="list"
+          aria-owns="overlay"
+          title$="[[title]]"
+          disabled$="[[disabled]]"
+          invalid="{{invalid}}"
+          prevent-invalid-input="[[preventInvalidInput]]"
+          allowed-pattern="[[allowedPattern]]"
+          pattern$="[[pattern]]"
           required$="[[required]]"
+          autofocus$="[[autofocus]]"
+          inputmode$="[[inputmode]]"
+          name$="[[name]]"
+          placeholder$="[[placeholder]]"
+          readonly$="[[readonly]]"
+          size$="[[size]]"
+          on-input="_inputValueChanged"
           on-blur="_onBlur"
           key-event-target>
-      <content select="[prefix]"></content>
+
+      <content select="[suffix]"></content>
+
       <content select=".clear-button">
         <paper-icon-button
             id="clearIcon"
-            suffix
+            tabindex="-1"
             icon="clear"
             on-touchend="_preventDefault"
             class="clear-button small">
         </paper-icon-button>
       </content>
+
       <content select=".toggle-button">
         <paper-icon-button
             id="toggleIcon"
-            suffix
+            tabindex="-1"
             icon="arrow-drop-down"
             aria-controls="overlay"
             on-touchend="_preventDefault"
             class="toggle-button rotate-on-open">
         </paper-icon-button>
       </content>
+
+      <template is="dom-if" if="[[errorMessage]]">
+        <paper-input-error>[[errorMessage]]</paper-input-error>
+      </template>
     </paper-input-container>
 
     <vaadin-combo-box-overlay
         id="overlay"
         _aria-active-index="{{_ariaActiveIndex}}"
-        position-target="[[_positionTarget]]"
+        position-target="[[_getPositionTarget()]]"
         _focused-index="[[_focusedIndex]]"
         _item-label-path="[[itemLabelPath]]"
         on-down="_onOverlayDown"
@@ -226,41 +246,11 @@ Custom property | Description | Default
     is: 'vaadin-combo-box',
 
     behaviors: [
-      Polymer.IronFormElementBehavior,
-      Polymer.IronValidatableBehavior,
-      Polymer.IronA11yKeysBehavior,
-      vaadin.elements.combobox.DropdownBehavior
+      vaadin.elements.combobox.ComboBoxBehavior,
+      Polymer.PaperInputBehavior
     ],
 
     properties: {
-
-      attrForValue: {
-        value: 'bind-value'
-      },
-
-      /**
-       * An array of values to be displayed as options in the dropdown. The
-       * options could be either `String` or `Object`.
-       */
-      items: {
-        type: Array
-      },
-
-      /**
-       * The `String` value for the selected item of the combo box. Provides
-       * the value for `iron-form`.
-       *
-       * When there’s no item selected, the value is an empty string.
-       *
-       * Use `selectedItem` property to get the raw selected item from
-       * the `items` array.
-       */
-      value: {
-        type: String,
-        // notify: true already set in IronFormBehavior, setting this to true will make two value-changed events(?)
-        notify: false
-      },
-
       /**
        * A read-only property indicating whether this combo box has a value
        * selected or not. Can be used for example in styling of the component.
@@ -269,111 +259,15 @@ Custom property | Description | Default
         type: Boolean,
         readonly: true,
         reflectToAttribute: true
-      },
-
-      /**
-       * If `true`, user can input a value that is not present in the items list.
-       * `value` property will be set to the input value in this case.
-       * Also, when `value` is set programmatically, the input value will be set
-       * to reflect that value.
-       */
-      allowCustomValue: {
-        type: Boolean,
-        value: false
-      },
-
-      /**
-       * The label for this element.
-       */
-      label: {
-        type: String,
-        reflectToAttribute: true
-      },
-
-      _positionTarget: {
-        type: Object,
-        value: function() {
-          return this._hasCustomInput ? this._inputElement : this.$.inputContainer;
-        }
-      },
-
-      _focusedIndex: {
-        type: Number,
-        value: -1
-      },
-
-      _filter: {
-        type: String,
-        value: ''
-      },
-
-      /**
-       * The selected item from the `items` array.
-       */
-      selectedItem: {
-        type: Object,
-        readOnly: true,
-        notify: true
-      },
-
-      /**
-       * Path for label of the item. If `items` is an array of objects, the
-       * `itemLabelPath` is used to fetch the displayed string label for each
-       * item.
-       *
-       * The item label is also used for matching items when processing user
-       * input, i.e., for filtering and selecting items.
-       */
-      itemLabelPath: {
-        type: String,
-        value: 'label'
-      },
-
-      /**
-       * Path for value of the item. If `items` is an array of objects, the
-       * `itemValuePath:` is used to fetch the string value for the selected
-       * item.
-       *
-       * The item value is to be used in the `value` property of the combo box,
-       * to provide the form value.
-       */
-      itemValuePath: {
-        type: String,
-        value: 'value'
       }
     },
 
     observers: [
-      '_filterChanged(_filter, itemValuePath, itemLabelPath)',
-      '_itemsChanged(items.splices)',
-      '_setItems(items, itemValuePath, itemLabelPath)',
-
-      // We need to be sure that attrForValue is defined in order to
-      // correctly set the _inputElementValue inside the observer.
-      '_valueChanged(value, attrForValue)'
+      '_valueChanged(value)'
     ],
 
     listeners: {
-      'vaadin-dropdown-opened': '_onOpened',
-      'vaadin-dropdown-closed': '_onClosed',
-      'keydown': '_onKeyDown',
-      // listen to input instead of bind-value-changed to allow changing the
-      // input value with a prefill value when focusing with keyboard navigation
-      'input': '_inputValueChanged',
       'tap': '_onTap'
-    },
-
-    ready: function() {
-      // The value property is also defined in IronFormElementBehavior, which
-      // will mix up the default value if set in the property.
-      if (this.value === undefined) {
-        this.value = '';
-      }
-      Polymer.IronA11yAnnouncer.requestAvailability();
-
-      if (this._hasCustomInput) {
-        Polymer.dom(this.root).removeChild(this.$.inputContainer);
-      }
     },
 
     _onTap: function(e) {
@@ -382,180 +276,18 @@ Custom property | Description | Default
         this._clear();
       } else if (path.indexOf(this._toggleElement) !== -1) {
         this._toggle();
-      } else if (path.indexOf(this._inputElement) !== -1) {
+      } else if (path.indexOf(this.inputElement) !== -1) {
         this.open();
       }
     },
 
-    /**
-     * Keyboard navigation
-     */
-
-    _onKeyDown: function(e) {
-      if (this._isEventKey(e, 'down')) {
-        this._onArrowDown();
-
-        // prevent caret from moving
-        e.preventDefault();
-      } else if (this._isEventKey(e, 'up')) {
-        this._onArrowUp();
-
-        // prevent caret from moving
-        e.preventDefault();
-      } else if (this._isEventKey(e, 'enter')) {
-        this._onEnter(e);
-      } else if (this._isEventKey(e, 'esc')) {
-        this._onEscape();
-      }
+    // document.activeElement doesn't return elements from inside shadow root
+    _focusedInput: function() {
+      return Polymer.dom(this.root).querySelector('input:focus');
     },
 
-    _isEventKey: function(e, k) {
-      return Polymer.IronA11yKeysBehavior.keyboardEventMatchesKeys(e, k);
-    },
-
-    _getItemLabel: function(item) {
-      return this.$.overlay.getItemLabel(item);
-    },
-
-    _getItemValue: function(item) {
-      var value = this.get(this.itemValuePath, item);
-      if (value === undefined || value === null) {
-        value = item ? item.toString() : '';
-      }
-      return value;
-    },
-
-    _onArrowDown: function() {
-      if (this.opened) {
-        if (this.$.overlay._items) {
-          this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
-          this._prefillFocusedItemLabel();
-        }
-      } else {
-        this.open();
-      }
-    },
-
-    _onArrowUp: function() {
-      if (this.opened) {
-        if (this._focusedIndex > -1) {
-          this._focusedIndex = Math.max(0, this._focusedIndex - 1);
-        } else {
-          if (this.$.overlay._items) {
-            this._focusedIndex = this.$.overlay._items.length - 1;
-          }
-        }
-
-        this._prefillFocusedItemLabel();
-      } else {
-        this.open();
-      }
-    },
-
-    _prefillFocusedItemLabel: function() {
-      if (this._focusedIndex > -1) {
-        this._inputElementValue = this._getItemLabel(this.$.overlay._focusedItem);
-        this._setSelectionRange();
-      }
-    },
-
-    _onEnter: function(e) {
-      // should close on enter when custom values are allowed, input field is cleared, or when an existing
-      // item is focused with keyboard.
-      if (this.opened && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
-        this.close();
-
-        // Do not submit the surrounding form.
-        e.preventDefault();
-      }
-    },
-
-    _onEscape: function() {
-      if (this.opened) {
-        if (this._focusedIndex > -1) {
-          this._focusedIndex = -1;
-          this._revertInputValue();
-        } else {
-          this.cancel();
-        }
-      }
-    },
-
-    /**
-     * Opening and closing related functionality
-     */
-
-    _onBlur: function() {
-      if (!this._closeOnBlurIsPrevented) {
-        this.close();
-      }
-    },
-
-    _onOverlayDown: function(event) {
-      // Prevent the focus transfer when user scrolls inside the overlay with mouse drag
-      event.preventDefault();
-
-      if (this.$.overlay.touchDevice && event.target !== this.$.overlay.$.scroller) {
-        // On touch devices, blur the input on touch start inside the overlay, in order to hide
-        // the virtual keyboard. But don't close the overlay on this blur.
-        this._closeOnBlurIsPrevented = true;
-        this._inputElement.blur();
-        this._closeOnBlurIsPrevented = false;
-      }
-    },
-
-    /**
-     * Opens and closes the dropdown list.
-     */
-    _toggle: function() {
-      if (this.opened) {
-        this.close();
-      } else {
-        this.open();
-      }
-    },
-
-    /**
-     * Clears the current value.
-     */
-    _clear: function() {
-      this.value = '';
-    },
-
-    /**
-     * Reverts back to original value.
-     */
-    cancel: function() {
-      this._inputElementValue = this._getItemLabel(this.selectedItem);
-      this.close();
-    },
-
-    _onOpened: function() {
-      this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
-      this.$.overlay.notifyResize();
-      this.$.overlay.adjustScrollPosition();
-    },
-
-    _onClosed: function() {
-      if (this._focusedIndex > -1) {
-        this.$.overlay._selectItem(this._focusedIndex);
-        this._inputElementValue = this._getItemLabel(this.selectedItem);
-      } else if (this._inputElementValue === '') {
-        this._clear();
-      } else {
-        if (this.allowCustomValue) {
-          var e = this.fire('custom-value-set', this._inputElementValue, {cancelable: true});
-          if (!e.defaultPrevented) {
-            this.value = this._inputElementValue;
-          }
-        } else {
-          this._inputElementValue = this._getItemLabel(this.selectedItem);
-        }
-      }
-
-      this._clearSelectionRange();
-
-      this._filter = '';
+    _getPositionTarget: function() {
+      return this.$.inputContainer;
     },
 
     /**
@@ -566,187 +298,12 @@ Custom property | Description | Default
       return value.toString();
     },
 
-    /**
-     *  Filtering and items handling
-     */
-
-    _inputValueChanged: function(e) {
-      // Handle only input events from our _inputElement.
-      if (Polymer.dom(e).rootTarget === this._inputElement) {
-        if (this._filter === this._inputElementValue) {
-          // Filter and input value might get out of sync, while keyboard navigating for example.
-          // Afterwards, input value might be changed to the same value as used in filtering.
-          // In situation like these, we need to make sure all the filter changes handlers are run.
-          this._filterChanged(this._filter);
-        } else {
-          this._filter = this._inputElementValue;
-        }
-
-        if (!this.opened) {
-          this.open();
-        }
-      }
-    },
-
-    _revertInputValue: function() {
-      if (this._filter !== '') {
-        this._inputElementValue = this._filter;
-      } else {
-        this._inputElementValue = this._getItemLabel(this.selectedItem);
-      }
-
-      this._clearSelectionRange();
-    },
-
-    _setSelectionRange: function() {
-      if (this._inputElement.setSelectionRange) {
-        this._inputElement.setSelectionRange(0, this._inputElementValue.length);
-      }
-    },
-
-    // document.activeElement doesn't return elements from inside shadow root
-    _focusedInput: function() {
-      return Polymer.dom(this.root).querySelector('input:focus') ||
-             Polymer.dom(this).querySelector('input:focus');
-    },
-
-    _clearSelectionRange: function() {
-      // Setting selection range focuses and/or moves the caret in some browsers,
-      // and there's no need to modify the selection range if the input isn't focused anyway.
-      if (this._focusedInput() === this._inputElement && this._inputElement.setSelectionRange) {
-        this._inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
-      }
-    },
-
-    _filterChanged: function(filter) {
-      this.unlisten(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
-
-      this._setItems(this._filterItems(this.items, filter));
-      this._focusedIndex = this.$.overlay.indexOfLabel(filter);
-
-      this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
-
-      // async needed to reposition correctly after filtering
-      this.async(function() {
-        this.$.overlay.notifyResize();
-      }.bind(this));
-    },
-
-    _itemsChanged: function(change) {
-      if (change && change.indexSplices) {
-        this._setItems(change.indexSplices[0].object);
-      }
-    },
-
-    _filterItems: function(arr, filter) {
-      if (!arr) {
-        return arr;
-      }
-
-      return arr.filter((function(item) {
-        filter = filter.toString().toLowerCase() || '';
-
-        // Check if item contains input value.
-        return this._getItemLabel(item).toString().toLowerCase()
-          .indexOf(filter) > -1;
-      }).bind(this));
-    },
-
-    _setItems: function(items) {
-      //TODO: There is something wrong with observers and using set function
-      // see here: https://github.com/Polymer/polymer/issues/3254
-      //As a workaround setting/notifying the observer with the value undefined helps
-      this.$.overlay.notifyPath('_items', undefined);
-      this.$.overlay.set('_items', items);
-
-      var valueIndex = this._indexOfValue(this.value, items);
-      if (valueIndex > -1) {
-        this.$.overlay._selectItem(valueIndex);
-      }
-
-      this.$.overlay.hidden = !this._hasItems(items);
-      this.$.overlay.notifyResize();
-    },
-
-    _hasItems: function(array) {
-      return array && array.length;
-    },
-
-    _indexOfValue: function(value, items) {
-      items = items || this.items;
-      if (items && value) {
-        for (var i = 0; i < items.length; i++) {
-          if (this._getItemValue(items[i]).toString() === value.toString()) {
-            return i;
-          }
-        }
-      }
-
-      return -1;
-    },
-
-    _selectedItemChanged: function(event, detail) {
-      if (detail.value !== null) {
-        this._setSelectedItem(detail.value);
-        this._inputElementValue = this._getItemLabel(this.selectedItem);
-        this.value = this._getItemValue(this.selectedItem);
-        this._focusedIndex = this.$.overlay._items.indexOf(detail.value);
-      }
-
-      if (this.opened) {
-        this.close();
-      }
-    },
-
     _valueChanged: function(value) {
-      var valueIndex = this._indexOfValue(value);
-      var item = valueIndex > -1 && this.items[valueIndex];
-      if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
-        this.$.overlay._selectItem(item);
-      } else {
-        this._inputElementValue = this.allowCustomValue ? value : '';
-        this._setSelectedItem(null);
-        this._focusedIndex = -1;
-        this.$.overlay.$.selector.clearSelection();
-      }
       this.hasValue = !!value;
-
-      this.close();
     },
 
     _preventDefault: function(e) {
       e.preventDefault();
-    },
-
-    /**
-    * Validates the input element and sets an error style if needed.
-    *
-    * @return {boolean}
-    */
-    _getValidity: function() {
-      if (this._inputElement.validate) {
-        return this._inputElement.validate();
-      }
-    },
-
-    get _hasCustomInput() {
-      return Polymer.dom(this).querySelector('.input') !== null;
-    },
-
-    get _inputElement() {
-      return Polymer.dom(this).querySelector('.input') || this.$.input;
-    },
-
-    get _propertyForValue() {
-      return Polymer.CaseMap.dashToCamelCase(this.attrForValue);
-    },
-
-    get _inputElementValue() {
-      return this._inputElement[this._propertyForValue];
-    },
-
-    set _inputElementValue(value) {
-      this._inputElement[this._propertyForValue] = value;
     },
 
     get _clearElement() {
@@ -758,25 +315,4 @@ Custom property | Description | Default
     }
   });
 
-  /**
-   * Fired when the value changes.
-   *
-   * @event value-changed
-   * @param {Object} detail
-   *  @param {String} detail.value the combobox value
-   */
-
-  /**
-   * Fired when selected item changes.
-   *
-   * @event selected-item-changed
-   * @param {Object} detail
-   *  @param {Object|String} detail.value the selected item. Type is the same as the type of `items`.
-   */
-
-  /**
-   * Fired when the user sets a custom value.
-   * @event custom-value-set
-   * @param {String} detail the custom value
-   */
 </script>
