@@ -1,0 +1,456 @@
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
+
+<link rel="import" href="vaadin-combo-box-overlay.html">
+<link rel="import" href="vaadin-dropdown-behavior.html">
+
+<dom-module id="vaadin-combo-box-light">
+  <style>
+    :host > #overlay {
+      display: none;
+    }
+  </style>
+
+  <template>
+    <content></content>
+
+    <vaadin-combo-box-overlay
+        id="overlay"
+        _aria-active-index="{{_ariaActiveIndex}}"
+        position-target="[[_inputElement]]"
+        _focused-index="[[_focusedIndex]]"
+        _item-label-path="[[itemLabelPath]]"
+        on-down="_onOverlayDown"
+        vertical-offset="2">
+    </vaadin-combo-box-overlay>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'vaadin-combo-box-light',
+
+    behaviors: [
+      Polymer.IronA11yKeysBehavior,
+      vaadin.elements.combobox.DropdownBehavior
+    ],
+
+    properties: {
+      attrForValue: {
+        type: String,
+        value: 'bindValue'
+      },
+      items: {
+        type: Array
+      },
+      value: {
+        type: String,
+        value: "",
+        notify: true
+      },
+      allowCustomValue: {
+        type: Boolean,
+        value: false
+      },
+      _focusedIndex: {
+        type: Number,
+        value: -1
+      },
+      _filter: {
+        type: String,
+        value: ''
+      },
+      selectedItem: {
+        type: Object,
+        readOnly: true,
+        notify: true
+      },
+      itemLabelPath: {
+        type: String,
+        value: 'label'
+      },
+      itemValuePath: {
+        type: String,
+        value: 'value'
+      },
+      _inputElement: Object
+    },
+
+    observers: [
+      '_filterChanged(_filter, itemValuePath, itemLabelPath)',
+      '_itemsChanged(items.splices)',
+      '_setItems(items, itemValuePath, itemLabelPath)',
+      '_valueChanged(value, attrForValue, _inputElement)'
+    ],
+
+    listeners: {
+      'vaadin-dropdown-opened': '_onOpened',
+      'vaadin-dropdown-closed': '_onClosed',
+      'keydown': '_onKeyDown',
+      'input': '_inputValueChanged',
+      'tap': '_onTap'
+    },
+
+    ready: function() {
+      // The value property is also defined in IronFormElementBehavior, which
+      // will mix up the default value if set in the property.
+      if (this.value === undefined) {
+        this.value = '';
+      }
+      Polymer.IronA11yAnnouncer.requestAvailability();
+    },
+
+    attached: function() {
+      this._inputElement = Polymer.dom(this).querySelector('input[is="iron-input"],paper-input,.paper-input-input');
+    },
+
+    _onTap: function(e) {
+      // var path = Polymer.dom(e).path;
+      // if (path.indexOf(this._inputElement) !== -1) {
+        this.open();
+      // }
+    },
+
+    /**
+     * Keyboard navigation
+     */
+
+    _onKeyDown: function(e) {
+      if (this._isEventKey(e, 'down')) {
+        this._onArrowDown();
+
+        // prevent caret from moving
+        e.preventDefault();
+      } else if (this._isEventKey(e, 'up')) {
+        this._onArrowUp();
+
+        // prevent caret from moving
+        e.preventDefault();
+      } else if (this._isEventKey(e, 'enter')) {
+        this._onEnter(e);
+      } else if (this._isEventKey(e, 'esc')) {
+        this._onEscape();
+      }
+    },
+
+    _isEventKey: function(e, k) {
+      return Polymer.IronA11yKeysBehavior.keyboardEventMatchesKeys(e, k);
+    },
+
+    _getItemLabel: function(item) {
+      return this.$.overlay.getItemLabel(item);
+    },
+
+    _getItemValue: function(item) {
+      var value = this.get(this.itemValuePath, item);
+      if (value === undefined || value === null) {
+        value = item ? item.toString() : '';
+      }
+      return value;
+    },
+
+    _onArrowDown: function() {
+      if (this.opened) {
+        if (this.$.overlay._items) {
+          this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
+          this._prefillFocusedItemLabel();
+        }
+      } else {
+        this.open();
+      }
+    },
+
+    _onArrowUp: function() {
+      if (this.opened) {
+        if (this._focusedIndex > -1) {
+          this._focusedIndex = Math.max(0, this._focusedIndex - 1);
+        } else {
+          if (this.$.overlay._items) {
+            this._focusedIndex = this.$.overlay._items.length - 1;
+          }
+        }
+
+        this._prefillFocusedItemLabel();
+      } else {
+        this.open();
+      }
+    },
+
+    _prefillFocusedItemLabel: function() {
+      if (this._focusedIndex > -1) {
+        this._inputElementValue = this._getItemLabel(this.$.overlay._focusedItem);
+        this._setSelectionRange();
+      }
+    },
+
+    _onEnter: function(e) {
+      // should close on enter when custom values are allowed, input field is cleared, or when an existing
+      // item is focused with keyboard.
+      if (this.opened && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
+        this.close();
+
+        // Do not submit the surrounding form.
+        e.preventDefault();
+      }
+    },
+
+    _onEscape: function() {
+      if (this.opened) {
+        if (this._focusedIndex > -1) {
+          this._focusedIndex = -1;
+          this._revertInputValue();
+        } else {
+          this.cancel();
+        }
+      }
+    },
+
+    /**
+     * Opening and closing related functionality
+     */
+
+    _onBlur: function() {
+      if (!this._closeOnBlurIsPrevented) {
+        this.close();
+      }
+    },
+
+    _onOverlayDown: function(event) {
+      // Prevent the focus transfer when user scrolls inside the overlay with mouse drag
+      event.preventDefault();
+
+      if (this.$.overlay.touchDevice && event.target !== this.$.overlay.$.scroller) {
+        // On touch devices, blur the input on touch start inside the overlay, in order to hide
+        // the virtual keyboard. But don't close the overlay on this blur.
+        this._closeOnBlurIsPrevented = true;
+        this._inputElement.blur();
+        this._closeOnBlurIsPrevented = false;
+      }
+    },
+
+    /**
+     * Opens and closes the dropdown list.
+     */
+    _toggle: function() {
+      if (this.opened) {
+        this.close();
+      } else {
+        this.open();
+      }
+    },
+
+    /**
+     * Clears the current value.
+     */
+    _clear: function() {
+      this.value = '';
+    },
+
+    /**
+     * Reverts back to original value.
+     */
+    cancel: function() {
+      this._inputElementValue = this._getItemLabel(this.selectedItem);
+      this.close();
+    },
+
+    _onOpened: function() {
+      this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
+      this.$.overlay.notifyResize();
+      this.$.overlay.adjustScrollPosition();
+    },
+
+    _onClosed: function() {
+      if (this._focusedIndex > -1) {
+        this.$.overlay._selectItem(this._focusedIndex);
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+      } else if (this._inputElementValue === '') {
+        this._clear();
+      } else {
+        if (this.allowCustomValue) {
+          var e = this.fire('custom-value-set', this._inputElementValue, {cancelable: true});
+          if (!e.defaultPrevented) {
+            this.value = this._inputElementValue;
+          }
+        } else {
+          this._inputElementValue = this._getItemLabel(this.selectedItem);
+        }
+      }
+
+      this._clearSelectionRange();
+
+      this._filter = '';
+    },
+
+    /**
+     * WAI-ARIA
+     */
+
+    _getAriaExpanded: function(value) {
+      return value.toString();
+    },
+
+    /**
+     *  Filtering and items handling
+     */
+
+    _inputValueChanged: function(e) {
+      // Handle only input events from our _inputElement.
+      if (Polymer.dom(e).rootTarget === this._inputElement) {
+        if (this._filter === this._inputElementValue) {
+          // Filter and input value might get out of sync, while keyboard navigating for example.
+          // Afterwards, input value might be changed to the same value as used in filtering.
+          // In situation like these, we need to make sure all the filter changes handlers are run.
+          this._filterChanged(this._filter);
+        } else {
+          this._filter = this._inputElementValue;
+        }
+
+        if (!this.opened) {
+          this.open();
+        }
+      }
+    },
+
+    _revertInputValue: function() {
+      if (this._filter !== '') {
+        this._inputElementValue = this._filter;
+      } else {
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+      }
+
+      this._clearSelectionRange();
+    },
+
+    _setSelectionRange: function() {
+      if (this._inputElement.setSelectionRange) {
+        this._inputElement.setSelectionRange(0, this._inputElementValue.length);
+      }
+    },
+
+    // document.activeElement doesn't return elements from inside shadow root
+    _focusedInput: function() {
+      return Polymer.dom(this.root).querySelector('input:focus') ||
+             Polymer.dom(this).querySelector('input:focus');
+    },
+
+    _clearSelectionRange: function() {
+      // Setting selection range focuses and/or moves the caret in some browsers,
+      // and there's no need to modify the selection range if the input isn't focused anyway.
+      if (this._focusedInput() === this._inputElement && this._inputElement.setSelectionRange) {
+        this._inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
+      }
+    },
+
+    _filterChanged: function(filter) {
+      this.unlisten(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
+
+      this._setItems(this._filterItems(this.items, filter));
+      this._focusedIndex = this.$.overlay.indexOfLabel(filter);
+
+      this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
+
+      // async needed to reposition correctly after filtering
+      this.async(function() {
+        this.$.overlay.notifyResize();
+      }.bind(this));
+    },
+
+    _itemsChanged: function(change) {
+      if (change && change.indexSplices) {
+        this._setItems(change.indexSplices[0].object);
+      }
+    },
+
+    _filterItems: function(arr, filter) {
+      if (!arr) {
+        return arr;
+      }
+
+      return arr.filter((function(item) {
+        filter = filter.toString().toLowerCase() || '';
+
+        // Check if item contains input value.
+        return this._getItemLabel(item).toString().toLowerCase()
+          .indexOf(filter) > -1;
+      }).bind(this));
+    },
+
+    _setItems: function(items) {
+      //TODO: There is something wrong with observers and using set function
+      // see here: https://github.com/Polymer/polymer/issues/3254
+      //As a workaround setting/notifying the observer with the value undefined helps
+      this.$.overlay.notifyPath('_items', undefined);
+      this.$.overlay.set('_items', items);
+
+      var valueIndex = this._indexOfValue(this.value, items);
+      if (valueIndex > -1) {
+        this.$.overlay._selectItem(valueIndex);
+      }
+
+      this.$.overlay.hidden = !this._hasItems(items);
+      this.$.overlay.notifyResize();
+    },
+
+    _hasItems: function(array) {
+      return array && array.length;
+    },
+
+    _indexOfValue: function(value, items) {
+      items = items || this.items;
+      if (items && value) {
+        for (var i = 0; i < items.length; i++) {
+          if (this._getItemValue(items[i]).toString() === value.toString()) {
+            return i;
+          }
+        }
+      }
+
+      return -1;
+    },
+
+    _selectedItemChanged: function(event, detail) {
+      if (detail.value !== null) {
+        this._setSelectedItem(detail.value);
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+        this.value = this._getItemValue(this.selectedItem);
+        this._focusedIndex = this.$.overlay._items.indexOf(detail.value);
+      }
+
+      if (this.opened) {
+        this.close();
+      }
+    },
+
+    _valueChanged: function(value) {
+      var valueIndex = this._indexOfValue(value);
+      var item = valueIndex > -1 && this.items[valueIndex];
+      if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
+        this.$.overlay._selectItem(item);
+      } else {
+        this._inputElementValue = this.allowCustomValue ? value : '';
+        this._setSelectedItem(null);
+        this._focusedIndex = -1;
+        this.$.overlay.$.selector.clearSelection();
+      }
+      this.hasValue = !!value;
+
+      this.close();
+    },
+
+    _preventDefault: function(e) {
+      e.preventDefault();
+    },
+
+    /**
+     * New
+     */
+    get _inputElementValue() {
+      return this._inputElement[this.attrForValue];
+    },
+
+    set _inputElementValue(value) {
+      this._inputElement[this.attrForValue] = value;
+    }
+  });
+</script>
