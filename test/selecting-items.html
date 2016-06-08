@@ -18,15 +18,6 @@
   </template>
 </test-fixture>
 
-<test-fixture id="custom-input">
-  <template>
-    <vaadin-combo-box>
-      <input is="iron-input" class="input">
-    </vaadin-combo-box>
-  </template>
-</test-fixture>
-
-
 <script>
   describe('selecting a value', function() {
     var combobox;
@@ -35,7 +26,7 @@
     var valueChangedSpy;
 
     beforeEach(function() {
-      combobox = customFixture('combobox');
+      combobox = fixture('combobox');
       combobox.items = ['foo', 'bar'];
       input = combobox.querySelector('.input') || combobox.$$('input');
       selector = combobox.$.overlay.$.selector;

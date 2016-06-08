@@ -24,14 +24,6 @@
   </template>
 </test-fixture>
 
-<test-fixture id='custom-input'>
-  <template>
-    <vaadin-combo-box>
-      <input is="iron-input" class="input">
-    </vaadin-combo-box>
-  </template>
-</test-fixture>
-
 <script>
 
   describe('keyboard navigation', function() {
@@ -67,7 +59,7 @@
     }
 
     beforeEach(function() {
-      comboBox = customFixture('combobox');
+      comboBox = fixture('combobox');
       comboBox.items = ['foo', 'bar', 'baz'];
     });
 
