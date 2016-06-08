@@ -45,6 +45,11 @@
           expect(comboBox._inputElementValue).to.eql('foo');
           expect(ironInput.value).to.eql('foo');
         });
+
+        it('should find the focused input', function() {
+          ironInput.focus();
+          expect(comboBox._focusedInput()).to.eql(ironInput);
+        });
       });
     });
   </script>
