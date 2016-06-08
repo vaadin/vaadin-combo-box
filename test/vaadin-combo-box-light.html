@@ -13,7 +13,7 @@
 
 <body>
 
-  <test-fixture id="combobox">
+  <test-fixture id="combobox-light">
     <template>
       <vaadin-combo-box-light>
         <input is="iron-input">
@@ -23,15 +23,27 @@
 
   <script>
     describe('vaadin-combo-box-light', function() {
-      var comboBox;
+      var comboBox, ironInput;
 
       beforeEach(function() {
-        comboBox = fixture('combobox');
+        comboBox = fixture('combobox-light');
+        comboBox.items = ['foo', 'bar', 'baz'];
+        ironInput = comboBox.querySelector('input[is="iron-input"]');
       });
 
-      describe('todo', function() {
-        it('should be implemented', function() {
-          expect(comboBox).to.not.be.undefined;
+      describe('using iron-input', function() {
+        it('should find the input element correctly', function() {
+          expect(comboBox._inputElement).to.eql(ironInput);
+        });
+
+        it('should bind the input value correctly', function() {
+          // Empty string by default.
+          expect(comboBox._inputElementValue).to.eql('');
+          expect(ironInput.value).to.eql('');
+
+          comboBox.value = 'foo';
+          expect(comboBox._inputElementValue).to.eql('foo');
+          expect(ironInput.value).to.eql('foo');
         });
       });
     });
