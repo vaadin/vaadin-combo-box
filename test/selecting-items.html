@@ -101,7 +101,7 @@
 
       combobox.open();
 
-      expect(window.getComputedStyle(clearIcon).display).to.eql('block');
+      expect(window.getComputedStyle(clearIcon).display).to.contain('block');
     });
 
     it('should not show clearing icon when nothing is selected', function() {
