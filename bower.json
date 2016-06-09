@@ -42,7 +42,6 @@
     "iron-test-helpers": "polymerelements/iron-test-helpers#^1.0.0",
     "iron-component-page": "polymerelements/iron-component-page#^1.1.0",
     "elements-demo-resources": "vaadin/elements-demo-resources#master",
-    "components-demo-resources": "vaadin/components-demo-resources#master",
-    "paper-icon-button": "polymerelements/paper-icon-button#^1.1.1"
+    "components-demo-resources": "vaadin/components-demo-resources#master"
   }
 }
