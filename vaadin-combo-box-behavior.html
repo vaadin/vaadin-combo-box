@@ -28,6 +28,16 @@
         value: false
       },
 
+      /**
+       * A read-only property indicating whether this combo box has a value
+       * selected or not. Can be used for example in styling of the component.
+       */
+      hasValue: {
+        type: Boolean,
+        readonly: true,
+        reflectToAttribute: true
+      },
+
       _focusedIndex: {
         type: Number,
         value: -1
@@ -84,7 +94,7 @@
       '_filterChanged(_filter, itemValuePath, itemLabelPath)',
       '_itemsChanged(items.splices)',
       '_setItems(items, itemValuePath, itemLabelPath)',
-      '_valueChangedCommon(value)'
+      '_valueChanged(value)'
     ],
 
     listeners: {
@@ -338,7 +348,9 @@
       this._clearSelectionRange();
     },
 
-    _valueChangedCommon: function(value) {
+    _valueChanged: function(value) {
+      this.hasValue = !!value;
+
       var valueIndex = this._indexOfValue(value);
       var item = valueIndex > -1 && this.items[valueIndex];
       if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {

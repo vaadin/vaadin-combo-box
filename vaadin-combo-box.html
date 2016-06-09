@@ -250,22 +250,6 @@ Custom property | Description | Default
       Polymer.PaperInputBehavior
     ],
 
-    properties: {
-      /**
-       * A read-only property indicating whether this combo box has a value
-       * selected or not. Can be used for example in styling of the component.
-       */
-      hasValue: {
-        type: Boolean,
-        readonly: true,
-        reflectToAttribute: true
-      }
-    },
-
-    observers: [
-      '_valueChanged(value)'
-    ],
-
     listeners: {
       'tap': '_onTap'
     },
@@ -296,10 +280,6 @@ Custom property | Description | Default
 
     _getAriaExpanded: function(value) {
       return value.toString();
-    },
-
-    _valueChanged: function(value) {
-      this.hasValue = !!value;
     },
 
     _preventDefault: function(e) {
