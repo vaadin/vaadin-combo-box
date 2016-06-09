@@ -252,8 +252,10 @@ Custom property | Description | Default
 
     attached: function() {
       this.inputElement = this.$.input;
-      this._toggleElement = this.$.toggleIcon;
-      this._clearElement = this.$.clearIcon;
+
+      // Use the default toggle/clear or one replaced in light DOM.
+      this._toggleElement = Polymer.dom(this).querySelector('.toggle-button') || this.$.toggleIcon;
+      this._clearElement = Polymer.dom(this).querySelector('.clear-button') || this.$.clearIcon;
     },
 
     // document.activeElement doesn't return elements from inside shadow root
