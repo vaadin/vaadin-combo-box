@@ -51,6 +51,7 @@
       this._clearElement = Polymer.dom(this).querySelector('.clear-button');
 
       this._revertInputValue();
+      this.listen(this, 'down', '_preventDefault');
       this.listen(this.inputElement, 'input', '_inputValueChanged');
       this.listen(this.inputElement, 'blur', '_onBlur');
     },
