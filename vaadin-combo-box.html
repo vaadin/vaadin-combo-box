@@ -275,14 +275,6 @@ Custom property | Description | Default
 
     _preventDefault: function(e) {
       e.preventDefault();
-    },
-
-    get _clearElement() {
-      return Polymer.dom(this).querySelector('.clear-button') || this.$.clearIcon;
-    },
-
-    get _toggleElement() {
-      return Polymer.dom(this).querySelector('.toggle-button') || this.$.toggleIcon;
     }
   });
 
