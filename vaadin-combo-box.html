@@ -250,19 +250,10 @@ Custom property | Description | Default
       Polymer.PaperInputBehavior
     ],
 
-    listeners: {
-      'tap': '_onTap'
-    },
-
-    _onTap: function(e) {
-      var path = Polymer.dom(e).path;
-      if (path.indexOf(this._clearElement) !== -1) {
-        this._clear();
-      } else if (path.indexOf(this._toggleElement) !== -1) {
-        this._toggle();
-      } else if (path.indexOf(this.inputElement) !== -1) {
-        this.open();
-      }
+    attached: function() {
+      this.inputElement = this.$.input;
+      this._toggleElement = this.$.toggleIcon;
+      this._clearElement = this.$.clearIcon;
     },
 
     // document.activeElement doesn't return elements from inside shadow root

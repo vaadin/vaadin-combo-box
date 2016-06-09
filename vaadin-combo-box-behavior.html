@@ -84,6 +84,8 @@
       },
 
       inputElement: Object,
+      _toggleElement: Object,
+      _clearElement: Object,
 
       _inputElementValue: String,
 
@@ -130,6 +132,21 @@
         this.inputElement.blur();
         this._closeOnBlurIsPrevented = false;
       }
+    },
+
+    _onTap: function(e) {
+      this._closeOnBlurIsPrevented = true;
+
+      var path = Polymer.dom(e).path;
+      if (path.indexOf(this._clearElement) !== -1) {
+        this._clear();
+      } else if (path.indexOf(this._toggleElement) !== -1) {
+        this._toggle();
+      } else if (path.indexOf(this.inputElement) !== -1) {
+        this.open();
+      }
+
+      this._closeOnBlurIsPrevented = false;
     },
 
     /**

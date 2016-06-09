@@ -45,24 +45,14 @@
       inputElement: Object
     },
 
-    listeners: {
-      'tap': '_onTap'
-    },
-
     attached: function() {
       this.inputElement = Polymer.dom(this).querySelector('input[is="iron-input"],paper-input,.paper-input-input');
+      this._toggleElement = Polymer.dom(this).querySelector('.toggle-button');
+      this._clearElement = Polymer.dom(this).querySelector('.clear-button');
+
       this._revertInputValue();
       this.listen(this.inputElement, 'input', '_inputValueChanged');
       this.listen(this.inputElement, 'blur', '_onBlur');
-    },
-
-    _onTap: function(e) {
-      var path = Polymer.dom(e).path;
-      if (path.indexOf(this.inputElement) !== -1) {
-        this._closeOnBlurIsPrevented = true;
-        this.open();
-        this._closeOnBlurIsPrevented = false;
-      }
     },
 
     // document.activeElement doesn't return elements from inside shadow root
