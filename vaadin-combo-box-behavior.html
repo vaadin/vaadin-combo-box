@@ -11,14 +11,14 @@
     properties: {
       /**
        * An array of values to be displayed as options in the dropdown. The
-       * options could be either `String` or `Object`.
+       * options can be of either `String` or `Object` type.
        */
       items: {
         type: Array
       },
 
       /**
-       * If `true`, user can input a value that is not present in the items list.
+       * If `true`, the user can input a value that is not present in the items list.
        * `value` property will be set to the input value in this case.
        * Also, when `value` is set programmatically, the input value will be set
        * to reflect that value.
@@ -30,7 +30,7 @@
 
       /**
        * A read-only property indicating whether this combo box has a value
-       * selected or not. Can be used for example in styling of the component.
+       * selected or not. It can be used for example in styling of the component.
        */
       hasValue: {
         type: Boolean,
@@ -71,11 +71,11 @@
       },
 
       /**
-       * Path for value of the item. If `items` is an array of objects, the
+       * Path for the value of the item. If `items` is an array of objects, the
        * `itemValuePath:` is used to fetch the string value for the selected
        * item.
        *
-       * The item value is to be used in the `value` property of the combo box,
+       * The item value is used in the `value` property of the combo box,
        * to provide the form value.
        */
       itemValuePath: {
@@ -252,10 +252,6 @@
         }
       }
     },
-
-    /**
-     * Opening and closing related functionality
-     */
 
     /**
      * Opens and closes the dropdown list.
