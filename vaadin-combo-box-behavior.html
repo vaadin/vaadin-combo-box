@@ -457,6 +457,10 @@
       if (this.inputElement.validate) {
         return this.inputElement.validate();
       }
+    },
+
+    _preventDefault: function(e) {
+      e.preventDefault();
     }
   };
 

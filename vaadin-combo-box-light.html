@@ -62,10 +62,6 @@
       return Polymer.dom(this).querySelector('input:focus');
     },
 
-    _preventDefault: function(e) {
-      e.preventDefault();
-    },
-
     get _propertyForValue() {
       return Polymer.CaseMap.dashToCamelCase(this.attrForValue);
     },
