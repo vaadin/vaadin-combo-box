@@ -189,11 +189,6 @@ Custom property | Description | Default
       this._clearElement = Polymer.dom(this).querySelector('.clear-button') || this.$.clearIcon;
     },
 
-    // document.activeElement doesn't return elements from inside shadow root
-    _focusedInput: function() {
-      return Polymer.dom(this.root).querySelector('input:focus');
-    },
-
     _getPositionTarget: function() {
       return this.$.inputContainer;
     },

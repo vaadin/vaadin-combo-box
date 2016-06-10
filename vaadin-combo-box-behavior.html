@@ -341,6 +341,11 @@
       }
     },
 
+    _focusedInput: function() {
+      // Use either light DOM input or one from local DOM.
+      return Polymer.dom(this).querySelector('input:focus') || Polymer.dom(this.root).querySelector('input:focus');
+    },
+
     _filterChanged: function(filter) {
       this.unlisten(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
 

@@ -108,11 +108,6 @@ two `<paper-button>`s to act as the clear and toggle controls.
       this.listen(this._inputElement, 'blur', '_onBlur');
     },
 
-    // document.activeElement doesn't return elements from inside shadow root
-    _focusedInput: function() {
-      return Polymer.dom(this).querySelector('input:focus');
-    },
-
     get _propertyForValue() {
       return Polymer.CaseMap.dashToCamelCase(this.attrForValue);
     },
