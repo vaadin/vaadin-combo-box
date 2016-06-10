@@ -31,14 +31,3 @@ var getItemArray = function(length) {
       return 'item ' + index;
     });
 };
-
-var customFixture = function(id) {
-  var re = /fixture=([\w\-]*)/g;
-
-  var result = re.exec(document.location.search);
-  if (result && result[1]) {
-    return fixture(result[1]);
-  }
-
-  return fixture(id);
-};

@@ -28,7 +28,7 @@
     beforeEach(function() {
       combobox = fixture('combobox');
       combobox.items = ['foo', 'bar'];
-      input = combobox.querySelector('.input') || combobox.$$('input');
+      input = combobox.$$('input');
       selector = combobox.$.overlay.$.selector;
       valueChangedSpy = sinon.spy();
       combobox.addEventListener('value-changed', valueChangedSpy);
