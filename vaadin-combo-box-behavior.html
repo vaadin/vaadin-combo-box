@@ -83,7 +83,7 @@
         value: 'value'
       },
 
-      inputElement: Object,
+      _inputElement: Object,
       _toggleElement: Object,
       _clearElement: Object,
 
@@ -129,7 +129,7 @@
         // On touch devices, blur the input on touch start inside the overlay, in order to hide
         // the virtual keyboard. But don't close the overlay on this blur.
         this._closeOnBlurIsPrevented = true;
-        this.inputElement.blur();
+        this._inputElement.blur();
         this._closeOnBlurIsPrevented = false;
       }
     },
@@ -142,7 +142,7 @@
         this._clear();
       } else if (path.indexOf(this._toggleElement) !== -1) {
         this._toggle();
-      } else if (path.indexOf(this.inputElement) !== -1) {
+      } else if (path.indexOf(this._inputElement) !== -1) {
         this.open();
       }
 
@@ -226,8 +226,8 @@
     },
 
     _setSelectionRange: function() {
-      if (this.inputElement.setSelectionRange) {
-        this.inputElement.setSelectionRange(0, this._inputElementValue.length);
+      if (this._inputElement.setSelectionRange) {
+        this._inputElement.setSelectionRange(0, this._inputElementValue.length);
       }
     },
 
@@ -316,8 +316,8 @@
      */
 
     _inputValueChanged: function(e) {
-      // Handle only input events from our inputElement.
-      if (Polymer.dom(e).path.indexOf(this.inputElement) !== -1) {
+      // Handle only input events from our _inputElement.
+      if (Polymer.dom(e).path.indexOf(this._inputElement) !== -1) {
         if (this._filter === this._inputElementValue) {
           // Filter and input value might get out of sync, while keyboard navigating for example.
           // Afterwards, input value might be changed to the same value as used in filtering.
@@ -336,8 +336,8 @@
     _clearSelectionRange: function() {
       // Setting selection range focuses and/or moves the caret in some browsers,
       // and there's no need to modify the selection range if the input isn't focused anyway.
-      if (this._focusedInput() === this.inputElement && this.inputElement.setSelectionRange) {
-        this.inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
+      if (this._focusedInput() === this._inputElement && this._inputElement.setSelectionRange) {
+        this._inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
       }
     },
 
@@ -454,8 +454,8 @@
      * @return {boolean}
      */
     _getValidity: function() {
-      if (this.inputElement.validate) {
-        return this.inputElement.validate();
+      if (this._inputElement.validate) {
+        return this._inputElement.validate();
       }
     },
 

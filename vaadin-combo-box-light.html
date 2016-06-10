@@ -47,14 +47,14 @@
     },
 
     attached: function() {
-      this.inputElement = Polymer.dom(this).querySelector('input[is="iron-input"],paper-input,.paper-input-input,.input');
+      this._inputElement = Polymer.dom(this).querySelector('input[is="iron-input"],paper-input,.paper-input-input,.input');
       this._toggleElement = Polymer.dom(this).querySelector('.toggle-button');
       this._clearElement = Polymer.dom(this).querySelector('.clear-button');
 
       this._revertInputValue();
       this.listen(this, 'down', '_preventDefault');
-      this.listen(this.inputElement, 'input', '_inputValueChanged');
-      this.listen(this.inputElement, 'blur', '_onBlur');
+      this.listen(this._inputElement, 'input', '_inputValueChanged');
+      this.listen(this._inputElement, 'blur', '_onBlur');
     },
 
     // document.activeElement doesn't return elements from inside shadow root
@@ -67,12 +67,12 @@
     },
 
     get _inputElementValue() {
-      return this.inputElement && this.inputElement[this._propertyForValue];
+      return this._inputElement && this._inputElement[this._propertyForValue];
     },
 
     set _inputElementValue(value) {
-      if (this.inputElement) {
-        this.inputElement[this._propertyForValue] = value;
+      if (this._inputElement) {
+        this._inputElement[this._propertyForValue] = value;
       }
     }
   });
