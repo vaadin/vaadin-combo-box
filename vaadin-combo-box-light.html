@@ -14,7 +14,7 @@ This element is using the same [`ComboBoxBehavior`](#vaadin.elements.combobox.Co
 To create a custom input field, you need to add a child element which has a two-way
 data-bindable property representing the input value. The property name is expected
 to be `bindValue` by default. See the example below for a simplest possible example
-using `<iron-input>` as the input field.
+using an `<input>` element extended with `iron-input`.
 
 ```html
 <vaadin-combo-box-light>
@@ -22,10 +22,10 @@ using `<iron-input>` as the input field.
 </vaadin-combo-box-light>
 ```
 
-If you are using other custom input fields or for example `<paper-input>`, you
+If you are using other custom input fields like `<paper-input>`, you
 need to define the name of value property with `attrForValue` property.
-See the example below for an example on how to create a custom input field
-with a `<paper-input>` and decorating it with a custom `<iron-icon>` and
+See the example below on how to create a custom input field based
+on a `<paper-input>` decorated with a custom `<iron-icon>` and
 two `<paper-button>`s to act as the clear and toggle controls.
 
 ```html
