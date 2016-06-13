@@ -1,11 +1,11 @@
 ---
-title: Customization
+title: Customizing the Input Field
 order: 7
 layout: page
 ---
 
 [[vaadin-combo-box.customization]]
-= Customization
+= Customizing the Input Field
 
 The [vaadinelement]#vaadin-combo-box# element allows you to customize parts of the user interface by replacing the content with any other elements.
 You can replace individual icons by adding elements with `clear-button` and `toggle-button` class names.
