@@ -59,7 +59,7 @@ two `<paper-button>`s to act as the clear and toggle controls.
     <vaadin-combo-box-overlay
         id="overlay"
         _aria-active-index="{{_ariaActiveIndex}}"
-        position-target="[[_inputElement]]"
+        position-target="[[inputElement]]"
         _focused-index="[[_focusedIndex]]"
         _item-label-path="[[itemLabelPath]]"
         on-down="_onOverlayDown"
@@ -98,14 +98,14 @@ two `<paper-button>`s to act as the clear and toggle controls.
     },
 
     attached: function() {
-      this._inputElement = Polymer.dom(this).querySelector('input[is="iron-input"],paper-input,.paper-input-input,.input');
+      this.inputElement = Polymer.dom(this).querySelector('input[is="iron-input"],paper-input,.paper-input-input,.input');
       this._toggleElement = Polymer.dom(this).querySelector('.toggle-button');
       this._clearElement = Polymer.dom(this).querySelector('.clear-button');
 
       this._revertInputValue();
       this.listen(this, 'down', '_preventDefault');
-      this.listen(this._inputElement, 'input', '_inputValueChanged');
-      this.listen(this._inputElement, 'blur', '_onBlur');
+      this.listen(this.inputElement, 'input', '_inputValueChanged');
+      this.listen(this.inputElement, 'blur', '_onBlur');
     },
 
     get _propertyForValue() {
@@ -113,12 +113,12 @@ two `<paper-button>`s to act as the clear and toggle controls.
     },
 
     get _inputElementValue() {
-      return this._inputElement && this._inputElement[this._propertyForValue];
+      return this.inputElement && this.inputElement[this._propertyForValue];
     },
 
     set _inputElementValue(value) {
-      if (this._inputElement) {
-        this._inputElement[this._propertyForValue] = value;
+      if (this.inputElement) {
+        this.inputElement[this._propertyForValue] = value;
       }
     }
   });

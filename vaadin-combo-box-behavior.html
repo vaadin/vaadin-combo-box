@@ -84,7 +84,10 @@
         value: 'value'
       },
 
-      _inputElement: Object,
+      // Keep the inputElement public, as vaadin-combo-box is extended with
+      // PaperInputBehavior, which already has "inputElement" defined and we
+      // don't want to have two separate properties.
+      inputElement: Object,
       _toggleElement: Object,
       _clearElement: Object,
 
@@ -130,7 +133,7 @@
         // On touch devices, blur the input on touch start inside the overlay, in order to hide
         // the virtual keyboard. But don't close the overlay on this blur.
         this._closeOnBlurIsPrevented = true;
-        this._inputElement.blur();
+        this.inputElement.blur();
         this._closeOnBlurIsPrevented = false;
       }
     },
@@ -143,7 +146,7 @@
         this._clear();
       } else if (path.indexOf(this._toggleElement) !== -1) {
         this._toggle();
-      } else if (path.indexOf(this._inputElement) !== -1) {
+      } else if (path.indexOf(this.inputElement) !== -1) {
         this.open();
       }
 
@@ -227,8 +230,8 @@
     },
 
     _setSelectionRange: function() {
-      if (this._inputElement.setSelectionRange) {
-        this._inputElement.setSelectionRange(0, this._inputElementValue.length);
+      if (this.inputElement.setSelectionRange) {
+        this.inputElement.setSelectionRange(0, this._inputElementValue.length);
       }
     },
 
@@ -317,8 +320,8 @@
      */
 
     _inputValueChanged: function(e) {
-      // Handle only input events from our _inputElement.
-      if (Polymer.dom(e).path.indexOf(this._inputElement) !== -1) {
+      // Handle only input events from our inputElement.
+      if (Polymer.dom(e).path.indexOf(this.inputElement) !== -1) {
         if (this._filter === this._inputElementValue) {
           // Filter and input value might get out of sync, while keyboard navigating for example.
           // Afterwards, input value might be changed to the same value as used in filtering.
@@ -340,8 +343,8 @@
       //
       // Notice also that document.activeElement doesn't return elements from inside shadow root
       // and therefore we're using _focusedInput method here.
-      if (this._focusedInput() === this._inputElement && this._inputElement.setSelectionRange) {
-        this._inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
+      if (this._focusedInput() === this.inputElement && this.inputElement.setSelectionRange) {
+        this.inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
       }
     },
 
@@ -463,8 +466,8 @@
      * @return {boolean}
      */
     _getValidity: function() {
-      if (this._inputElement.validate) {
-        return this._inputElement.validate();
+      if (this.inputElement.validate) {
+        return this.inputElement.validate();
       }
     },
 
