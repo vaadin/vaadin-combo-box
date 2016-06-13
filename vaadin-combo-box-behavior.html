@@ -333,6 +333,9 @@
     _clearSelectionRange: function() {
       // Setting selection range focuses and/or moves the caret in some browsers,
       // and there's no need to modify the selection range if the input isn't focused anyway.
+      //
+      // Notice also that document.activeElement doesn't return elements from inside shadow root
+      // and therefore we're using _focusedInput method here.
       if (this._focusedInput() === this._inputElement && this._inputElement.setSelectionRange) {
         this._inputElement.setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
       }
