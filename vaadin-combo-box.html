@@ -68,6 +68,43 @@ Custom property | Description | Default
       padding: 0;
     }
 
+    paper-icon-button.clear-button,
+    paper-icon-button.toggle-button,
+    :host ::content paper-icon-button.clear-button,
+    :host ::content paper-icon-button.toggle-button {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+
+      line-height: 18px !important;
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      text-align: center;
+
+      color: rgba(0, 0, 0, .38);
+      cursor: pointer;
+      margin-top: -1px;
+      --paper-icon-button-ink-color: rgba(0, 0, 0, .54);
+    }
+
+    paper-input-container paper-icon-button.clear-button,
+    paper-input-container ::content paper-icon-button.clear-button {
+      right: 28px;
+    }
+
+    paper-input-container paper-icon-button:hover,
+    paper-input-container ::content paper-icon-button:hover,
+    :host([opened]) paper-input-container paper-icon-button,
+    :host([opened]) paper-input-container ::content paper-icon-button {
+      color: rgba(0, 0, 0, .54);
+    }
+
+    :host([opened]) paper-input-container ::content paper-icon-button:hover,
+    :host([opened]) paper-input-container paper-icon-button:hover {
+      color: rgba(0, 0, 0, .86);
+    }
+
     :host([opened]) paper-input-container {
       /* Keep the paper-input-container above the dropdown. */
       z-index: 20;

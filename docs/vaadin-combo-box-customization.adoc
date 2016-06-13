@@ -35,10 +35,10 @@ Two special class names are also available for the custom buttons.
 |Class name |Purpose
 
 |`small`
-|Makes the `paper-icon-button` slightly smaller. Used by the default `clear-button`.
+|Makes a `paper-icon-button` slightly smaller. Used by the default `clear-button`.
 
 |`rotate-on-open`
-|Rotates the `paper-icon-button` 180 degrees when the dropdown is opened. Used by the default `toggle-button`.
+|Rotates the element 180 degrees when the dropdown is opened. Used by the default `toggle-button`.
 |===
 
 If you would like to apply some custom styles specific to the state of the element, the [vaadinelement]#vaadin-combo-box# reflects following properties to an attribute.
