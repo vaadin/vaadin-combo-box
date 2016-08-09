@@ -134,7 +134,7 @@ Custom property | Description | Default
           always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]"
           auto-validate$="[[autoValidate]]"
           invalid="[[invalid]]"
-          on-down="_preventDefault">
+          on-down="_preventMouseDownDefault">
       <label id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="_openAsync">[[label]]</label>
 
       <content select="[prefix]"></content>

@@ -145,8 +145,8 @@
     },
 
     _onOverlayDown: function(event) {
-      // Prevent the focus transfer when user scrolls inside the overlay with mouse drag
-      event.preventDefault();
+      // Prevent the focus transfer when user clicks the overlay.
+      this._preventMouseDownDefault(event);
 
       if (this.$.overlay.touchDevice && event.target !== this.$.overlay.$.scroller) {
         // On touch devices, blur the input on touch start inside the overlay, in order to hide
@@ -154,6 +154,14 @@
         this._closeOnBlurIsPrevented = true;
         this.inputElement.blur();
         this._closeOnBlurIsPrevented = false;
+      }
+    },
+
+    _preventMouseDownDefault: function(downEvent) {
+      if (downEvent.detail.sourceEvent && downEvent.detail.sourceEvent.type === 'mousedown') {
+        // Be sure to only prevent mousedown to not interfere with touch events.
+        // See also https://github.com/vaadin/vaadin-combo-box/issues/288
+        downEvent.preventDefault();
       }
     },
 
