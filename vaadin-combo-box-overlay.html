@@ -147,6 +147,11 @@
         value: 'label'
       },
 
+      _itemLabelSeparator: {
+        type: String,
+        value: ' '
+      },
+
       _itemValuePath: {
         type: String,
         value: 'value'
@@ -190,9 +195,22 @@
      * Gets the label string for the item based on the `_itemLabelPath`.
      * @return {String}
      */
-    getItemLabel: function(item) {
-      var label = this.get(this._itemLabelPath, item);
-      if (label === undefined || label === null) {
+    getItemLabel: function (item) {
+      let label = '';
+      if (this._itemLabelPath !== undefined && this._itemLabelPath != null) {
+        let labelArray = this._itemLabelPath.split(';');
+        let labelArrayLength = labelArray.length;
+        for (let i = 0; i < labelArrayLength; i++) {
+          let lab = this.get(labelArray[i], item);
+          if (lab !== undefined && lab != null) {
+            label += lab;
+            if(i < labelArrayLength - 1) {
+              label += this._itemLabelSeparator;
+            }
+          }
+        }
+      }
+      if (label === '') {
         label = item ? item.toString() : '';
       }
       return label;
