@@ -230,6 +230,45 @@ layout: page
     </code-example>
   </section>
 
+
+  <section>
+    <h3>Custom Properties for Item Label and Value</h3>
+    <p>
+      You can override the default property paths by defining <code>item-label-path</code> and <code>item-value-path</code> properties.
+      <br/>
+      You can use several properties for the <code>item-label-path</code> concatened by <code>item-label-separator</code>
+    </p>
+
+    <code-example source>
+      <vaadin-combo-box demo class="elements-array-box" label="Element" item-label-separator=" - " item-label-path="symbol;name" item-value-path="symbol"></vaadin-combo-box>
+      <p>Selected element name: <span id="element-name"></span>.</p>
+      <p>Value: <span id="element-value"></span>.</p>
+
+      <code demo-var="combobox">
+        HTMLImports.whenReady(function() {
+        // code
+        var combobox = combobox || document.querySelector('.elements-array-box');
+
+        // elementsJson is an Array of Objects. Item object format:
+        //   {name: 'Hydrogen', symbol: 'H', number: 1}
+        combobox.items = elementsJson;
+
+        combobox.addEventListener('selected-item-changed', function() {
+        document.querySelector('#element-name').innerHTML = combobox.selectedItem && combobox.selectedItem.name;
+        });
+
+        combobox.addEventListener('value-changed', function() {
+        document.querySelector('#element-value').innerHTML = combobox.value;
+        });
+
+        combobox.value = 'C';
+        // end-code
+        });
+      </code>
+    </code-example>
+  </section>
+
+
 </body>
 
 </html>
