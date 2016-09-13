@@ -84,21 +84,30 @@
           expect(selectedItemRect.bottom).to.be.at.most(overlayRect.bottom);
         }
 
-        it('should make selected item visible after open', function() {
+        it('should make selected item visible after open', function(done) {
           combobox.value = combobox.items[50];
-          combobox.open();
 
-          expectSelectedItemPositionToBeVisible();
+          Polymer.Base.async(function() {
+            combobox.open();
+          }, 10);
+          Polymer.Base.async(function() {
+            expectSelectedItemPositionToBeVisible();
+            done();
+          }, 40);
         });
 
-        it('should make selected item visible after reopen', function() {
+        it('should make selected item visible after reopen', function(done) {
           combobox.open();
 
           combobox.value = combobox.items[50];
-          combobox.close();
-          combobox.open();
-
-          expectSelectedItemPositionToBeVisible();
+          Polymer.Base.async(function() {
+            combobox.close();
+            combobox.open();
+          }, 10);
+          Polymer.Base.async(function() {
+            expectSelectedItemPositionToBeVisible();
+            done();
+          }, 40);
         });
       });
     });

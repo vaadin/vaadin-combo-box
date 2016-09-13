@@ -51,6 +51,7 @@
       it('should use the default label property in overlay items', function(done) {
         combobox.open();
 
+        combobox.$.overlay.$.selector.flushDebouncer('_debounceTemplate');
         Polymer.Base.async(function() {
           expect(combobox.$.overlay.$.selector.querySelector('.item').textContent).to.contain('foo');
           done();
