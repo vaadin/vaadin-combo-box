@@ -163,6 +163,11 @@
       }
     },
 
+    attached: function() {
+      // Required after asynchrony introduced by iron-list 1.3.9.
+      this.async(this.$.selector.notifyResize, 10);
+    },
+
     _getFocusedItem: function(focusedIndex) {
       if (focusedIndex >= 0) {
         return this._items[focusedIndex];
@@ -255,7 +260,11 @@
 
     adjustScrollPosition: function() {
       if (this._items) {
-        this._scrollIntoView(this._focusedIndex);
+        // This must be async from iron-list 1.3.9 onwards to have the overlay
+        // visible before scrolling.
+        this.async(function() {
+          this._scrollIntoView(this._focusedIndex);
+        }, 1);
       }
     },
 

@@ -320,7 +320,7 @@
           expect(comboBox.$.overlay._visibleItemsCount()).to.eql(4);
           expect(comboBox.$.overlay._lastVisibleIndex()).to.eql(3);
           done();
-        });
+        }, 40);
       });
 
       it('should calculate items correctly when some items are hidden', function(done) {
@@ -336,12 +336,13 @@
         Polymer.Base.async(function() {
           expect(comboBox.$.overlay._lastVisibleIndex()).to.eql(comboBox.$.overlay._visibleItemsCount() - 1);
           done();
-        });
+        }, 40);
       });
     });
 
     describe('scrolling items', function() {
       var selector;
+      var asyncDelay = 100;
 
       beforeEach(function(done) {
         var items = [];
@@ -354,64 +355,76 @@
         comboBox.open();
         selector = comboBox.$.overlay.$.selector;
 
-        Polymer.Base.async(done);
+        Polymer.Base.async(done, asyncDelay);
       });
 
-      it('should scroll down after reaching the last visible item', function() {
+      it('should scroll down after reaching the last visible item', function(done) {
         comboBox._focusedIndex = comboBox.$.overlay._visibleItemsCount() - 1;
         expect(selector.firstVisibleIndex).to.eql(0);
 
         arrowDown();
-
-        expect(selector.firstVisibleIndex).to.eql(1);
+        Polymer.Base.async(function() {
+          expect(selector.firstVisibleIndex).to.eql(1);
+          done();
+        }, asyncDelay);
       });
 
-      it('should scroll up after reaching the first visible item', function() {
+      it('should scroll up after reaching the first visible item', function(done) {
         comboBox._focusedIndex = 1;
         selector.scrollToIndex(1);
         expect(selector.firstVisibleIndex).to.eql(1);
 
         arrowUp();
-
-        expect(selector.firstVisibleIndex).to.eql(0);
+        Polymer.Base.async(function() {
+          expect(selector.firstVisibleIndex).to.eql(0);
+          done();
+        }, asyncDelay);
       });
 
-      it('should scroll to first visible when navigating down above viewport', function() {
+      it('should scroll to first visible when navigating down above viewport', function(done) {
         comboBox._focusedIndex = 5;
         selector.scrollToIndex(50);
 
         arrowDown();
-
-        expect(selector.firstVisibleIndex).to.eql(6);
+        Polymer.Base.async(function() {
+          expect(selector.firstVisibleIndex).to.eql(6);
+          done();
+        }, asyncDelay);
       });
 
-      it('should scroll to first visible when navigating up above viewport', function() {
+      it('should scroll to first visible when navigating up above viewport', function(done) {
         comboBox._focusedIndex = 5;
         selector.scrollToIndex(50);
 
         arrowUp();
-
-        expect(selector.firstVisibleIndex).to.eql(4);
+        Polymer.Base.async(function() {
+          expect(selector.firstVisibleIndex).to.eql(4);
+          done();
+        }, asyncDelay);
       });
 
-      it('should scroll to last visible when navigating up below viewport', function() {
+      it('should scroll to last visible when navigating up below viewport', function(done) {
         comboBox._focusedIndex = 50;
         selector.scrollToIndex(0);
         expect(selector.firstVisibleIndex).to.eql(0);
 
         arrowUp();
-
-        expect(selector.firstVisibleIndex).to.eql(49 - comboBox.$.overlay._visibleItemsCount() + 1);
+        Polymer.Base.async(function() {
+          expect(selector.firstVisibleIndex).to.eql(49 - comboBox.$.overlay._visibleItemsCount() + 1);
+          done();
+        }, asyncDelay);
       });
 
-      it('should scroll to last visible when navigating down below viewport', function() {
+      it('should scroll to last visible when navigating down below viewport', function(done) {
         comboBox._focusedIndex = 50;
         selector.scrollToIndex(0);
         expect(selector.firstVisibleIndex).to.eql(0);
 
         arrowDown();
-
-        expect(selector.firstVisibleIndex).to.eql(51 - comboBox.$.overlay._visibleItemsCount() + 1);
+        Polymer.Base.async(function() {
+          expect(selector.firstVisibleIndex).to.eql(51 - comboBox.$.overlay._visibleItemsCount() + 1);
+          done();
+        }, asyncDelay);
       });
 
       it('should scroll to start if no items focused when opening overlay', function(done) {
@@ -423,7 +436,7 @@
         Polymer.Base.async(function() {
           expect(selector.firstVisibleIndex).to.eql(0);
           done();
-        });
+        }, asyncDelay);
       });
 
       it('should scroll to focused item when opening overlay', function(done) {
@@ -436,7 +449,7 @@
         Polymer.Base.async(function() {
           expect(selector.firstVisibleIndex).to.be.within(50 - comboBox.$.overlay._visibleItemsCount(), 50);
           done();
-        });
+        }, asyncDelay);
       });
     });
   });

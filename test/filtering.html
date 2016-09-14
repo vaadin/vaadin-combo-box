@@ -115,7 +115,7 @@
       it('should not scroll to selected value when filtering', function() {
         comboBox.value = 'baz';
 
-        var spy = sinon.spy(comboBox.$.overlay, '_scrollIntoView');
+        var spy = sinon.spy(comboBox.$.overlay, 'adjustScrollPosition');
 
         setInputValue('ba');
         setInputValue('b');
