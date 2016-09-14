@@ -250,6 +250,7 @@
     },
 
     adjustScrollPosition: function() {
+      this.$.selector._render && this.$.selector._render();
       if (this._items) {
         this._scrollIntoView(this._focusedIndex);
       }

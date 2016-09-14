@@ -316,6 +316,7 @@
       this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
       this.$.overlay.notifyResize();
       this.$.overlay.adjustScrollPosition();
+      this.$.overlay.notifyResize();
     },
 
     _onClosed: function() {
