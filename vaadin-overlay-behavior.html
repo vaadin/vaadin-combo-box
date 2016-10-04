@@ -74,6 +74,17 @@
       if (target === document.body) {
         this.style.position = this._isPositionFixed(this.positionTarget) ? 'fixed' : 'absolute';
         window.addEventListener('scroll', this._boundSetPosition, true);
+
+        // after overlay moves under body, display:none is removed and iron-list
+        // iron-list needs to recalculate viewport size etc.
+        // With iron-list v1.3.10 all this doesn't happen automatically on 'attached' anymore.
+        this.$.selector.notifyResize();
+
+        // With iron-list v1.3.9, calling `notifyResize()` no longer renders
+        // the items synchonously. It is required to have the items rendered
+        // before we update the overlay and the list positions and sizes.
+        this.$.selector._render();
+
         this._setPosition();
       } else {
         window.removeEventListener('scroll', this._boundSetPosition, true);
