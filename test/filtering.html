@@ -142,7 +142,7 @@
 
         comboBox.close();
 
-        expect(comboBox._filter).to.be.empty;
+        expect(comboBox.filter).to.be.empty;
       });
 
       it('should filter boolean', function() {
@@ -201,13 +201,19 @@
 
         setInputValue('foo');
 
-        expect(getFilteredItems()).to.be.null;
+        expect(getFilteredItems()).to.be.undefined;
       });
 
       it('should hide overlay when filtered items length is 0', function() {
         setInputValue('THIS IS NOT FOUND');
 
         expect(comboBox.opened && comboBox.$.overlay.hidden).to.be.true;
+      });
+
+      it('should not filter items if filter-disabled is set', function() {
+        comboBox.filterDisabled = true;
+        setInputValue('a');
+        expect(getFilteredItems()).to.eql([ 'foo', 'bar', 'baz' ]);
       });
     });
   });
