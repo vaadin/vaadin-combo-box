@@ -57,7 +57,9 @@
       background: #eee;
     }
 
-    #selector .item[selected] {
+    #selector .item[selected],
+    #selector .item strong,
+    :host ::content .item strong {
       color: var(--primary-color);
     }
   </style>
@@ -80,8 +82,8 @@
               selected$="[[selected]]"
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
-              focused$="[[_isItemFocused(_focusedIndex,index)]]">
-              [[getItemLabel(item)]]
+              focused$="[[_isItemFocused(_focusedIndex,index)]]"
+              content$="[[_updateContent(item, index, item.*)]]">
           </div>
         </template>
       </iron-list>
@@ -196,6 +198,17 @@
         label = item ? item.toString() : '';
       }
       return label;
+    },
+
+    _updateContent: function(item, index) {
+      var itemElement = Polymer.dom(this.root).querySelector('#it' + index);
+      itemElement.innerHTML = '';
+      var contentElement = item.element;
+      if (contentElement) {
+        Polymer.dom(itemElement).appendChild(contentElement);
+      } else {
+        itemElement.textContent = this.getItemLabel(item)
+      }
     },
 
     _isItemFocused: function(focusedIndex, itemIndex) {

@@ -72,6 +72,95 @@
       </template>
     </demo-snippet>
 
+    <h3>Highlighting Filtered Items</h3>
+    <p>
+      By providing dom elements to the item object, we can hightlight filter results as it is shown in the followind example.
+    </p>
+
+    <demo-snippet>
+      <template>
+        <dom-module id="language-ajax">
+            <template>
+              <vaadin-combo-box item-label-path="language" item-value-path="language"
+                items="{{items}}" filter="{{filter}}">
+              </vaadin-combo-box>
+            </template>
+
+          <script>
+            Polymer({
+              is: "language-ajax",
+
+              properties: {
+                items: {
+                  type: Object,
+                  value: languagesJson
+                }
+              },
+
+              observers : ['_onFilter(filter)'],
+
+              _onFilter: function(filter) {
+                this.items.forEach(function(item) {
+                  item.element = item.element || document.createElement('span');
+                  var html = item.language.replace(RegExp('(' + filter + ')', 'i'), '<strong>$1</strong>');
+                  item.element.innerHTML = html + ' (' + item.population + ' m)';
+                });
+              },
+            });
+          </script>
+        </dom-module>
+
+        <language-ajax></language-ajax>
+      </template>
+    </demo-snippet>
+
+    <h3>Advanced Filtering</h3>
+    <p>In the following example we show how to do customised searchs and highlight the results.
+
+    <demo-snippet>
+      <template>
+        <dom-module id="language-search">
+          <template>
+            <vaadin-combo-box item-label-path="language" item-value-path="language"
+              items="[[items]]"
+              filter="{{filter}}" filter-disabled>
+            </vaadin-combo-box>
+          </template>
+
+          <script>
+
+            Polymer({
+              is: "language-search",
+
+              observers : ['_onFilter(filter)'],
+
+              _onFilter: function(filter) {
+                // Regular expresion that matches a sequence of characters in a word.
+                var regexpr = RegExp('(.*?)' + filter.replace(/(.)/g, '($1)(.*?)'), 'i');
+                // Replacement for the given regular expression. It wraps matched groups with <strong>.
+                var replace = '$1' + filter.replace(/(.)/g, function(c, c, i) {
+                  return '<strong>$' + (2 * i + 2) + '</strong>$' + (2 * i + 3);
+                });
+
+                this.items = languagesJson.filter(function(item) {
+                  // Filter code
+                  return regexpr.test(item.language);
+                }).map(function(item) {
+                  // update displayed element
+                  item.element = item.element || document.createElement('span');
+                  var html = item.language.replace(regexpr, replace) + ' (' + item.population + ' mill)';
+                  item.element.innerHTML = html;
+                  return item;
+                });;
+              },
+            });
+          </script>
+        </dom-module>
+
+        <language-search></language-search>
+      </template>
+    </demo-snippet>
+
   </div>
 </body>
 
