@@ -481,7 +481,7 @@
       items = items || this.items;
       if (items && this._isValidValue(value)) {
         for (var i = 0; i < items.length; i++) {
-          if (this._getItemValue(items[i]).toString() === value.toString()) {
+          if (this._getItemValue(items[i]) === value) {
             return i;
           }
         }
@@ -491,16 +491,14 @@
     },
 
     /**
-     * Checks if the value is supported an an item value in this control.
+     * Checks if the value is supported as an item value in this control.
      *
      * @return {boolean}
      */
     _isValidValue: function(value) {
-      // !!value my evaluate to false even for some acceptable values
+      // !!value might evaluate to false even for some acceptable values
       // See the full list here: http://stackoverflow.com/a/19839953
-      var isTruthy = !!value;
-      var isOneOfAcceptedFalseyValues = (value === 0) || (value === -0) || (value === false);
-      return isTruthy || isOneOfAcceptedFalseyValues;
+      return !!value || (value === 0 || value === -0 || value === false || value === "");
     },
 
     _selectedItemChanged: function(event, detail) {
