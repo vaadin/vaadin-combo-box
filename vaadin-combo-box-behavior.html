@@ -420,7 +420,7 @@
     },
 
     _valueChanged: function(value) {
-      this.hasValue = !!value;
+      this.hasValue = this._isValidValue(value);
 
       var valueIndex = this._indexOfValue(value);
       var item = valueIndex > -1 && this.items[valueIndex];
@@ -479,7 +479,7 @@
 
     _indexOfValue: function(value, items) {
       items = items || this.items;
-      if (items && value) {
+      if (items && this._isValidValue(value)) {
         for (var i = 0; i < items.length; i++) {
           if (this._getItemValue(items[i]).toString() === value.toString()) {
             return i;
@@ -488,6 +488,19 @@
       }
 
       return -1;
+    },
+
+    /**
+     * Checks if the value is supported an an item value in this control.
+     *
+     * @return {boolean}
+     */
+    _isValidValue: function(value) {
+      // !!value my evaluate to false even for some acceptable values
+      // See the full list here: http://stackoverflow.com/a/19839953
+      var isTruthy = !!value;
+      var isOneOfAcceptedFalseyValues = (value === 0) || (value === -0) || (value === false);
+      return isTruthy || isOneOfAcceptedFalseyValues;
     },
 
     _selectedItemChanged: function(event, detail) {

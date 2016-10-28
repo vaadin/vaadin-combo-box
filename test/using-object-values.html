@@ -37,6 +37,14 @@
           label: 'baz',
           custom: 'bashcsdfsa',
           value: 'qux'
+        }, {
+          label: 'zero',
+          custom: 'zero-custom',
+          value: 0
+        }, {
+          label: 'false',
+          custom: 'false-custom',
+          value: false
         }];
       });
 
@@ -120,6 +128,20 @@
 
         expect(combobox.$.input.bindValue).to.eql('foo');
         expect(combobox.value).to.eql('bar');
+      });
+
+      it('should set the value even if the value is zero (number)', function() {
+        combobox.$.overlay.$.selector.selectItem(2);
+
+        expect(combobox.$.input.bindValue).to.eql('zero');
+        expect(combobox.value).to.eql(0);
+      });
+
+      it('should set the value even if the value is false (boolean)', function() {
+        combobox.$.overlay.$.selector.selectItem(3);
+
+        expect(combobox.$.input.bindValue).to.eql('false');
+        expect(combobox.value).to.eql(false);
       });
 
       it('should set the input value from item label if item is found', function() {
