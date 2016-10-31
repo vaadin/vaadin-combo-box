@@ -498,7 +498,7 @@
     _isValidValue: function(value) {
       // !!value might evaluate to false even for some acceptable values
       // See the full list here: http://stackoverflow.com/a/19839953
-      return !!value || (value === 0 || value === -0 || value === false || value === "");
+      return value !== NaN && value !== undefined && value !== null;
     },
 
     _selectedItemChanged: function(event, detail) {
