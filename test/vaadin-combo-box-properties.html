@@ -23,6 +23,8 @@
 
       beforeEach(function() {
         comboBox = fixture('combobox');
+        combobox.items = undefined;
+        combobox.value = undefined;
       });
 
       describe('items property', function() {
@@ -59,6 +61,38 @@
         });
       });
 
+      describe('non-string values', function() {
+        it('should allow numeric valules in the items array', function() {
+          comboBox.items = [3, 2, 1, 0];
+          comboBox.value = 0;
+
+          expect(comboBox.$.overlay.$.selector.items).to.eql([3, 2, 1, 0]);
+          expect(comboBox._focusedIndex).to.eql(3);
+          expect(comboBox.$.input.bindValue).to.eql('0');
+          expect(comboBox.value).to.eql(0);
+        });
+
+        it('should allow boolean valules in the items array', function() {
+          comboBox.items = [true, false, true, false];
+          comboBox.value = false;
+
+          expect(comboBox.$.overlay.$.selector.items).to.eql([true, false, true, false]);
+          expect(comboBox._focusedIndex).to.eql(1);
+          expect(comboBox.$.input.bindValue).to.eql('false');
+          expect(comboBox.value).to.eql(false);
+        });
+
+        it('should allow empty string valules in the items array', function() {
+          comboBox.items = ['a', '', 'b'];
+          comboBox.value = '';
+
+          expect(comboBox.$.overlay.$.selector.items).to.eql(['a', '', 'b']);
+          expect(comboBox._focusedIndex).to.eql(1);
+          expect(comboBox.$.input.bindValue).to.eql('');
+          expect(comboBox.value).to.eql('');
+        });
+      });
+
       describe('value property', function() {
         it('should have empty string by default', function() {
           expect(comboBox.value).to.eql('');
@@ -75,7 +109,7 @@
 
         it('should be able to be set before object items', function() {
           var item = {label: 'foo', value: 1};
-          comboBox.value = '1';
+          comboBox.value = 1;
 
           comboBox.items = [item];
 
