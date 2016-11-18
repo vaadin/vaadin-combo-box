@@ -48,8 +48,8 @@
           var combobox = document.querySelector('#demo2');
           combobox.items = elements;
 
-          combobox.addEventListener('value-changed', function() {
-            document.querySelector('#selected-value').innerHTML = combobox.value;
+          combobox.addEventListener('value-changed', function(e) {
+            document.querySelector('#selected-value').innerHTML = e.target.value;
           });
           combobox.value = 'Carbon';
         </script>
