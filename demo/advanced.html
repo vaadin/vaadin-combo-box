@@ -74,6 +74,12 @@
             return item.substring(0, filter.length).toLowerCase() === filter.toLowerCase();
           };
           combobox2.filterFunction = startsWith;
+
+          var strikeMatches = function(label, filter) {
+            var regex = new RegExp(filter, "gi");
+            return label.replace(regex, '<strike>$&</strike>'); // http://stackoverflow.com/a/4002341/1331425
+          };
+          combobox2.highlightFunction = strikeMatches;
         </script>
 
       </template>

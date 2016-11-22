@@ -200,6 +200,8 @@ Custom property | Description | Default
         id="overlay"
         position-target="[[_getPositionTarget()]]"
         _focused-index="[[_focusedIndex]]"
+        _filter="[[_inputElementValue]]"
+        _highlight-function="[[highlightFunction]]"
         _item-label-path="[[itemLabelPath]]"
         on-down="_onOverlayDown"
         on-mousedown="_preventDefault"
@@ -225,6 +227,11 @@ Custom property | Description | Default
         type: String,
         reflectToAttribute: true
       },
+
+      /**
+       * Function to highlight labels matches, takes item label and filter as parameters.
+       */
+      highlightFunction: Function,
 
       /**
        * Set to true to disable the floating label.
