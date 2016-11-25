@@ -29,6 +29,16 @@
         value: false
       },
 
+      /*
+       * If set to `true`, when the `filter` changes, `<vaadin-combo-box>` will
+       * remain in loading state until a new, pre-filtered array of items is
+       * assigned to `items`.
+       */
+      externalFiltering: {
+        type: Boolean,
+        value: false
+      },
+
       /**
        * The `String` value for the selected item of the combo box. Provides
        * the value for `iron-form`.
@@ -54,6 +64,11 @@
         value: false,
         readonly: true,
         reflectToAttribute: true
+      },
+
+      _loading: {
+        type: Boolean,
+        value: false
       },
 
       _focusedIndex: {
@@ -375,6 +390,7 @@
           // In situation like these, we need to make sure all the filter changes handlers are run.
           this._filterChanged(this.filter);
         } else {
+          this._loading = this.externalFiltering;
           this.filter = this._inputElementValue;
         }
 
@@ -402,9 +418,9 @@
     },
 
     _filterChanged: function(filter) {
-      this._setItems(this._filterItems(this.items, filter));
-      // TODO: disable this for async
-      this._focusedIndex = this.$.overlay.indexOfLabel(filter);
+      if (!this.externalFiltering) {
+        this._setItems(this._filterItems(this.items, filter));
+      }
     },
 
     _revertInputValue: function() {
@@ -442,15 +458,23 @@
       if (e.path === 'items' || e.path === 'items.splices') {
         this._setItems(this.items);
 
-        var valueIndex = this._indexOfValue(this.value);
-        this._focusedIndex = valueIndex;
+        if (!this._loading) {
+          var valueIndex = this._indexOfValue(this.value);
+          this._focusedIndex = valueIndex;
 
-        var item = valueIndex > -1 && this.items[valueIndex];
-        if (item) {
-          //TODO: this is duplicate from _valueChanged
-          this.$.overlay._selectedItem = item;
-          this._inputElementValue = this._getItemLabel(item);
-          this._setSelectedItem(item);
+          var item = valueIndex > -1 && this.items[valueIndex];
+          if (item) {
+            //TODO: this is duplicate from _valueChanged
+            this.$.overlay._selectedItem = item;
+            this._inputElementValue = this._getItemLabel(item);
+            this._setSelectedItem(item);
+          }
+        } else {
+          // this needs to be set async in case a external filter-changed
+          // listener is reassigning the items array syncronously.
+          this.async(function() {
+            this._loading = false;
+          });
         }
       }
     },
@@ -475,6 +499,8 @@
       //As a workaround setting/notifying the observer with the value undefined helps
       this.$.overlay.notifyPath('_items', undefined);
       this.$.overlay.set('_items', items);
+
+      this._focusedIndex = this.$.overlay.indexOfLabel(this.filter);
 
       this.$.overlay.hidden = !this._hasItems(items);
       this.$.overlay.notifyResize();

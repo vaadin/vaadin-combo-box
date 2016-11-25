@@ -1,0 +1,47 @@
+<dom-module id="vaadin-spinner">
+  <template>
+    <style>
+      /* Anim */
+      @keyframes vaadin-spin-360 {
+        100% {
+          transform: rotate(1turn);
+        }
+      }
+
+      :host {
+        display: block;
+        border: 2px solid var(--primary-color, #03A9F4);
+        border-radius: 50%;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        height: 16px;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        position: absolute;
+        top: 50%;
+        width: 16px;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      :host([loading]) {
+        opacity: 1;
+        animation: vaadin-spin-360 400ms linear infinite;
+      }
+    </style>
+  </template>
+  <script>
+    Polymer({
+      is: 'vaadin-spinner',
+
+      properties: {
+        loading: {
+          type: Boolean,
+          reflectToAttribute: true
+        }
+      }
+    });
+  </script>
+</dom-module>

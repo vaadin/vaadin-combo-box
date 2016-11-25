@@ -210,6 +210,50 @@
         expect(comboBox.opened && comboBox.$.overlay.hidden).to.be.true;
       });
     });
+
+    describe('external filtering', function() {
+      beforeEach(function() {
+        comboBox.externalFiltering = true;
+      });
+
+      it('should not filter items', function() {
+        setInputValue('foo');
+
+        expect(getFilteredItems()).to.eql(['foo', 'bar', 'baz']);
+      });
+
+      it('should start loading after filtering', function() {
+        setInputValue('foo');
+
+        expect(comboBox._loading).to.be.true;
+      });
+
+      it('should refresh items after reassignment', function() {
+        setInputValue('foo');
+
+        comboBox.items = ['foo'];
+
+        expect(getFilteredItems()).to.eql(['foo']);
+      });
+
+      it('should finish loading when items are assigned in a filter-changed listener', function(done) {
+        var assert = function() {
+          comboBox.removeEventListener('filter-changed', assert);
+
+          comboBox.items = ['foo'];
+
+          comboBox.async(function() {
+            expect(comboBox._focusedIndex).to.eql(0);
+            expect(comboBox._loading).to.be.false;
+            done();
+          });
+        };
+
+        comboBox.addEventListener('filter-changed', assert);
+
+        setInputValue('foo');
+      });
+    });
   });
 </script>
 
