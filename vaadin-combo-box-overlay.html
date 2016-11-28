@@ -53,8 +53,9 @@
       text-overflow: ellipsis;
     }
 
-    :host([loading]) .item {
-      opacity: 0.5;
+    :host([loading]) {
+      /* roughly the size of a list with one item */
+      height: 58px;
     }
 
     #selector:not([touch-device]) .item:hover,

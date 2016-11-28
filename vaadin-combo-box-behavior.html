@@ -137,7 +137,8 @@
 
     observers: [
       '_filterChanged(filter, itemValuePath, itemLabelPath)',
-      '_itemsChanged(items.*, itemValuePath, itemLabelPath)'
+      '_itemsChanged(items.*, itemValuePath, itemLabelPath)',
+      '_loadingChanged(_loading)'
     ],
 
     listeners: {
@@ -343,7 +344,7 @@
     },
 
     _onOpened: function() {
-      this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
+      this.$.overlay.hidden = !this._hasItems(this.$.overlay._items) && !this._loading;
 
       // With iron-list v1.3.9, calling `notifyResize()` no longer renders
       // the items synchonously. It is required to have the items rendered
@@ -420,6 +421,15 @@
     _filterChanged: function(filter) {
       if (!this.externalFiltering) {
         this._setItems(this._filterItems(this.items, filter));
+      }
+    },
+
+    _loadingChanged: function(loading) {
+      if (loading) {
+        this._focusedIndex = -1;
+        this.$.overlay._items = [];
+        this.$.overlay.hidden = false;
+        this.$.overlay.notifyResize();
       }
     },
 
