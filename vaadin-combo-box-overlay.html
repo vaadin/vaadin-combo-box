@@ -178,7 +178,7 @@
     },
 
     _onTap: function(e) {
-      this.fire('selection-changed', {item: this._items[e.model.index]});
+      this.fire('selection-changed', {item: e.model.item});
     },
 
     /**

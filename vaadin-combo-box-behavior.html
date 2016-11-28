@@ -464,17 +464,12 @@
 
           var item = valueIndex > -1 && this.items[valueIndex];
           if (item) {
-            //TODO: this is duplicate from _valueChanged
             this.$.overlay._selectedItem = item;
             this._inputElementValue = this._getItemLabel(item);
             this._setSelectedItem(item);
           }
         } else {
-          // this needs to be set async in case a external filter-changed
-          // listener is reassigning the items array syncronously.
-          this.async(function() {
-            this._loading = false;
-          });
+          this._loading = false;
         }
       }
     },

@@ -9,7 +9,7 @@ layout: page
 == Overview
 
 By default, [vaadinelement]#vaadin-combo-box# is used with a local array of items
-is filtered internally to display only the items that match the input that the
+that are filtered internally to display only the items that match the input the
 user has typed. The search algorithm used is a simple case insensitive search.
 
 Next, we're going to go through how you can do filtering remotely, and also
@@ -21,7 +21,7 @@ how to customize the filtering on the client side.
 By default, the internal client side filtering is run every time user types something
 on the input field. To prevent that, we need to set [propertyname]#externalFiltering#.
 
-This not only disable the client side filtering, but also tell
+This not only disables the client side filtering, but also tells
 [vaadinelement]#vaadin-combo-box# to remain in "loading" state until a fresh set
 of pre-filtered items is reassigned to [propertyname]#items#.
 
@@ -43,7 +43,7 @@ When [vaadinelement]#vaadin-combo-box# is closed, [propertyname]#filter# changes
 
 == Custom Filtering
 
-When you want to custom filtering on the client side, you can listen for changes
+When you want to customize filtering on the client side, you can listen for changes
 on the [propertyname]#filter# and update [propertyname]#items# based on any criteria.
 
 [source,html]
