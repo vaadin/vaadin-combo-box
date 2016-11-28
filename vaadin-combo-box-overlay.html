@@ -69,7 +69,7 @@
   </style>
 
   <template>
-    <vaadin-spinner loading="[[loading]]"></vaadin-spinner>
+    <vaadin-spinner active="[[loading]]"></vaadin-spinner>
     <div id="scroller" scroller="[[_getScroller()]]" on-tap="_stopPropagation">
       <iron-list
           id="selector"
