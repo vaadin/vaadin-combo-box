@@ -38,6 +38,10 @@
       return getInput().bindValue;
     }
 
+    function startsWithCustomFilter(item, filter) {
+      return item.substring(0, filter.length) === filter;
+    }
+
     beforeEach(function() {
       comboBox = fixture('combobox');
       comboBox.items = ['foo', 'bar', 'baz'];
@@ -209,6 +213,28 @@
 
         expect(comboBox.opened && comboBox.$.overlay.hidden).to.be.true;
       });
+
+      it('should use the custom filter function', function() {
+        comboBox.items = ['arsenic', 'nickel'];
+
+        comboBox.filterFunction = startsWithCustomFilter;
+
+        setInputValue('nic');
+        expect(getFilteredItems()).to.eql(['nickel']);
+      });
+
+      it('should apply the custom filter function to labels of items', function() {
+        comboBox.items = [
+          {label: 'arsenic', value: 'bar'},
+          {label: 'nickel', value: 'qux'}
+        ];
+
+        comboBox.filterFunction = startsWithCustomFilter;
+
+        setInputValue('nic');
+        expect(getFilteredItems()).to.eql([{label: 'nickel', value: 'qux'}]);
+      });
+
     });
   });
 </script>

@@ -78,8 +78,8 @@
               selected$="[[selected]]"
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
-              focused$="[[_isItemFocused(_focusedIndex,index)]]">
-            [[getItemLabel(item)]]
+              focused$="[[_isItemFocused(_focusedIndex,index)]]"
+              inner-h-t-m-l="{{getItemHighlightedLabel(item, _filter)}}">
           </div>
         </template>
       </iron-list>
@@ -113,6 +113,10 @@
         }
       },
 
+      _filter: String,
+
+      _highlightFunction: Function,
+
       _selectedItem: {
         type: String,
         notify: true
@@ -143,6 +147,11 @@
         type: String,
         value: 'value'
       }
+    },
+
+    _defaultHighlightFunction: function(label, filter) {
+      var regex = new RegExp(filter, "gi");
+      return label.replace(regex, '<b>$&</b>'); // http://stackoverflow.com/a/4002341/1331425
     },
 
     ready: function() {
@@ -188,6 +197,16 @@
         label = item ? item.toString() : '';
       }
       return label;
+    },
+
+    /**
+     * Gets the label string for the item based on the `_itemLabelPath`.
+     * @return {String}
+     */
+    getItemHighlightedLabel: function(item, filter) {
+      debugger
+      var highlightFunction = this._highlightFunction || this._defaultHighlightFunction;
+      return highlightFunction(this.getItemLabel(item), filter);
     },
 
     _isItemFocused: function(focusedIndex, itemIndex) {

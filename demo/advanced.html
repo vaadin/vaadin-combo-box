@@ -60,27 +60,38 @@
       </template>
     </demo-snippet>
 
-    <h3>Configuring Icons</h3>
+    <h3>Using Custom Filter Function</h3>
+
     <demo-snippet>
       <template>
-        <vaadin-combo-box id="demo2" label="Custom Icons">
-          <paper-icon-button icon="remove-circle" class="clear-button"></paper-icon-button>
-          <paper-icon-button icon="search" class="toggle-button"></paper-icon-button>
-        </vaadin-combo-box>
+        <vaadin-combo-box id="demo2" label="Element" allow-custom-value></vaadin-combo-box>
+        <p>Selected value: <span id="selected-value2"></span></p>
+
         <script>
           var combobox2 = document.querySelector('#demo2');
-          // Array of String values.
           combobox2.items = elements;
+          var startsWith = function(item, filter) {
+            return item.substring(0, filter.length).toLowerCase() === filter.toLowerCase();
+          };
+          combobox2.filterFunction = startsWith;
+
+          var strikeMatches = function(label, filter) {
+            var regex = new RegExp(filter, "gi");
+            return label.replace(regex, '<strike>$&</strike>'); // http://stackoverflow.com/a/4002341/1331425
+          };
+          combobox2.highlightFunction = strikeMatches;
         </script>
+
       </template>
     </demo-snippet>
 
-    <h3>Replacing the Input with an &lt;iron-input></h3>
+    <h3>Configuring Icons</h3>
     <demo-snippet>
       <template>
-        <vaadin-combo-box-light id="demo3">
-          <input is="iron-input">
-        </vaadin-combo-box-light>
+        <vaadin-combo-box id="demo3" label="Custom Icons">
+          <paper-icon-button icon="remove-circle" class="clear-button"></paper-icon-button>
+          <paper-icon-button icon="search" class="toggle-button"></paper-icon-button>
+        </vaadin-combo-box>
         <script>
           var combobox3 = document.querySelector('#demo3');
           // Array of String values.
@@ -89,10 +100,24 @@
       </template>
     </demo-snippet>
 
+    <h3>Replacing the Input with an &lt;iron-input></h3>
+    <demo-snippet>
+      <template>
+        <vaadin-combo-box-light id="demo4">
+          <input is="iron-input">
+        </vaadin-combo-box-light>
+        <script>
+          var combobox4 = document.querySelector('#demo4');
+          // Array of String values.
+          combobox4.items = elements;
+        </script>
+      </template>
+    </demo-snippet>
+
     <h3>Replacing the Input with a &lt;paper-input></h3>
     <demo-snippet>
       <template>
-        <vaadin-combo-box-light id="demo4" attr-for-value="value">
+        <vaadin-combo-box-light id="demo5" attr-for-value="value">
           <paper-input label="Elements" class="input">
             <iron-icon icon="toll" prefix></iron-icon>
             <paper-button suffix class="clear-button">Clear</paper-button>
@@ -100,9 +125,9 @@
           </paper-input>
         </vaadin-combo-box-light>
         <script>
-          var combobox4 = document.querySelector('#demo4');
+          var combobox5 = document.querySelector('#demo5');
           // Array of String values.
-          combobox4.items = elements;
+          combobox5.items = elements;
         </script>
       </template>
     </demo-snippet>

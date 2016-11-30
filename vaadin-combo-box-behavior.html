@@ -67,6 +67,13 @@
       },
 
       /**
+       * Filtering function, takes item label and filter as parameters.
+       * Default one is _defaultFilterFunction
+       * Should return Boolean.
+       */
+      filterFunction: Function,
+
+      /**
        * The selected item from the `items` array.
        */
       selectedItem: {
@@ -448,13 +455,22 @@
         return arr;
       }
 
-      return arr.filter((function(item) {
-        filter = filter ? filter.toString().toLowerCase() : '';
+      var filterFunction = this.filterFunction || this._defaultFilterFunction;
 
-        // Check if item contains input value.
-        return this._getItemLabel(item).toString().toLowerCase()
-          .indexOf(filter) > -1;
-      }).bind(this));
+      var filteredItems = [];
+      for (var i in arr) {
+        var label = this._getItemLabel(arr[i]);
+        if (filterFunction(label.toString(), filter.toString())) {
+          filteredItems.push(arr[i]);
+        }
+      }
+
+      return filteredItems;
+    },
+
+    // Check if item contains input value.
+    _defaultFilterFunction: function(item, filter) {
+      return item.toLowerCase().indexOf(filter.toLowerCase()) > -1;
     },
 
     _setItems: function(items) {
@@ -496,7 +512,7 @@
      * @return {boolean}
      */
     _isValidValue: function(value) {
-      /* jshint ignore:start */ //IE11 doesn't support Number.isNaN() 
+      /* jshint ignore:start */ //IE11 doesn't support Number.isNaN()
       return value !== NaN && value !== undefined && value !== null;
       /* jshint ignore:end */
     },
