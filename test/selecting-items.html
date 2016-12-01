@@ -73,7 +73,9 @@
 
     it('should close the dropdown on selection', function() {
       combobox.open();
-      combobox.value = 'foo';
+
+      combobox.$.overlay.$.selector.querySelector('.item').click();
+
       expect(combobox.opened).to.equal(false);
     });
 
@@ -170,6 +172,7 @@
 
       expect(combobox.value).to.eql('');
       expect(combobox.$.overlay._selectedItem).to.be.null;
+      expect(combobox.selectedItem).to.be.null;
     });
 
     it('should close the dropdown after clearing a selection', function() {
