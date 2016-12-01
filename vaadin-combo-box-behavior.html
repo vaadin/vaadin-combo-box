@@ -392,7 +392,7 @@
 
     _focusedInput: function() {
       // Use either light DOM input or one from local DOM.
-      return Polymer.dom(this).querySelector('input:focus') || Polymer.dom(this.root).querySelector('input:focus');
+      return Polymer.dom(this).querySelector('input:focus') || Polymer.dom(this.root).querySelector('input:focus');
     },
 
     _filterChanged: function(filter) {
@@ -496,9 +496,7 @@
      * @return {boolean}
      */
     _isValidValue: function(value) {
-      /* jshint ignore:start */ //IE11 doesn't support Number.isNaN() 
-      return value !== NaN && value !== undefined && value !== null;
-      /* jshint ignore:end */
+      return !isNaN(value) && value !== undefined && value !== null;
     },
 
     _selectedItemChanged: function(event, detail) {

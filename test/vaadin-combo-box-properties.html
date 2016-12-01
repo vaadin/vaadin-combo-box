@@ -23,8 +23,8 @@
 
       beforeEach(function() {
         comboBox = fixture('combobox');
-        combobox.items = undefined;
-        combobox.value = undefined;
+        comboBox.items = undefined;
+        comboBox.value = undefined;
       });
 
       describe('items property', function() {
@@ -139,7 +139,7 @@
             comboBox.$.input.bindValue = 'foo';
             comboBox.close();
 
-            expect(combobox.value).to.be.empty;
+            expect(comboBox.value).to.be.empty;
           });
         });
       });
