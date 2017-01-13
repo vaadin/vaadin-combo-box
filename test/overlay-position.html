@@ -117,6 +117,28 @@
         expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom + comboBox.$.overlay.verticalOffset, 1);
       });
 
+      it('should place the backdrop above all other document elements', function(done) {
+        if (Polymer.Settings.dom === 'shadow') {
+          // TODO @limonte revisit after switching to Polymer 2
+          // currently document.elementFromPoint() always returns
+          // <vaadin-combo-box> when running test in Shadow DOM
+          return done();
+        }
+        comboBox.open();
+
+        var a = document.createElement('a');
+        var linkText = document.createTextNode('I should not be clicked because of backdrop');
+        a.appendChild(linkText);
+        a.href = 'http://example.com';
+        document.body.insertBefore(a, document.body.firstChild);
+
+        comboBox.async(function() {
+          var linkRect = a.getBoundingClientRect();
+          expect(document.elementFromPoint(linkRect.left, linkRect.top)).to.eql(comboBox.$.backdrop);
+          done();
+        }, 220);
+      });
+
       it('should position correctly if items are populated after opening', function(done) {
         comboBox.items = [];
         comboBox.addEventListener('vaadin-dropdown-opened', function() {
