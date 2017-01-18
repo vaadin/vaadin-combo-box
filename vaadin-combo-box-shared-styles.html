@@ -36,6 +36,14 @@
       :host([disabled]) .toggle-button {
         display: none;
       }
+
+      iron-overlay-backdrop {
+        --iron-overlay-backdrop-opacity: 0;
+        /**
+        * Keep the backdrop just below vaadin-combo-box-overlay.
+        */
+        z-index: 199;
+      }
     </style>
   </template>
   <script>
