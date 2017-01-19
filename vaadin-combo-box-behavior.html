@@ -164,6 +164,11 @@
       Polymer.IronA11yAnnouncer.requestAvailability();
     },
 
+    attached: function() {
+      // Set items template
+      this.$.overlay.template = Polymer.dom(this).querySelector('template');
+    },
+
     _onBlur: function() {
       if (!this._closeOnBlurIsPrevented) {
         this.close();

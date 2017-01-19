@@ -1,0 +1,45 @@
+<!--
+@element vaadin-combo-box-item
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="vaadin-combo-box-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'vaadin-combo-box-item',
+
+    properties: {
+      item: Object,
+      _itemTemplateInstance: Object
+    },
+
+    observers: [
+      '_updateItem(item, _itemTemplateInstance)'
+    ],
+
+    attached: function() {
+      if (!this._itemTemplateInstance) {
+        this.domHost.ensureTemplatized();
+        this._itemTemplateInstance = this.domHost.stamp();
+        Polymer.dom(this.root).appendChild(this._itemTemplateInstance.root);
+        if (this.parentElement.notifyResize) {
+          this.parentElement.notifyResize();
+        }
+      }
+    },
+
+    _updateItem: function(item, _itemTemplateInstance) {
+      this._itemTemplateInstance.item = item;
+    },
+  });
+</script>
