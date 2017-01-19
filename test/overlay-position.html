@@ -88,11 +88,12 @@
       comboBox = fixture('combobox');
       comboBox.items = getItemArray(20);
 
-      wh = window.innerHeight;
-      ww = window.innerWidth;
+      var win = comboBox.ownerDocument.defaultView;
+      wh = win.innerHeight;
+      ww = win.innerWidth;
       horiCenter = ww * 0.5;
       vertTop = 0;
-      vertBottom = wh;
+      vertBottom = wh - 100;
 
       // <paper-input-container> adds floated-label-placeholder div asynchronously,
       // we want to wait that out so that the dropdown clientHeight is calculated correctly.
