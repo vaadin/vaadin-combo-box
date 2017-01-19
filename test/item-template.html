@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="common.html">
+</head>
+
+<body>
+
+  <dom-module id="x-scope">
+    <template>
+      <vaadin-combo-box id="combobox" items="[[items]]">
+        <template>
+          item: [[item]]
+          parentProperty: [[parentProperty]]
+          parentProperty.foo: [[parentProperty.foo]]
+        </template>
+      </vaadin-combo-box>
+    </template>
+    <script>
+      HTMLImports.whenReady(function() {
+        Polymer({is: 'x-scope'});
+      });
+    </script>
+  </dom-module>
+
+  <test-fixture id="scope">
+    <template is="dom-template">
+      <x-scope items="[[items]]"></x-scope>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('item template', function() {
+      var scope, combobox, firstItem;
+
+      beforeEach(function(done) {
+        scope = fixture('scope', {items: ['foo', 'bar']});
+        combobox = scope.$.combobox;
+        combobox.open();
+        firstItem = combobox.$.overlay.$.selector.querySelector('vaadin-combo-box-item');
+        combobox.async(done, 1);
+      });
+
+      it('should render items using template', function() {
+        expect(Polymer.dom(firstItem.root).innerHTML).to.contain('item: foo');
+      });
+
+      it('should forward parent properties', function() {
+        scope.parentProperty = 'qux';
+        expect(Polymer.dom(firstItem.root).innerHTML).to.contain('parentProperty: qux');
+      });
+
+      it('should forward parent paths', function() {
+        scope.parentProperty = {foo: ''};
+        scope.set('parentProperty.foo', 'bar');
+        expect(Polymer.dom(firstItem.root).innerHTML).to.contain('parentProperty.foo: bar');
+      });
+    });
+  </script>
+
+</body>
+
+</html>
