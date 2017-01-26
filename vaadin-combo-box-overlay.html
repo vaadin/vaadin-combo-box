@@ -28,6 +28,10 @@
         overflow: hidden;
       }
 
+      :host([opened]) {
+        pointer-events: auto;
+      }
+
       #scroller {
         overflow: auto;
         max-height: var(--vaadin-combo-box-overlay-max-height, 65vh);

@@ -139,7 +139,15 @@
       _closeOnBlurIsPrevented: Boolean,
 
       _templatized: Boolean,
-      _itemTemplate: Boolean
+      _itemTemplate: Boolean,
+
+      /**
+       * When combo-box is opened, we're setting body pointer-events to none
+       * to make the combo-box behave in "modal" way. This variable keeps the
+       * previous state of body pointer-events to restore it when combo-box is
+       * closed.
+       */
+      _documentPointerEvents: String
     },
 
     observers: [
@@ -364,6 +372,11 @@
       this.$.overlay.updateViewportBoundaries();
       this.$.overlay.async(this.$.overlay.adjustScrollPosition);
       this.$.overlay.async(this.$.overlay.notifyResize, 1);
+
+      // Set body pointer-events to 'none' to disable mouse interactions with
+      // other document nodes (combo-box is "modal")
+      this._documentPointerEvents = document.body.style.pointerEvents;
+      document.body.style.pointerEvents = 'none';
     },
 
     _onClosed: function() {
@@ -392,6 +405,9 @@
       this._clearSelectionRange();
 
       this.filter = '';
+
+      // Restore the initial body pointer-events
+      document.body.style.pointerEvents = this._documentPointerEvents;
     },
 
     /**
