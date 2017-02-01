@@ -80,6 +80,21 @@
         expect(combobox.opened).to.be.true;
       });
 
+      it('should set body `pointer-events: none` on open and restore initial value on close', function(done) {
+        document.body.style.pointerEvents = 'painted';
+        combobox.open();
+        Polymer.Base.async(function() {
+          expect(getComputedStyle(document.body).pointerEvents).to.be.equal('none');
+          expect(getComputedStyle(combobox).pointerEvents).to.be.equal('auto');
+          expect(getComputedStyle(combobox.$.overlay).pointerEvents).to.be.equal('auto');
+          tapToggleIcon();
+          Polymer.Base.async(function() {
+            expect(getComputedStyle(document.body).pointerEvents).to.be.equal('painted');
+            done();
+          });
+        });
+      });
+
       it('should not close an open popup', function() {
         combobox.open();
 
