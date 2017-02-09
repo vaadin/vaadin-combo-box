@@ -11,6 +11,7 @@
   <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 
   <link rel="import" href="common.html">
+  <link rel="import" href="../../paper-item/all-imports.html">
 </head>
 
 <body unresolved>
@@ -127,6 +128,56 @@
         </script>
       </template>
     </demo-snippet>
+
+    <h3>Custom Paper Item</h3>
+
+    <demo-snippet>
+      <template>
+        <dom-module id="my-paper-item">
+          <template>
+            <style>
+              :host {
+                display: block;
+              }
+              paper-icon-item {
+                margin: -13px -16px;
+              }
+              paper-icon-item div:not([secondary]) {
+                text-transform: capitalize;
+              }
+              paper-icon-item img {
+                border-radius: 50%;
+              }
+            </style>
+
+            <paper-icon-item>
+              <img src="[[item.picture.thumbnail]]" item-icon>
+              <paper-item-body two-line>
+                <div>[[item.name.first]] [[item.name.last]]</div>
+                <div secondary>[[item.email]]</div>
+              </paper-item-body>
+            </paper-icon-item>
+          </template>
+          <script>
+            Polymer({
+              is: 'my-paper-item',
+              properties: {item: Object}
+            });
+          </script>
+        </dom-module>
+
+        <vaadin-combo-box id="elements-paper-item" items="{{response.results}}" item-value-path="email" item-label-path="email">
+          <template>
+            <my-paper-item item="[[item]]"></my-paper-item>
+          </template>
+        </vaadin-combo-box>
+
+        <script>
+          document.querySelector('#elements-paper-item').items = users;
+        </script>
+      </template>
+    </demo-snippet>
+
   </div>
 </body>
 
