@@ -11,6 +11,7 @@
   <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 
   <link rel="import" href="common.html">
+  <link rel="import" href="../../paper-item/all-imports.html">
 </head>
 
 <body unresolved>
@@ -127,6 +128,29 @@
         </script>
       </template>
     </demo-snippet>
+
+    <h3>Item Template with Material Design</h3>
+
+    <demo-snippet>
+      <template>
+        <vaadin-combo-box id="elements-paper-item" item-value-path="email" item-label-path="email">
+          <template>
+            <paper-item style="padding: 0">
+              <img src="[[item.picture.thumbnail]]" style="border-radius: 50%; height: 48px; width: 48px;">
+              <div style="padding: 0 8px;">
+                <div style="text-transform: capitalize">[[item.name.first]] [[item.name.last]]</div>
+                <div style="font-size: 14px; line-height: 20px; color: #737373;">[[item.email]]</div>
+              </div>
+            </paper-item>
+          </template>
+        </vaadin-combo-box>
+
+        <script>
+          document.querySelector('#elements-paper-item').items = users;
+        </script>
+      </template>
+    </demo-snippet>
+
   </div>
 </body>
 
