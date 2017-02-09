@@ -1,6 +1,6 @@
-![Bower version](https://img.shields.io/bower/v/vaadin-combo-box.svg) 
+![Bower version](https://img.shields.io/bower/v/vaadin-combo-box.svg)
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/vaadin/vaadin-combo-box)
-[![Build Status](https://travis-ci.org/vaadin/vaadin-combo-box.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-combo-box) 
+[![Build Status](https://travis-ci.org/vaadin/vaadin-combo-box.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-combo-box)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/vaadin-core-elements?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # &lt;vaadin-combo-box&gt;
@@ -14,6 +14,7 @@
 <custom-element-demo height="300">
   <template>
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../paper-item/all-imports.html">
     <link rel="import" href="vaadin-combo-box.html">
     <next-code-block></next-code-block>
   </template>
@@ -21,12 +22,37 @@
 ```
 -->
 ```html
-<vaadin-combo-box label="Element"
-    items='["Cadmium","Caesium","Calcium","Californium","Carbon","Scandium"]'>
+<style is="custom-style">
+  paper-icon-item {
+    margin: -13px -16px;
+  }
+</style>
+
+<vaadin-combo-box item-value-path="email" item-label-path="email">
+  <template>
+    <paper-icon-item>
+      <img src="[[item.picture.thumbnail]]" item-icon>
+      <paper-item-body two-line>
+        <div>[[item.name.first]] [[item.name.last]]</div>
+        <div secondary>[[item.email]]</div>
+      </paper-item-body>
+    </paper-icon-item>
+  </template>
 </vaadin-combo-box>
+
+<script>
+  var comboBox = document.querySelector('vaadin-combo-box');
+
+  var request = new XMLHttpRequest();
+  request.open('GET', 'https://randomuser.me/api?results=100&inc=name,email,picture');
+  request.onload = function() {
+    comboBox.items = JSON.parse(request.responseText).results;
+  };
+  request.send();
+</script>
 ```
 
-[<img src="https://raw.githubusercontent.com/vaadin/vaadin-combo-box/master/docs/img/vaadin-combo-box-overview.png" width="387" alt="Screenshot of vaadin-combo-box" />](https://vaadin.com/elements/-/element/vaadin-combo-box)
+[<img src="https://raw.githubusercontent.com/vaadin/vaadin-combo-box/master/docs/img/vaadin-combo-box-item-template-material.png" width="311" alt="Screenshot of vaadin-combo-box" />](https://vaadin.com/elements/-/element/vaadin-combo-box)
 
 
 ## Contributing
