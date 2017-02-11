@@ -158,7 +158,8 @@ Custom property | Description | Default
           no-label-float="[[noLabelFloat]]"
           always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]"
           auto-validate$="[[autoValidate]]"
-          invalid="[[invalid]]">
+          invalid="[[invalid]]"
+          focused="{{focused}}">
       <label on-down="_preventDefault" id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="_openAsync">[[label]]</label>
 
       <content select="[prefix]"></content>
@@ -347,6 +348,11 @@ Custom property | Description | Default
 
       size: {
         type: Number
+      },
+
+      focused: {
+        type: Boolean,
+        reflectToAttribute: true
       }
 
     },
@@ -374,6 +380,10 @@ Custom property | Description | Default
 
     _getAriaExpanded: function(value) {
       return value.toString();
+    },
+
+    focus: function() {
+      this.open();
     }
   });
 
