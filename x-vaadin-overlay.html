@@ -1,0 +1,288 @@
+<!--
+@element x-vaadin-overlay
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/shadow.html">
+
+<dom-module id="x-vaadin-overlay">
+  <template>
+    <style>
+      :host {
+        display: none;
+        position: fixed;
+        @apply(--shadow-elevation-2dp);
+        background: #fff;
+        border-radius: 0 0 2px 2px;
+        pointer-events: auto;
+
+        /**
+        * Keep the x-vaadin-overlay above paper-dialogs.
+        * iron-overlay-manager.html: Polymer.IronOverlayManagerClass.prototype._applyOverlayZ
+        */
+        z-index: 200;
+        overflow: auto;
+      }
+
+      :host([opened]) {
+        display: block;
+      }
+
+    </style>
+    <slot name="template"></slot>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'x-vaadin-overlay',
+
+    behaviors: [Polymer.Templatizer],
+
+    properties: {
+
+      opened: {
+        type: Boolean,
+        value: function() {
+          return false;
+        },
+        reflectToAttribute: true,
+        observer: '_openedChanged',
+        notify: true
+      },
+
+      /**
+       * True if the device supports touch events.
+       */
+      touchDevice: {
+        type: Boolean,
+        reflectToAttribute: true,
+        value: function() {
+          try {
+            document.createEvent('TouchEvent');
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+      },
+
+      template: {
+        value: function() {
+          return Polymer.dom(this).querySelector('template') || undefined;
+        }
+      },
+
+      _notTapping: Boolean,
+
+      _ignoreTaps: Boolean,
+
+
+    },
+
+    observers: ['_templateChanged(template)'],
+
+    _templateChanged: function(template) {
+      this.templatize(template);
+      var instance = this.stamp();
+      this.appendChild(instance.root);
+    },
+
+    _openedChanged: function(value, old) {
+      // Prevent _close() being called when opened is set to its default value (false).
+      if (old === undefined) {
+        return;
+      }
+
+      if (this.opened) {
+        this._open();
+      } else {
+        this._close();
+      }
+    },
+
+    _open: function() {
+      this._parent = Polymer.dom(this).parentNode;
+      this._moveTo(document.body);
+
+      this._addOutsideClickListener();
+
+     this.fire('vaadin-overlay-opened');
+    },
+
+    _close: function() {
+      this._moveTo(this._parent);
+
+      this._removeOutsideClickListener();
+
+     this.fire('vaadin-overlay-closed');
+    },
+
+    // We need to listen on 'click' / 'tap' event and capture it and close the overlay before
+    // propagating the event to the listener in the button. Otherwise, if the clicked button would call
+    // open(), this would happen: https://www.youtube.com/watch?v=Z86V_ICUCD4
+    _outsideClickListener: function(event) {
+      var eventPath = Polymer.dom(event).path;
+      if (eventPath.indexOf(this) < 0) {
+        this.opened = false;
+      }
+    },
+
+    _addOutsideClickListener: function() {
+      // With desktop mouse, 'click' will make Polymer to fire 'tap' event.
+      // With touch devices, 'touchend' will make Polymer to fire 'tap' event, but browser will also fire 'click'.
+      // So, 'click' and 'tap' can come in any order and we need to make sure that the first one fired will close the overlay.
+      if (this.touchDevice) {
+        Polymer.Gestures.add(document, 'tap', null);
+        document.addEventListener('tap', this._outsideClickListener.bind(this), true);
+      } else {
+        document.addEventListener('click', this._outsideClickListener.bind(this), true);
+      }
+    },
+
+    _removeOutsideClickListener: function() {
+      if (this.touchDevice) {
+        // Not sure if this is a good idea to remove this Gesture globally, but that's how the iron-overlay-behavior does it.
+        Polymer.Gestures.remove(document, 'tap', null);
+        document.removeEventListener('tap', this._outsideClickListener.bind(this), true);
+      } else {
+        document.removeEventListener('click', this._outsideClickListener.bind(this), true);
+      }
+    },
+
+    _onTouchStart: function() {
+      this._notTapping = false;
+      this.async(function() {
+        this._notTapping = true;
+      }, 300);
+    },
+
+    _onScroll: function() {
+      this._ignoreTaps = true;
+      this.debounce('restore-taps', function() {
+        this._ignoreTaps = false;
+      }, 300);
+    },
+
+    _preventDefault: function(e) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    },
+
+    _stopPropagation: function(e) {
+      e.stopPropagation();
+    },
+
+    _unwrapIfNeeded: function(element) {
+      var isWrapped = Polymer.Settings.hasShadow && !Polymer.Settings.nativeShadow;
+      return isWrapped ? window.unwrap(element) : element;
+    },
+
+    _processPendingMutationObserversFor: function(node) {
+      if (!Polymer.Settings.useNativeCustomElements) {
+        CustomElements.takeRecords(node);
+      }
+    },
+
+    _moveTo: function(target) {
+      // `attached` and `detached` callbacks are unreliable with Shadow DOM polyfill. They are asynchonous and sometimes
+      // cancel each other. We need to process mutation observers synchonously after moving the overlay. :-(
+      var oldParentNode = this.parentNode;
+      Polymer.dom(target).appendChild(this);
+
+      if (oldParentNode) {
+        this._processPendingMutationObserversFor(oldParentNode);
+        if (oldParentNode.host) {
+          // When moving from local DOM, ensure to remove the old style scope
+          Polymer.StyleTransformer.dom(this, oldParentNode.host.is, this._scopeCssViaAttr, true);
+        }
+      }
+
+      this._processPendingMutationObserversFor(this);
+      if (target.host) {
+        // When moving to local DOM, ensure to add the new style scope
+        Polymer.StyleTransformer.dom(this, target.host.is, this._scopeCssViaAttr);
+      }
+
+      // if (target === document.body) {
+      //   this.style.position = this._isPositionFixed(this.positionTarget) ? 'fixed' : 'absolute';
+      //   window.addEventListener('scroll', this._boundSetPosition, true);
+      //   this._setPosition();
+      // } else {
+      //   window.removeEventListener('scroll', this._boundSetPosition, true);
+      // }
+    },
+
+    _verticalOffset: function(overlayRect, targetRect) {
+      if (this._alignedAbove) {
+        return -overlayRect.height;
+      } else {
+        return targetRect.height + this.verticalOffset;
+      }
+    },
+
+    _isPositionFixed: function(element) {
+      var offsetParent = element.offsetParent;
+
+      return window.getComputedStyle(this._unwrapIfNeeded(element)).position === 'fixed' ||
+        (offsetParent && this._isPositionFixed(offsetParent));
+    },
+
+    _maxHeight: function(targetRect) {
+      var margin = 8;
+      var minHeight = 116; // Height of two items in combo-box
+      var bottom = Math.min(window.innerHeight, document.body.scrollHeight - document.body.scrollTop);
+
+      if (this._alignedAbove) {
+        return Math.max(targetRect.top - margin + Math.min(document.body.scrollTop, 0), minHeight) + 'px';
+      } else {
+        return Math.max(bottom - targetRect.bottom - margin, minHeight) + 'px';
+      }
+    },
+
+    // TODO: move to dropdown.
+    _setPosition: function(e) {
+      if (e && e.target) {
+        var target = e.target === document ? document.body : e.target;
+        var parent = this._unwrapIfNeeded(this.parentElement);
+        if (!(target.contains(this) || target.contains(this.positionTarget)) || parent !== document.body) {
+          return;
+        }
+      }
+
+      var targetRect = this.positionTarget.getBoundingClientRect();
+      this._alignedAbove = this._shouldAlignAbove();
+
+      // overlay max height is restrained by the #scroller max height which is set to 65vh in CSS.
+      this.style.maxHeight = this._maxHeight(targetRect);
+
+      // we need to set height for iron-list to make its `firstVisibleIndex` work correctly.
+      this.$.selector.style.maxHeight = this._maxHeight(targetRect);
+
+      var overlayRect = this.getBoundingClientRect();
+      this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
+      this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
+        this._verticalOffset(overlayRect, targetRect);
+
+      var _devicePixelRatio = window.devicePixelRatio || 1;
+      this._translateX = Math.round(this._translateX * _devicePixelRatio) / _devicePixelRatio;
+      this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
+      this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
+
+      this.style.width = this.positionTarget.clientWidth + 'px';
+
+      this.updateViewportBoundaries();
+    },
+
+    _shouldAlignAbove: function() {
+      var spaceBelow = (
+          window.innerHeight -
+          this.positionTarget.getBoundingClientRect().bottom -
+          Math.min(document.body.scrollTop, 0)
+        ) / window.innerHeight;
+
+      return spaceBelow < 0.30;
+    }
+  });
+</script>

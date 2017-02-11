@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+  </head>
+  <body>
+    <dom-module id="highlight-span">
+      <style>
+        :host {
+          display: flex;
+        }
+
+        span[match] {
+          color: blue;
+          font-weight: bold;
+        }
+      </style>
+      <template>
+        <template is="dom-repeat" items="[[_tokens]]">
+          <span match$="[[_isMatch(item)]]">[[item]]</span>
+        </template>
+      </template>
+      <script>
+        Polymer({
+          is: 'highlight-span',
+
+          properties: {
+            match: String,
+            text: String,
+
+            _tokens: Array
+          },
+
+          observers: ['_match(match, text)'],
+
+          _match: function(match, text) {
+            var split = text.toLowerCase().split(match.toLowerCase());
+            for (var i = split.length - 1;i>0;i--) {
+              split.splice(i, 0, match);
+            }
+            this._tokens = split;
+          },
+
+          _isMatch: function(text) {
+            return this.match !== '' && text.toLowerCase().indexOf(this.match.toLowerCase()) >= 0;
+          }
+        });
+      </script>
+    </dom-module>
+
+    <x-box></x-box>
+
+    <dom-module id="x-box">
+      <style>
+        :host {
+          display: flex;
+          flex-direction: column;
+        }
+
+        highlight-span {
+
+        }
+      </style>
+      <template>
+        <input placeholder="filter" value="{{filter::input}}">
+        <template is="dom-repeat" items="[[elements]]">
+          <highlight-span text="[[item]]" match="[[filter]]"></highlight-span>
+        </template>
+      </template>
+      <script>
+        Polymer({
+          is: 'x-box',
+
+          properties: {
+            filter: String,
+            elements: Array
+          },
+
+          observers: ['_filterChanged(filter)'],
+
+          ready: function() {
+            this._elements = ['Actinium', 'Aluminium', 'Americium', 'Antimony', 'Argon',
+                    'Arsenic', 'Astatine', 'Barium', 'Berkelium', 'Beryllium', 'Bismuth',
+                    'Bohrium', 'Boron', 'Bromine', 'Cadmium', 'Caesium', 'Calcium',
+                    'Californium', 'Carbon', 'Cerium', 'Chlorine', 'Chromium', 'Cobalt',
+                    'Copernicium', 'Copper', 'Curium', 'Darmstadtium', 'Dubnium',
+                    'Dysprosium', 'Einsteinium', 'Erbium', 'Europium', 'Fermium',
+                    'Flerovium', 'Fluorine', 'Francium', 'Gadolinium', 'Gallium',
+                    'Germanium', 'Gold', 'Hafnium', 'Hassium', 'Helium', 'Holmium',
+                    'Hydrogen', 'Indium', 'Iodine', 'Iridium', 'Iron', 'Krypton',
+                    'Lanthanum', 'Lawrencium', 'Lead', 'Lithium', 'Livermorium', 'Lutetium',
+                    'Magnesium', 'Manganese', 'Meitnerium', 'Mendelevium', 'Mercury',
+                    'Molybdenum', 'Neodymium', 'Neon', 'Neptunium', 'Nickel', 'Niobium',
+                    'Nitrogen', 'Nobelium', 'Osmium', 'Oxygen', 'Palladium', 'Phosphorus',
+                    'Platinum', 'Plutonium', 'Polonium', 'Potassium', 'Praseodymium',
+                    'Promethium', 'Protactinium', 'Radium', 'Radon', 'Rhenium', 'Rhodium',
+                    'Roentgenium', 'Rubidium', 'Ruthenium', 'Rutherfordium', 'Samarium',
+                    'Scandium', 'Seaborgium', 'Selenium', 'Silicon', 'Silver', 'Sodium',
+                    'Strontium', 'Sulfur', 'Tantalum', 'Technetium', 'Tellurium', 'Terbium',
+                    'Thallium', 'Thorium', 'Thulium', 'Tin', 'Titanium', 'Tungsten',
+                    'Ununoctium', 'Ununpentium', 'Ununseptium', 'Ununtrium', 'Uranium',
+                    'Vanadium', 'Xenon', 'Ytterbium', 'Yttrium', 'Zinc', 'Zirconium'];
+
+            this.filter = '';
+          },
+
+          _filterChanged: function(filter) {
+            this.elements = this._elements.filter(function(el) {
+              // notice that the item filter is different from the highlighting filter,
+              // (startsWith vs. contains), but still works nicely from UX standpoint.
+              // just to make a point that it isn't necessary to match the highlighting
+              // algorithm with the filtering algorithm in most cases.
+              return el.toLowerCase().indexOf(filter.toLowerCase()) === 0;
+            });
+          }
+        });
+      </script>
+    </dom-module>
+  </body>
+</html>

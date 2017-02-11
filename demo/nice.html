@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src='https://cdn.vaadin.com/vaadin-components/latest/webcomponentsjs/webcomponents-lite.js'></script>
+  <link href='../vaadin-combo-box.html' rel='import'>
+  <script>
+    var randomUserUrl = 'https://randomuser.me/api/';
+  </script>
+</head>
+
+<body style="margin: 8px;position:relative">
+  <button id="togglebutton">Toggle dropdown</button>
+  <button id="openButton">Open dropdown</button>
+  <button id="closeButton">Close dropdown</button>
+  <vaadin-combo-box style="position:fixed; left: 300px"></vaadin-combo-box>
+  <div style='width:300px'>
+    <array-selector id="array"></array-selector>
+  </div>
+  <script>
+    document.addEventListener('blur', function(e) {
+      console.log(e);
+    }, true);
+    document.addEventListener('focus', function(e) {
+      console.log(e);
+    }, true);
+    document.addEventListener('click', function(e) {
+      console.log(e);
+    }, true);
+    document.addEventListener('opened-changed', function(e) {
+      console.log(e);
+    });
+
+    document.addEventListener('WebComponentsReady', function() {
+      var combobox = combobox || document.querySelector("vaadin-combo-box");
+
+      var items = [];
+      for (var i = 0; i < 100; i++) {
+        items.push(i.toString());
+      }
+
+      combobox.items = items;
+      //document.querySelector('#box2').items = items;
+
+
+
+      var togglebutton = document.querySelector("#togglebutton");
+      togglebutton.addEventListener('click', function() {
+        console.log('button.click');
+        if (combobox.opened) {
+          combobox.close();
+        } else {
+          combobox.open();
+        }
+      });
+
+      document.querySelector("#openButton").addEventListener('click', function() {
+        console.log('button.click');
+        combobox.open();
+      });
+
+      document.querySelector("#closeButton").addEventListener('click', function() {
+        console.log('button.click');
+        combobox.close();
+      });
+
+    });
+  </script>
+</body>
+
+</html>

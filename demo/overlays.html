@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <link rel="import" href="../x-vaadin-overlay.html">
+    <link rel="import" href="../x-vaadin-dropdown.html">
+    <link rel="import" href="../x-vaadin-list.html">
+    <link rel="import" href="../x-vaadin-combo-box.html">
+
+    <link rel="import" href="common.html">
+
+  </head>
+  <body>
+
+  <div class="vertical-section-container centered">
+    <h3>Dialog</h3>
+
+    <demo-snippet>
+      <template>
+        <x-vaadin-dialog></x-vaadin-dialog>
+      </template>
+    </demo-snippet>
+
+    <h3>Dropdown</h3>
+
+    <demo-snippet>
+      <template>
+        <x-vaadin-dropdown-menu></x-vaadin-dropdown-menu>
+      </template>
+    </demo-snippet>
+
+    <h3>Menu Button</h3>
+
+    <demo-snippet>
+      <template>
+        <x-vaadin-menu-button></x-vaadin-menu-button>
+      </template>
+    </demo-snippet>
+
+    <h3>Listbox</h3>
+
+    <demo-snippet>
+      <template>
+        <x-vaadin-listbox></x-vaadin-listbox>
+      </template>
+    </demo-snippet>
+
+    <h3>Combobox</h3>
+
+    <demo-snippet>
+      <template>
+        <x-vaadin-combo-box></x-vaadin-combo-box>
+      </template>
+    </demo-snippet>
+  </div>
+
+
+  <dom-module id="x-vaadin-dialog">
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <x-vaadin-overlay id="overlay" style="top: 50%;left: 50%;transform: translate3d(-50%, -50%, 0);">
+        <template slot="template">
+         <div style="height: 200px; width: 500px">
+           <button on-tap="_close">Close</button>
+         </div>
+       </template>
+      </x-vaadin-overlay>
+      <button on-tap="_open">Open</button>
+    </template>
+    <script>
+      Polymer({
+        is: 'x-vaadin-dialog',
+
+        _open: function() {
+          this.$.overlay.opened = true;
+        },
+
+        _close: function() {
+          this.$.overlay.opened = false;
+        }
+      });
+    </script>
+  </dom-module>
+
+  <dom-module id="x-vaadin-dropdown-menu">
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <label id="label" on-tap="_open">[[selected]]</label>
+      <x-vaadin-dropdown id="dropdown">
+        <template>
+          <style>
+            x-vaadin-list {
+              width: 100px;
+            }
+          </style>
+          <x-vaadin-list id="list" items="[[items]]" on-selection-changed="_selectionChanged"></x-vaadin-list>
+        </template>
+      </x-vaadin-dropdown>
+    </template>
+    <script>
+      Polymer({
+        is: 'x-vaadin-dropdown-menu',
+
+        properties: {
+          selected: String
+        },
+
+        ready: function() {
+          this.selected = 'Select Value';
+          this.$.dropdown.positionTarget = this.$.label;
+          this.items = ['foo', 'bar', 'baz'];
+        },
+
+        _open: function(e) {
+          this.$.dropdown.opened = true;
+        },
+
+        _selectionChanged: function(e) {
+          this.$.dropdown.opened = false;
+          this.selected = e.detail.item;
+        }
+      });
+    </script>
+  </dom-module>
+
+
+  <dom-module id="x-vaadin-menu-button">
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <button id="button" on-tap="_open">Show</button>
+      <x-vaadin-dropdown id="dropdown">
+        <template>
+          <style>
+            x-vaadin-list {
+              width: 100px;
+            }
+          </style>
+          <x-vaadin-list id="list" items="[[items]]" on-selection-changed="_selectionChanged"></x-vaadin-list>
+        </template>
+      </x-vaadin-dropdown>
+    </template>
+    <script>
+      Polymer({
+        is: 'x-vaadin-menu-button',
+
+        ready: function() {
+          this.$.dropdown.positionTarget = this.$.button;
+          this.items = ['foo', 'bar', 'baz'];
+        },
+
+        _open: function(e) {
+          this.$.dropdown.opened = true;
+        },
+
+        _selectionChanged: function(e) {
+          this.$.dropdown.opened = false;
+        }
+      });
+    </script>
+  </dom-module>
+
+  <dom-module id="x-vaadin-listbox">
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+
+        x-vaadin-list {
+          border: 1px solid black;
+        }
+      </style>
+      <input id="input" readonly>
+      <x-vaadin-list id="list" items="[[items]]" loading="[[loading]]"></x-vaadin-list>
+    </template>
+    <script>
+      Polymer({
+        is: 'x-vaadin-listbox',
+
+        properties: {
+          filter: String,
+          loading: Boolean
+        },
+
+        observers: ['_filterChanged(filter)'],
+
+        attached: function() {
+          this.filter = '';
+
+          this.$.list.style.width = this.$.input.clientWidth + 'px';
+        },
+
+        _filterChanged: function(filter) {
+          this.loading = true;
+
+          this.items = ['foo', 'bar', 'baz'].filter(function(item) {
+            return !item || item.indexOf(filter) >= 0;
+          });
+
+          console.log(this.items);
+
+          this.async(function() {
+            this.loading = false;
+          }, 100);
+        }
+      });
+    </script>
+  </dom-module>
+  </body>
+</html>
