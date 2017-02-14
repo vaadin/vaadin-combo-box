@@ -39,6 +39,15 @@
       },
 
       /**
+       * If true, the element currently has focus.
+       */
+      focused: {
+    	  type: Boolean,
+    	  notify: true,
+    	  readOnly: true,
+    	  value: false
+      },
+      /**
        * The `String` value for the selected item of the combo box. Provides
        * the value for `iron-form`.
        *
@@ -173,11 +182,16 @@
     },
 
     _onBlur: function() {
+    	this._setFocused(false);
       if (!this._closeOnBlurIsPrevented) {
         this.close();
       }
     },
 
+    _onFocus: function() {
+    	this._setFocused(true);
+    },
+      
     _onOverlayDown: function(event) {
       if (this.$.overlay.touchDevice && event.target !== this.$.overlay.$.scroller) {
         // On touch devices, blur the input on touch start inside the overlay, in order to hide
