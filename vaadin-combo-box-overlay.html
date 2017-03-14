@@ -27,6 +27,7 @@
         */
         z-index: 200;
         overflow: hidden;
+        @apply(--vaadin-combo-box-overlay);
       }
 
       #scroller {
@@ -65,6 +66,7 @@
       #selector:not([touch-device]) vaadin-combo-box-item:hover,
       #selector vaadin-combo-box-item[focused] {
         background: #eee;
+        @apply(--vaadin-combo-box-overlay-focused-item);
       }
 
       #selector vaadin-combo-box-item[selected] {
