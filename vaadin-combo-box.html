@@ -136,20 +136,41 @@ Custom property | Description | Default
         z-index: 20;
       }
 
-      #input::-ms-clear {
+      input::-ms-clear {
         display: none;
       }
 
-      #input {
+      input {
         box-sizing: border-box;
         padding-right: 28px;
       }
 
-      :host([has-value]) #input {
+      :host([has-value]) input {
         padding-right: 60px;
         margin-right: -32px;
       }
 
+      /* The same code than paper-input */
+      input {
+        position: relative; /* to make a stacking context */
+        outline: none;
+        box-shadow: none;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+        background: transparent;
+        border: none;
+        color: var(--paper-input-container-input-color, var(--primary-text-color));
+        -webkit-appearance: none;
+        text-align: inherit;
+        vertical-align: bottom;
+
+        /* Firefox sets a min-width on the input, which can cause layout issues */
+        min-width: 0;
+
+        @apply --paper-font-subhead;
+        @apply --paper-input-container-input;
+      }
     </style>
 
     <paper-input-container
@@ -161,32 +182,32 @@ Custom property | Description | Default
           invalid="[[invalid]]">
       <label on-down="_preventDefault" id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="_openAsync">[[label]]</label>
 
-      <slot name="prefix"></slot>
+      <slot name="prefix" slot="prefix"></slot>
 
       <span id="template-placeholder"></span>
 
-      <slot name="suffix"></slot>
+      <div slot="suffix">
+        <slot name="clear-button">
+          <paper-icon-button id="clearIcon"
+          tabindex="-1"
+          aria-label="Clear"
+          icon="vaadin-combo-box:clear"
+          class="clear-button small">
+          </paper-icon-button>
+        </slot>
+        <slot name="toggle-button">
+          <paper-icon-button id="toggleIcon"
+          tabindex="-1"
+          icon="vaadin-combo-box:arrow-drop-down"
+          aria-label="Toggle"
+          aria-expanded$="[[_getAriaExpanded(opened)]]"
+          class="toggle-button rotate-on-open">
+          </paper-icon-button>
+        </slot>
 
-      <slot name="clear-button">
-        <paper-icon-button
-            id="clearIcon"
-            tabindex="-1"
-            aria-label="Clear"
-            icon="vaadin-combo-box:clear"
-            class="clear-button small">
-        </paper-icon-button>
-      </slot>
-
-      <slot name="toggle-button">
-        <paper-icon-button
-            id="toggleIcon"
-            tabindex="-1"
-            icon="vaadin-combo-box:arrow-drop-down"
-            aria-label="Toggle"
-            aria-expanded$="[[_getAriaExpanded(opened)]]"
-            class="toggle-button rotate-on-open">
-        </paper-icon-button>
-      </slot>
+        <slot name="suffix">
+        </slot>
+      </div>
 
       <template is="dom-if" if="[[errorMessage]]">
         <paper-input-error>[[errorMessage]]</paper-input-error>
