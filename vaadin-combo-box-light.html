@@ -108,12 +108,14 @@ two `<paper-button>`s to act as the clear and toggle controls.
       this._revertInputValue();
       this.listen(this.inputElement, 'input', '_inputValueChanged');
       this.listen(this.inputElement, 'blur', '_onBlur');
+      this.listen(this.inputElement, 'focus', '_onFocus');
       this._preventInputBlur();
     },
 
     detached: function() {
       this.unlisten(this.inputElement, 'input', '_inputValueChanged');
       this.unlisten(this.inputElement, 'blur', '_onBlur');
+      this.unlisten(this.inputElement, 'focus', '_onFocus');
       this._restoreInputBlur();
     },
 
