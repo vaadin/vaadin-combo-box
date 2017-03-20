@@ -228,7 +228,8 @@ Custom property | Description | Default
         on-down="_onOverlayDown"
         loading="[[loading]]"
         on-mousedown="_preventDefault"
-        vertical-offset="2">
+        vertical-offset="2"
+        disable-dropdown-focused-item="[[disableDropdownFocusedItem]]">
     </vaadin-combo-box-overlay>
   </template>
 </dom-module>
@@ -279,6 +280,14 @@ Custom property | Description | Default
        * Set to true to disable this input.
        */
       disabled: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Disable dropdown focused item. The selected item is confirmed by only enter key.
+       */
+      disableDropdownFocusedItem: {
         type: Boolean,
         value: false
       },
