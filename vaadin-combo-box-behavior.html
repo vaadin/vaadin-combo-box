@@ -577,8 +577,15 @@
       // TODO: There is something wrong with observers and using set function
       // see here: https://github.com/Polymer/polymer/issues/3254
       // As a workaround setting/notifying the observer with the value undefined helps
+      var oldItems = this.$.overlay._items;
+
       this.$.overlay.notifyPath('_items', undefined);
       this.$.overlay.set('_items', items);
+      
+      // Check if selectedItem is exits in new items, if not, reset value
+      if(this.value && oldItems && oldItems.length && items && this._indexOfValue(this.value, items) === -1){
+        this.set('value', '');
+      }
 
       this.$.overlay.hidden = !this._hasItems(items);
       this.$.overlay.notifyResize();
