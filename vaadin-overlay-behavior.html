@@ -151,7 +151,11 @@
       this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
       this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
 
-      this.style.width = this.positionTarget.clientWidth + 'px';
+      var minWidth = this.getComputedStyleValue("--vaadin-combo-box-overlay-min-width");
+      var width = this.getComputedStyleValue("--vaadin-combo-box-overlay-width");
+
+      this.style.minWidth = minWidth || this.positionTarget.clientWidth + 'px';
+      this.style.width = width;
 
       this.updateViewportBoundaries();
     },
