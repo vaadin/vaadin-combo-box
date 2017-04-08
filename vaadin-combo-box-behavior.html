@@ -574,8 +574,8 @@
       this.$.overlay.notifyPath('_items', undefined);
       this.$.overlay.set('_items', items);
       
-      // Check if selectedItem is exits in new items, if not, reset value
-      if(this.value && oldItems && oldItems.length && items && this._indexOfValue(this.value, items) === -1){
+      // Check if allowCustomValue is not true and selectedItem is exits in new items, if not, reset value
+      if(!this.allowCustomValue && this.value && oldItems && oldItems.length && items && this._indexOfValue(this.value, items) === -1){
         this.set('value', '');
       }
 
