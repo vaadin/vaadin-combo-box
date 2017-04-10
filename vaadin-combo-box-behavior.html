@@ -522,7 +522,8 @@
     },
 
     _itemsChanged: function(e) {
-      if (e.path === 'items' || e.path === 'items.splices') {
+      //Update filteredItems when item is chagned
+      if (e.path !== 'length') {
         this.filteredItems = this.items ? this.items.slice(0) : this.items;
 
         var valueIndex = this._indexOfValue(this.value, this.items);
