@@ -66,7 +66,8 @@ two `<paper-button>`s to act as the clear and toggle controls.
         loading="[[loading]]"
         on-down="_onOverlayDown"
         on-mousedown="_preventDefault"
-        vertical-offset="[[overlayVerticalOffset]]">
+        vertical-offset="[[overlayVerticalOffset]]"
+        disable-dropdown-focused-item="[[disableDropdownFocusedItem]]">
     </vaadin-combo-box-overlay>
   </template>
 </dom-module>
@@ -88,6 +89,14 @@ two `<paper-button>`s to act as the clear and toggle controls.
       attrForValue: {
         type: String,
         value: 'bind-value'
+      },
+
+      /**
+       * Disable dropdown focused item. The selected item is confirmed by only enter key.
+       */
+      disableDropdownFocusedItem: {
+        type: Boolean,
+        value: false
       },
 
       /**

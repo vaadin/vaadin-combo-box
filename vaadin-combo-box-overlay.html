@@ -113,6 +113,14 @@
     properties: {
 
       /**
+       * Disable dropdown focused item. The selected item is confirmed by only enter key.
+       */
+      disableDropdownFocusedItem: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
        * True if the device supports touch events.
        */
       touchDevice: {
@@ -184,7 +192,7 @@
     },
 
     _getFocusedItem: function(focusedIndex) {
-      if (focusedIndex >= 0) {
+      if (focusedIndex >= 0 && !this.disableDropdownFocusedItem) {
         return this._items[focusedIndex];
       }
     },
