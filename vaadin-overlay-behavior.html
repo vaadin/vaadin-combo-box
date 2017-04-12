@@ -16,6 +16,13 @@
       },
 
       /**
+       * Width of the overlay, if not set the width of positionTarget is used
+       */
+      width: {
+        type: Number
+      },
+
+      /**
        * Vertical offset for the overlay position.
        */
       verticalOffset: {
@@ -135,7 +142,7 @@
       this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
       this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
 
-      this.style.width = this.positionTarget.clientWidth + 'px';
+      this.style.width = (this.width !== null && this.width !== undefined ? this.width : this.positionTarget.clientWidth) + 'px';
 
       this.updateViewportBoundaries();
     },
