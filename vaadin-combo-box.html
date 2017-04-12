@@ -375,6 +375,19 @@ Custom property | Description | Default
 
     _getAriaExpanded: function(value) {
       return value.toString();
+    },
+    
+    /**
+     * Sets focus on the input field.
+     */
+    focus: function() {
+      this.$.input.focus();
+    },
+    /**
+     * Removes focus from the input field.
+     */
+    blur: function() {
+      this.$.input.blur();
     }
   });
 
