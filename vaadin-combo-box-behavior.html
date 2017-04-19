@@ -312,6 +312,11 @@
         // Do not submit the surrounding form.
         e.preventDefault();
       }
+      
+      // fired event when entered value is new or not found from items array
+      if(!this.filteredItems || !this.filteredItems.length){
+        this.fire('vaadin-add-new', this._inputElementValue);
+      }
     },
 
     _onEscape: function() {
