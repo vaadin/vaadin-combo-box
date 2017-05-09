@@ -95,6 +95,13 @@
       },
 
       /**
+       * Array of items that cannot be selected.
+       */
+      disabledItems: {
+        type: Array,
+      },
+
+      /**
        * The selected item from the `items` array.
        */
       selectedItem: {
@@ -669,6 +676,7 @@
       return {
         item: true,
         index: true,
+        disabled: true,
         selected: true,
         focused: true
       };

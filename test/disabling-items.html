@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-combo basic tests</title>
+  <script src="../../web-component-tester/browser.js"></script>
+
+
+  <link rel="import" href="common.html">
+  <script src="common.js"></script>
+</head>
+
+<body>
+
+<test-fixture id="default">
+  <template>
+    <vaadin-combo-box></vaadin-combo-box>
+  </template>
+</test-fixture>
+
+<script>
+  describe('disabling items', function() {
+    var combobox;
+    var input;
+    var valueChangedSpy, selectedItemChangedSpy, selectionChangedSpy, changeSpy;
+
+    function dispatchTap(elm) {
+      elm.dispatchEvent(new CustomEvent('tap', {
+        bubbles: true
+      }));
+    }
+
+    beforeEach(function() {
+      combobox = fixture('default');
+      combobox.items = ['foo', 'bar', 'baz', 'qux'];
+      combobox.disabledItems = ['bar', 'baz'];
+
+      combobox.opened = true;
+    });
+
+    it('should set disabled attribute on the item', function() {
+      var items = combobox.$.overlay.$.selector.$.items.querySelectorAll('vaadin-combo-box-item');
+
+      expect(items[0].hasAttribute('disabled')).to.be.false;
+      expect(items[1].hasAttribute('disabled')).to.be.true;
+    });
+
+    it('should prevent selection by tapping', function() {
+      var items = combobox.$.overlay.$.selector.$.items.querySelectorAll('vaadin-combo-box-item');
+
+      dispatchTap(items[1]);
+
+      expect(combobox.opened).to.be.true;
+      expect(combobox.selectedItem).to.be.undefined;
+    });
+
+    it('should prevent focusing with arrow down', function() {
+      // TODO
+    })
+
+    it('should prevent focusing with arrow up', function() {
+      // TODO
+    });
+  });
+</script>
+
+</body>
+
+</html>

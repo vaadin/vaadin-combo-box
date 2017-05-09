@@ -62,13 +62,17 @@
         height: 58px;
       }
 
-      #selector:not([touch-device]) vaadin-combo-box-item:hover,
+      #selector:not([touch-device]) vaadin-combo-box-item:not([disabled]):hover,
       #selector vaadin-combo-box-item[focused] {
         background: #eee;
       }
 
       #selector vaadin-combo-box-item[selected] {
         color: var(--primary-color);
+      }
+
+      #selector vaadin-combo-box-item[disabled] {
+        opacity: 0.5;
       }
 
       #selector vaadin-combo-box-item[hidden] {
@@ -95,6 +99,7 @@
               index="[[index]]"
               item="[[item]]"
               label="[[getItemLabel(item)]]"
+              disabled="[[_isItemDisabled(item, _disabledItems.*)]]"
               selected="[[_isItemSelected(item, _selectedItem)]]"
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
@@ -140,6 +145,10 @@
         value: false,
         reflectToAttribute: true,
         observer: 'notifyResize'
+      },
+
+      _disabledItems: {
+        type: Array
       },
 
       _selectedItem: {
@@ -193,12 +202,16 @@
       }
     },
 
+    _isItemDisabled: function(item, splices) {
+      return this._disabledItems && this._disabledItems.indexOf(item) >= 0;
+    },
+
     _isItemSelected: function(item, selectedItem) {
       return item === selectedItem;
     },
 
     _onTap: function(e) {
-      if (!this._notTapping && !this._ignoreTaps) {
+      if (!this._notTapping && !this._ignoreTaps && !this._isItemDisabled(e.model.item)) {
         this.fire('selection-changed', {item: e.model.item});
       }
     },

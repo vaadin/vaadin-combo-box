@@ -43,7 +43,16 @@ This program is available under Apache License Version 2.0, available at https:/
       label: String,
 
       /**
-       * True when item is selected
+       * `true` when item is disabled
+       */
+      disabled: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
+
+      /**
+       * `true` when item is selected
        */
       selected: {
         type: Boolean,
@@ -52,7 +61,7 @@ This program is available under Apache License Version 2.0, available at https:/
       },
 
       /**
-       * True when item is focused
+       * `true` when item is focused
        */
       focused: {
         type: Boolean,
@@ -70,7 +79,8 @@ This program is available under Apache License Version 2.0, available at https:/
       '_updateTemplateInstanceVariable("index", index, _itemTemplateInstance)',
       '_updateTemplateInstanceVariable("item", item, _itemTemplateInstance)',
       '_updateTemplateInstanceVariable("selected", selected, _itemTemplateInstance)',
-      '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)'
+      '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)',
+      '_updateTemplateInstanceVariable("disabled", disabled, _itemTemplateInstance)'
     ],
 
     attached: function() {
