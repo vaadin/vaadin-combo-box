@@ -127,6 +127,11 @@
       if (e && e.target) {
         var target = e.target === document ? document.body : e.target;
         var parent = this._unwrapIfNeeded(this.parentElement);
+
+        if (this.domHost && ['vaadin-combo-box', 'vaadin-combo-box-light'].indexOf(this.domHost.is) >= 0) {
+          this._combobox = this.domHost;
+        }
+
         if (!(target.contains(this) || target.contains(this.positionTarget)) || parent !== document.body) {
           return;
         }
@@ -151,11 +156,9 @@
       this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
       this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
 
-      var minWidth = this.getComputedStyleValue("--vaadin-combo-box-overlay-min-width");
-      var width = this.getComputedStyleValue("--vaadin-combo-box-overlay-width");
+      var width = this._combobox.getComputedStyleValue('--vaadin-combo-box-overlay-width');
 
-      this.style.minWidth = minWidth || this.positionTarget.clientWidth + 'px';
-      this.style.width = width;
+      this.style.width = width || (this.positionTarget.clientWidth + 'px');
 
       this.updateViewportBoundaries();
     },
