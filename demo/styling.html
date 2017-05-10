@@ -8,11 +8,9 @@
 
   <title>vaadin-combo-box Styling Examples</title>
 
-  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <link rel="import" href="common.html">
-
-  <link rel="import" href="../../iron-form/iron-form.html">
 </head>
 
 <body unresolved>
@@ -21,42 +19,27 @@
     <demo-navigation></demo-navigation>
 
     <h3>Overlay Width</h3>
-    <p>To force the overlay width to be wider than the input field, use the <code>--vaadin-combo-box-overlay-width</code> CSS custom property.</p>
+    <p>The default width of the overlay equals the input field width. You can override that with the <code>--vaadin-combo-box-overlay-width</code> CSS custom property.</p>
     <demo-snippet>
       <template>
-        <style is="custom-style">
-          #demo1 {
-            width: 200px;
-            --vaadin-combo-box-overlay-width: 400px;
-          }
-        </style>
+        <custom-style>
+          <style is="custom-style">
+            #demo1 {
+              width: 200px;
+              --vaadin-combo-box-overlay-width: 400px;
+            }
+          </style>
+        </custom-style>
 
         <vaadin-combo-box id="demo1" label="Element"></vaadin-combo-box>
 
         <script>
-          var combobox = document.querySelector('#demo1').items = elements;
+          window.addEventListener('WebComponentsReady', function() {
+            var combobox = document.querySelector('#demo1').items = elements;
+          });
         </script>
       </template>
     </demo-snippet>
-
-    <h3>Overlay Minimum Width</h3>
-    <p>The default minimum width of the overlay equals the input field width. You can override that with the <code>--vaadin-combo-box-overlay-min-width</code> CSS custom property.</p>
-    <demo-snippet>
-      <template>
-        <style is="custom-style">
-          #demo2 {
-            --vaadin-combo-box-overlay-min-width: 200px;
-          }
-        </style>
-
-        <vaadin-combo-box id="demo2" label="Element"></vaadin-combo-box>
-
-        <script>
-          var combobox = document.querySelector('#demo2').items = elements;
-        </script>
-      </template>
-    </demo-snippet>
-
 
   </div>
 </body>

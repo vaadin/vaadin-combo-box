@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>vaadin-combo-box resizing tests</title>
+  <script src='../../web-component-tester/browser.js'></script>
+
+  <link rel='import' href='common.html'>
+  <script src="common.js"></script>
+
+</head>
+
+<body>
+
+<test-fixture id="default-width">
+  <template>
+    <vaadin-combo-box style="width: 200px"></vaadin-combo-box>
+  </template>
+</test-fixture>
+
+<test-fixture id="custom-width">
+  <template>
+    <custom-style>
+      <style>
+        #custom1 {
+          width: 200px;
+          --vaadin-combo-box-overlay-width: 100px;
+        }
+      </style>
+    </custom-style>
+    <vaadin-combo-box id="custom1"></vaadin-combo-box>
+  </template>
+</test-fixture>
+
+<script>
+  var combobox, overlay;
+
+  describe('overlay width', function() {
+    describe('default width', function() {
+      beforeEach(function() {
+        combobox = fixture('default-width');
+        overlay = combobox.$.overlay;
+        combobox.items = getItemArray(20);
+
+        combobox.opened = true;
+      });
+
+      afterEach(function() {
+        combobox.opened = false;
+      });
+
+      it('should use input width by default for width', function() {
+        expect(window.getComputedStyle(overlay).width).to.eql('200px');
+      });
+    });
+
+    describe('custom overlay width', function() {
+      beforeEach(function() {
+        combobox = fixture('custom-width')[1];
+        overlay = combobox.$.overlay;
+        combobox.items = getItemArray(20);
+
+        combobox.opened = true;
+      });
+
+      afterEach(function() {
+        combobox.opened = false;
+      });
+
+      it('should override width with CSS property', function() {
+        expect(window.getComputedStyle(overlay).width).to.eql('100px');
+      });
+    });
+  });
+</script>
+
+</body>
+
+</html>
