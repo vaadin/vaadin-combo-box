@@ -149,7 +149,8 @@
       var _devicePixelRatio = window.devicePixelRatio || 1;
       this._translateX = Math.round(this._translateX * _devicePixelRatio) / _devicePixelRatio;
       this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
-      this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
+      this.style.top = this._translateY + 'px';
+      this.style.left = this._translateX + 'px';
 
       this.style.width = this.positionTarget.clientWidth + 'px';
 
