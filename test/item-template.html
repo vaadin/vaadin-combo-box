@@ -22,6 +22,7 @@
           parentProperty: [[parentProperty]]
           parentProperty.foo: [[parentProperty.foo]]
           parentMethod: [[parentMethod()]]
+          filter: [[filter]]
           <button on-tap="parentEventHandler"></button>
         </template>
       </vaadin-combo-box>
@@ -83,6 +84,12 @@
       it('should update focused property', function() {
         MockInteractions.keyDownOn(combobox.inputElement, 40); // Press arrow down key
         expect(Polymer.dom(firstItem.root).innerHTML).to.contain('focused: true');
+      });
+
+      it('should have filter property', function() {
+        combobox.filter = 'foobar';
+
+        expect(Polymer.dom(firstItem.root).innerHTML).to.contain('filter: foobar');
       });
 
       it('should forward parent properties', function() {

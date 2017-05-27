@@ -61,6 +61,13 @@ This program is available under Apache License Version 2.0, available at https:/
       },
 
       /**
+       * Filtering string the user has typed into the input field.
+       */
+      filter: {
+        type: String
+      },
+
+      /**
        * The template instance corresponding to the item
        */
       _itemTemplateInstance: Object
@@ -70,7 +77,8 @@ This program is available under Apache License Version 2.0, available at https:/
       '_updateTemplateInstanceVariable("index", index, _itemTemplateInstance)',
       '_updateTemplateInstanceVariable("item", item, _itemTemplateInstance)',
       '_updateTemplateInstanceVariable("selected", selected, _itemTemplateInstance)',
-      '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)'
+      '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)',
+      '_updateTemplateInstanceVariable("filter", filter, _itemTemplateInstance)'
     ],
 
     attached: function() {
