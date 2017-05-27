@@ -51,6 +51,7 @@ Property name | Type | Description
 `item` | String or Object | The item reference
 `selected` | Boolean | True when item is selected
 `focused` | Boolean | True when item is focused
+`filter` | String | Filtering string the user has typed into the input field
 
 See the [Item Template Live Demos](demo/item-template.html) for more examples.
 
@@ -273,6 +274,7 @@ Custom property | Description | Default
       _item-label-path="[[itemLabelPath]]"
       on-down="_onOverlayDown"
       loading="[[loading]]"
+      filter="[[filter]]"
       on-mousedown="_preventDefault"
       vertical-offset="2">
     </vaadin-combo-box-overlay>
