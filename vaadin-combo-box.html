@@ -60,6 +60,7 @@ There are custom properties and mixins you can use to style the component:
 Custom property | Description | Default
 ----------------|-------------|-------------
 `--vaadin-combo-box-overlay-max-height` | Property that determines the max height of overlay | `65vh`
+`--vaadin-combo-box-input-disabled` | Mixin applied to the input when the component is disabled | `{}`
 
 @element vaadin-combo-box
 @demo demo/index.html
@@ -184,6 +185,10 @@ Custom property | Description | Default
 
         @apply --paper-font-subhead;
         @apply --paper-input-container-input;
+      }
+
+      input:disabled {
+        @apply --vaadin-combo-box-input-disabled;
       }
     </style>
 
