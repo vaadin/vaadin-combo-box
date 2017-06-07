@@ -98,7 +98,7 @@
     });
 
     describe('navigating the items after overlay opened', () => {
-      beforeEach(done => Polymer.Async.microTask.run(() => {
+      beforeEach(done => setTimeout(() => {
         arrowDown();
         done();
       }));
@@ -157,7 +157,7 @@
     });
 
     describe('selecting items', () => {
-      beforeEach(done => Polymer.Async.microTask.run(() => {
+      beforeEach(done => setTimeout(() => {
         comboBox.value = 'bar';
         arrowDown();
         done();
@@ -479,7 +479,7 @@
 
         comboBox.open();
 
-        Polymer.Async.microTask.run(() => {
+        setTimeout(() => {
           expect(selector.firstVisibleIndex).to.eql(0);
           done();
         });
@@ -492,7 +492,7 @@
 
         comboBox.open();
 
-        Polymer.Async.microTask.run(() => {
+        setTimeout(() => {
           expect(selector.firstVisibleIndex).to.be.within(50 - comboBox.$.overlay._visibleItemsCount(), 50);
           done();
         });
