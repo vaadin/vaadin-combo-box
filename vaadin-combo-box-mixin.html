@@ -379,6 +379,9 @@ This program is available under Apache License Version 2.0, available at https:/
       } else {
         this.open();
       }
+      if (!this.$.overlay.touchDevice && !this.focused) {
+        this.focus();
+      }
     }
 
     /**
