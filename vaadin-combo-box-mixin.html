@@ -521,7 +521,9 @@ This program is available under Apache License Version 2.0, available at https:/
         this._revertInputValueToValue();
       }
 
-      this._setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
+      if (this._inputElementValue) {
+        this._setSelectionRange(this._inputElementValue.length, this._inputElementValue.length);
+      }
     }
 
     _revertInputValueToValue() {
