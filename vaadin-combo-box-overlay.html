@@ -167,7 +167,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       static get observers() {
-        return ['_selectorChanged(_selector)', '_loadingChanged(loading)'];
+        return ['_selectorChanged(_selector)'];
       }
 
       ready() {
@@ -186,14 +186,6 @@ This program is available under Apache License Version 2.0, available at https:/
       _templateChanged(e) {
         this._selector = this.$.dropdown.$.overlay.root.querySelector('#selector');
         this._scroller = this.$.dropdown.$.overlay.root.querySelector('#scroller');
-      }
-
-      _loadingChanged(loading) {
-        if (loading) {
-          this.$.dropdown.$.overlay.setAttribute('loading', '');
-        } else {
-          this.$.dropdown.$.overlay.removeAttribute('loading');
-        }
       }
 
       _selectorChanged(selector) {
