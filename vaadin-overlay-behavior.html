@@ -2,11 +2,11 @@
 
 <script>
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.combobox = vaadin.elements.combobox || {};
+  window.vaadin.elements = window.vaadin.elements || {};
+  window.vaadin.elements.combobox = window.vaadin.elements.combobox || {};
 
-  /** @polymerBehavior vaadin.elements.combobox.OverlayBehavior */
-  vaadin.elements.combobox.OverlayBehaviorImpl = {
+  /** @polymerBehavior window.vaadin.elements.combobox.OverlayBehavior */
+  window.vaadin.elements.combobox.OverlayBehaviorImpl = {
     properties: {
       /**
        * The element to position/align the dropdown by.
@@ -152,8 +152,8 @@
   };
 
   /** @polymerBehavior */
-  vaadin.elements.combobox.OverlayBehavior = [
+  window.vaadin.elements.combobox.OverlayBehavior = [
     Polymer.IronResizableBehavior,
-    vaadin.elements.combobox.OverlayBehaviorImpl
+    window.vaadin.elements.combobox.OverlayBehaviorImpl
   ];
 </script>

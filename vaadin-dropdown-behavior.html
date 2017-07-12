@@ -1,10 +1,10 @@
 <script>
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.combobox = vaadin.elements.combobox || {};
+  window.vaadin.elements = window.vaadin.elements || {};
+  window.vaadin.elements.combobox = window.vaadin.elements.combobox || {};
 
-  /** @polymerBehavior vaadin.elements.combobox.DropdownBehavior */
-  vaadin.elements.combobox.DropdownBehavior = {
+  /** @polymerBehavior window.vaadin.elements.combobox.DropdownBehavior */
+  window.vaadin.elements.combobox.DropdownBehavior = {
     properties: {
       /**
        * True if the dropdown is open, false otherwise.
