@@ -3,12 +3,8 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 -->
-
-<!--
-@element vaadin-combo-box-item
--->
-
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../vaadin-themable-mixin/vaadin-themable-mixin.html">
 
 <dom-module id="vaadin-combo-box-item">
   <template>
@@ -22,56 +18,72 @@ This program is available under Apache License Version 2.0, available at https:/
 </dom-module>
 
 <script>
-  Polymer({
-    is: 'vaadin-combo-box-item',
+  {
+    /**
+     * The default element used for items in the vaadin-combobox.
+     *
+     * @memberof Vaadin
+     * @mixes Vaadin.ThemableMixin
+     */
+    class ComboBoxItemElement extends Vaadin.ThemableMixin(Polymer.Element) {
+      static get is() {
+        return 'vaadin-combo-box-item';
+      }
 
-    properties: {
-      /**
-       * The index of the item
-       */
-      index: Number,
+      static get properties() {
+        return {
+          /**
+           * The index of the item
+           */
+          index: Number,
 
-      /**
-       * The item to render
-       * @type {(String|Object)}
-       */
-      item: Object,
+          /**
+           * The item to render
+           * @type {(String|Object)}
+           */
+          item: Object,
 
-      /**
-       * The text label corresponding to the item
-       */
-      label: String,
+          /**
+           * The text label corresponding to the item
+           */
+          label: String,
 
-      /**
-       * True when item is selected
-       */
-      selected: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      },
+          /**
+           * True when item is selected
+           */
+          selected: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
 
-      /**
-       * True when item is focused
-       */
-      focused: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      },
+          /**
+           * True when item is focused
+           */
+          focused: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
 
-      /**
-       * The template instance corresponding to the item
-       */
-      _itemTemplateInstance: Object
-    },
+          /**
+           * The template instance corresponding to the item
+           */
+          _itemTemplateInstance: Object
+        };
+      }
 
-    observers: [
-      '_updateTemplateInstanceVariable("index", index, _itemTemplateInstance)',
-      '_updateTemplateInstanceVariable("item", item, _itemTemplateInstance)',
-      '_updateTemplateInstanceVariable("selected", selected, _itemTemplateInstance)',
-      '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)'
-    ],
+      static get observers() {
+        return [
+          '_updateTemplateInstanceVariable("index", index, _itemTemplateInstance)',
+          '_updateTemplateInstanceVariable("item", item, _itemTemplateInstance)',
+          '_updateTemplateInstanceVariable("selected", selected, _itemTemplateInstance)',
+          '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)'
+        ];
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
 
     attached: function() {
       if (!this._itemTemplateInstance) {
@@ -84,13 +96,21 @@ This program is available under Apache License Version 2.0, available at https:/
           Polymer.dom(this.root).appendChild(this._itemTemplateInstance.root);
         }
       }
-    },
 
-    _updateTemplateInstanceVariable: function(variable, value, _itemTemplateInstance) {
-      if (variable === undefined || value === undefined || _itemTemplateInstance === undefined) {
-        return;
+      _updateTemplateInstanceVariable(variable, value, _itemTemplateInstance) {
+        if (variable === undefined || value === undefined || _itemTemplateInstance === undefined) {
+          return;
+        }
+        _itemTemplateInstance[variable] = value;
       }
-      _itemTemplateInstance[variable] = value;
     }
-  });
+
+    customElements.define(ComboBoxItemElement.is, ComboBoxItemElement);
+
+    /**
+     * @namespace Vaadin
+     */
+    window.Vaadin = window.Vaadin || {};
+    Vaadin.ComboBoxItemElement = ComboBoxItemElement;
+  }
 </script>
