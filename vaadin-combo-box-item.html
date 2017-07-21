@@ -85,18 +85,15 @@ This program is available under Apache License Version 2.0, available at https:/
       connectedCallback() {
         super.connectedCallback();
 
-        if (!this._itemTemplateInstance) {
-          // 2.0 has __dataHost. Might want to consider assigning combobox reference directly to item.
-          const overlay = this.getRootNode().host; // equivalent of `this.domHost` from legacy API
-          const dropdown = overlay.__dataHost;
-          const comboBoxOverlay = dropdown.getRootNode().host;
-          const comboBox = comboBoxOverlay.getRootNode().host;
-          comboBox._ensureTemplatized();
-          if (comboBox._TemplateClass) {
-            this._itemTemplateInstance = new comboBox._TemplateClass({});
-            this.root.removeChild(this.$.content);
-            this.root.appendChild(this._itemTemplateInstance.root);
-          }
+    attached: function() {
+      if (!this._itemTemplateInstance) {
+        // 2.0 has __dataHost
+        var comboBox = this.domHost.dataHost || this.domHost.__dataHost;
+        comboBox._ensureTemplatized();
+        if (comboBox._itemTemplate) {
+          this._itemTemplateInstance = comboBox.stamp({});
+          Polymer.dom(this.root).removeChild(this.$.content);
+          Polymer.dom(this.root).appendChild(this._itemTemplateInstance.root);
         }
       }
 

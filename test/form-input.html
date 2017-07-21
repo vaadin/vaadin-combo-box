@@ -95,9 +95,8 @@
       it('should serialize correctly', () => {
         comboBox.value = 'bar';
 
-        // IronForm 2.0 returns an array
-        const val = ironForm.serializeForm().foo;
-        expect(Array.isArray(val) ? val[0] : val).to.equal('bar');
+        var val = ironForm.serializeForm().foo;
+        expect(val).to.equal('bar');
       });
 
       it('should not-submit iron-form with invalid value', done => {
