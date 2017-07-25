@@ -396,17 +396,19 @@ Custom property | Description | Default
     _onInputContainerFocusedChanged: function(e) {
       this._setFocused(e.detail.value);
     },
-    
+
     /**
      * Forward focus to inputElement. Overriden from IronControlState.
      */
     _focusBlurHandler: function(event) {
       Polymer.IronControlState._focusBlurHandler.call(this, event);
       // Forward the focus to the nested input.
-      if (!this.focused)
+      if (!this.focused) {
         this.async(this.close, 100);
-      if (this.focused && !this._shiftTabPressed)
+      }
+      if (this.focused && !this._shiftTabPressed) {
         this.$.input.focus();
+      }
     }
   });
 
