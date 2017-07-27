@@ -17,7 +17,9 @@ This program is available under Apache License Version 2.0, available at https:/
   <template>
     <style>
       :host {
-        display: inline-block;
+        display: inline-flex;
+        margin-top: 0;
+        padding: 0;
       }
 
       :host([hidden]) {
@@ -43,6 +45,10 @@ This program is available under Apache License Version 2.0, available at https:/
 
       [part="toggle-button"]::before {
         content: "\e900";
+      }
+
+      [part="value"] {
+        flex: 1;
       }
 
       :host([disabled]) [part="clear-button"],
