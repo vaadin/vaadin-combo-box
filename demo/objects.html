@@ -48,6 +48,29 @@
       </template>
     </demo-snippet>
 
+    <h3>Disabled items</h3>
+
+    <demo-snippet>
+      <template>
+        <vaadin-combo-box id="disabled-items-box" label="Number"></vaadin-combo-box>
+
+        <script>
+          window.addEventListener('WebComponentsReady', function() {
+            var combobox = document.querySelector('#disabled-items-box');
+            combobox.items = [
+              {label: 'One', value: 1},
+              {label: 'Two', value: 2},
+              {label: 'Three', value: 3, disabled: true},
+              {label: 'Four', value: 4, disabled: true},
+              {label: 'Five', value: 5}
+            ];
+
+            combobox.value = 1;
+          });
+        </script>
+      </template>
+    </demo-snippet>
+
     <h3>Setting Label and Value Path</h3>
 
     <demo-snippet>
