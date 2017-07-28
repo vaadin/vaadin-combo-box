@@ -16,6 +16,14 @@ This program is available under Apache License Version 2.0, available at https:/
       :host([hidden]) {
          display: none;
       }
+
+      :host([disabled]:hover){
+        background: none !important;
+      }
+
+      :host([disabled]){
+        color: #ccc;
+      }
     </style>
     <span id="content">[[label]]</span>
   </template>
@@ -70,6 +78,15 @@ This program is available under Apache License Version 2.0, available at https:/
             reflectToAttribute: true
           },
 
+          /*
+           * True when item is disabled
+           */
+          disabled: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+          },
+
           /**
            * The template instance corresponding to the item
            */
@@ -82,6 +99,7 @@ This program is available under Apache License Version 2.0, available at https:/
           '_updateTemplateInstanceVariable("index", index, _itemTemplateInstance)',
           '_updateTemplateInstanceVariable("item", item, _itemTemplateInstance)',
           '_updateTemplateInstanceVariable("selected", selected, _itemTemplateInstance)',
+          '_updateTemplateInstanceVariable("disabled", disabled, _itemTemplateInstance)',
           '_updateTemplateInstanceVariable("focused", focused, _itemTemplateInstance)'
         ];
       }

@@ -220,6 +220,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _onTap(e) {
+        // Preventing selection of the disabled item
+        if (e.target.disabled) {
+          return;
+        }
         if (!this._notTapping && !this._ignoreTaps) {
           if (e.detail && e.detail.sourceEvent && e.detail.sourceEvent.stopPropagation) {
             this._stopPropagation(e.detail.sourceEvent);
