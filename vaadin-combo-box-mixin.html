@@ -130,6 +130,16 @@ This program is available under Apache License Version 2.0, available at https:/
         },
 
         /**
+         * Path for the disabled state of the item. If `items` is an array of objects, the
+         * `itemDisabledPath:` is used to fetch the disabled state for the selected
+         * item.
+         */
+        itemDisabledPath: {
+          type: String,
+          value: 'disabled'
+        },
+
+        /**
          * Path for the value of the item. If `items` is an array of objects, the
          * `itemValuePath:` is used to fetch the string value for the selected
          * item.
@@ -180,8 +190,8 @@ This program is available under Apache License Version 2.0, available at https:/
     static get observers() {
       return [
         '_filterChanged(filter, itemValuePath, itemLabelPath)',
-        '_itemsChanged(items.*, itemValuePath, itemLabelPath)',
-        '_filteredItemsChanged(filteredItems.*, itemValuePath, itemLabelPath)',
+        '_itemsChanged(items.*, itemValuePath, itemLabelPath, itemDisabledPath)',
+        '_filteredItemsChanged(filteredItems.*, itemValuePath, itemLabelPath, itemDisabledPath)',
         '_loadingChanged(loading)',
         '_selectedItemChanged(selectedItem)'
       ];
@@ -283,7 +293,10 @@ This program is available under Apache License Version 2.0, available at https:/
     _onArrowDown() {
       if (this.opened) {
         if (this.$.overlay._items) {
-          this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
+          // Counting how many items from current index should be skipped due to disabled state.
+          var movedIndex = this._countNextDisabledIndexes(this._focusedIndex);
+
+          this._focusedIndex = this._focusedIndex + movedIndex;
           this._prefillFocusedItemLabel();
         }
       } else {
@@ -294,7 +307,10 @@ This program is available under Apache License Version 2.0, available at https:/
     _onArrowUp() {
       if (this.opened) {
         if (this._focusedIndex > -1) {
-          this._focusedIndex = Math.max(0, this._focusedIndex - 1);
+          // Counting how many items from current index should be skipped due to disabled state.
+          var movedIndex = this._countPreviousDisabledIndexes(this._focusedIndex);
+
+          this._focusedIndex = Math.max(0, this._focusedIndex - movedIndex);
         } else {
           if (this.$.overlay._items) {
             this._focusedIndex = this.$.overlay._items.length - 1;
@@ -305,6 +321,50 @@ This program is available under Apache License Version 2.0, available at https:/
       } else {
         this.open();
       }
+    }
+
+    _countPreviousDisabledIndexes(focusedIndex) {
+      // Check if not the beginning of the list
+      if (focusedIndex == 0) {
+        return 0;
+      }
+
+      var comboboxItems = this.$.overlay._selector.querySelectorAll('vaadin-combo-box-item');
+      var previousItemIndex = focusedIndex - 1;
+      var movedIndex = 1;
+
+      while (comboboxItems[previousItemIndex].disabled) {
+        movedIndex ++;
+
+        // Check if not the beginning of the list
+        if (previousItemIndex != 0) {
+          previousItemIndex --;
+        } else {
+          movedIndex = 0;
+          break;
+        }
+      }
+
+      return movedIndex;
+    }
+
+    _countNextDisabledIndexes(focusedIndex) {
+      // Check if not the end of the list
+      if (focusedIndex == this.$.overlay._items.length - 1) {
+        return 0;
+      }
+
+      var comboboxItems = this.$.overlay._selector.querySelectorAll('vaadin-combo-box-item');
+      var nextItemIndex = focusedIndex + 1;
+      var movedIndex = 1;
+
+      while (comboboxItems[nextItemIndex].disabled) {
+        movedIndex ++;
+
+        nextItemIndex ++;
+      }
+
+      return movedIndex;
     }
 
     _prefillFocusedItemLabel() {
@@ -426,6 +486,24 @@ This program is available under Apache License Version 2.0, available at https:/
       this.close();
     }
 
+    /**
+     * Comparing filtered items with actually displayed items in the overaly
+     * and toggling disabled attribute accordingly.
+     */
+    _applyDisabledStateToItems() {
+      const overlayItems = this.$.overlay._selector.querySelectorAll('vaadin-combo-box-item');
+
+      Array.from(this.filteredItems).forEach((item, index) => {
+        if (overlayItems[index]) {
+          if (item.disabled) {
+            overlayItems[index].setAttribute('disabled', 'true');
+          } else {
+            overlayItems[index].removeAttribute('disabled');
+          }
+        }
+      });
+    }
+
     _onOpened() {
       // Pre P2 iron-list used a debouncer to render. Now that we syncronously render items,
       // we need to flush the DOM to make sure it doesn't get flushed in the middle of _render call
@@ -451,6 +529,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
       // _detectAndDispatchChange() should not consider value changes done before opening
       this._lastCommittedValue = this.value;
+
+      // Applying disabled state to items
+      this._applyDisabledStateToItems();
     }
 
     _onClosed() {
@@ -519,12 +600,15 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
-    _filterChanged(filter, itemValuePath, itemLabelPath) {
-      if (filter === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
+    _filterChanged(filter, itemValuePath, itemLabelPath, itemDisabledPath) {
+      if (filter === undefined || itemValuePath === undefined || itemLabelPath === undefined || itemDisabledPath) {
         return;
       }
       if (this.items) {
         this.filteredItems = this._filterItems(this.items, filter);
+
+        // After filteredItems array was generated, apply disabled state to items
+        this._applyDisabledStateToItems();
       }
     }
 
@@ -611,8 +695,8 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
-    _itemsChanged(e, itemValuePath, itemLabelPath) {
-      if (e === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
+    _itemsChanged(e, itemValuePath, itemLabelPath, itemDisabledPath) {
+      if (e === undefined || itemValuePath === undefined || itemLabelPath === undefined || itemDisabledPath === undefined) {
         return;
       }
       if (e.path === 'items' || e.path === 'items.splices') {
@@ -628,8 +712,8 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
-    _filteredItemsChanged(e, itemValuePath, itemLabelPath) {
-      if (e === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
+    _filteredItemsChanged(e, itemValuePath, itemLabelPath, itemDisabledPath) {
+      if (e === undefined || itemValuePath === undefined || itemLabelPath === undefined || itemDisabledPath === undefined) {
         return;
       }
       if (e.path === 'filteredItems' || e.path === 'filteredItems.splices') {

@@ -47,7 +47,7 @@ This program is available under Apache License Version 2.0, available at https:/
           <iron-list id="selector" role="listbox" items="[[_items]]" scroll-target="[[_scroller]]">
             <template>
               <vaadin-combo-box-item on-tap="_onTap" index="[[index]]" item="[[item]]" label="[[getItemLabel(item)]]" selected="[[_isItemSelected(item, _selectedItem)]]"
-                role$="[[_getAriaRole(index)]]" aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]" focused="[[_isItemFocused(_focusedIndex,index)]]" touch-device$="[[touchDevice]]">
+                role$="[[_getAriaRole(index)]]" aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]" aria-disabled$="[[_getAriaDisabled(item)]]" focused="[[_isItemFocused(_focusedIndex,index)]]" touch-device$="[[touchDevice]]">
               </vaadin-combo-box-item>
             </template>
           </iron-list>
@@ -123,6 +123,11 @@ This program is available under Apache License Version 2.0, available at https:/
           _focusedItem: {
             type: String,
             computed: '_getFocusedItem(_focusedIndex)'
+          },
+
+          _itemDisabledPath: {
+            type: String,
+            value: 'disabled'
           },
 
           _itemLabelPath: {
@@ -245,14 +250,15 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       /**
-       * Gets the index of the item with the provided label.
+       * Gets the index of the item with the provided label
+       * excluding disabled items.
        * @return {Number}
        */
       indexOfLabel(label) {
         if (this._items && label) {
           for (let i = 0; i < this._items.length; i++) {
             if (this.getItemLabel(this._items[i]).toString().toLowerCase() ===
-              label.toString().toLowerCase()) {
+              label.toString().toLowerCase() && !this._items[i].disabled) {
               return i;
             }
           }
@@ -271,6 +277,16 @@ This program is available under Apache License Version 2.0, available at https:/
           label = item ? item.toString() : '';
         }
         return label;
+      }
+
+      /**
+       * Gets the disabled state of the item based on the `_itemDisabledPath`.
+       * @return {String}
+       */
+      _getAriaDisabled(item) {
+        var disabledValue = this.get(this._itemDisabledPath, item);
+
+        return (disabledValue) ? disabledValue.toString() : false;
       }
 
       _isItemFocused(focusedIndex, itemIndex) {
