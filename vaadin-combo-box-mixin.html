@@ -160,6 +160,14 @@ This program is available under Apache License Version 2.0, available at https:/
         },
 
         /**
+         * Set to true when user is not scrolling the page on mobile
+         */
+        _notScrolling: {
+          type: Boolean,
+          value: true
+        },
+
+        /**
          * The name of this element.
          */
         name: {
@@ -200,7 +208,9 @@ This program is available under Apache License Version 2.0, available at https:/
       this.addEventListener('vaadin-combo-box-dropdown-opened', this._onOpened.bind(this));
       this.addEventListener('keydown', this._onKeyDown.bind(this));
 
-     // This listener should listen for "tap" again once composedPath() issues with touch devices
+      // This listener should listen to down tapping to detect scrolling on mobile devices.
+      this._addEventListenerToNode(this, 'down', this._onTapDown.bind(this));
+      // This listener should listen for "tap" again once composedPath() issues with touch devices
       // have been fixed. See https://github.com/Polymer/polymer/issues/4670
       this._addEventListenerToNode(this, 'up', this._onTap.bind(this));
     }
@@ -219,6 +229,13 @@ This program is available under Apache License Version 2.0, available at https:/
         this.inputElement.blur();
         this._closeOnBlurIsPrevented = false;
       }
+    }
+
+    _onTapDown(e) {
+      this._notScrolling = true;
+      setTimeout(() => {
+        this._notScrolling = false;
+      }, 100);
     }
 
     _onTap(e) {
@@ -385,7 +402,9 @@ This program is available under Apache License Version 2.0, available at https:/
     _openAsync() {
       // Needed for MS Edge. Otherwise, it does not pop the virtual keyboard up
       // when tapping the combobox that has non-empty value.
-      Polymer.Async.microTask.run(() => this.open());
+      if (this._notScrolling) {
+        Polymer.Async.microTask.run(() => this.open());
+      }
     }
 
     /**
