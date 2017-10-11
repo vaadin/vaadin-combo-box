@@ -254,10 +254,7 @@
     });
 
     describe('disabled', () => {
-
-      beforeEach(() => {
-        combobox.disabled = true;
-      });
+      beforeEach(() => combobox.disabled = true);
 
       it('toggleIcon should not be hidden when disabled', () => {
         expect(getComputedStyle(combobox._toggleElement).display).not.to.equal('none');
@@ -273,11 +270,20 @@
       });
     });
 
+    describe('items.length', () => {
+      it('toggleIcon should not be hidden when there are items', () => {
+        expect(getComputedStyle(combobox._toggleElement).display).not.to.equal('none');
+      });
+
+      it('toggleIcon should not be hidden when there are no items', () => {
+        combobox.items = [];
+        expect(getComputedStyle(combobox._toggleElement).display).to.equal('none');
+      });
+    });
+
     describe('read-only', () => {
 
-      beforeEach(() => {
-        combobox.readonly = true;
-      });
+      beforeEach(() => combobox.readonly = true);
 
       it('toggleIcon should not be hidden when read-only', () => {
         expect(getComputedStyle(combobox._toggleElement).display).not.to.equal('none');
