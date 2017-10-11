@@ -109,6 +109,17 @@ This program is available under Apache License Version 2.0, available at https:/
           reflectToAttribute: true
         },
 
+        /**
+         * A read-only property indicating whether this combo box has items.
+         * It can be used for example in styling of the component.
+         */
+        hasItems: {
+          type: Boolean,
+          value: false,
+          readOnly: true,
+          reflectToAttribute: true
+        },
+
         /*
          * When set to `true`, "loading" attibute is added to host and the overlay element.
          */
@@ -655,6 +666,8 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _itemsChanged(e, itemValuePath, itemLabelPath) {
+      this._setHasItems(this.items && this.items.length);
+
       if (e === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
         return;
       }
