@@ -100,7 +100,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         /**
          * A read-only property indicating whether this combo box has a value
-         * selected or not. It can be used for example in styling of the component.
+         * selected or not.
          */
         hasValue: {
           type: Boolean,
@@ -111,7 +111,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
         /**
          * A read-only property indicating whether this combo box has items.
-         * It can be used for example in styling of the component.
          */
         hasItems: {
           type: Boolean,
@@ -488,8 +487,6 @@ This program is available under Apache License Version 2.0, available at https:/
       // because that will cause problems to say the least.
       Polymer.flush && Polymer.flush();
 
-      this.$.overlay.hidden = !this._hasItems(this.$.overlay._items) && !this.loading;
-
       // With iron-list v1.3.9, calling `notifyResize()` no longer renders
       // the items synchonously. It is required to have the items rendered
       // before we update the overlay and the list positions and sizes.
@@ -718,7 +715,6 @@ This program is available under Apache License Version 2.0, available at https:/
     _setOverlayItems(items) {
       this.$.overlay.set('_items', items);
 
-      this.$.overlay.hidden = !this._hasItems(items);
       this.$.overlay.$.dropdown.notifyResize();
     }
 
