@@ -388,8 +388,8 @@ This program is available under Apache License Version 2.0, available at https:/
         e.stopPropagation();
       }
 
-      _hidden() {
-        return !this.loading && (!this._items || !this._items.length);
+      _hidden(itemsChange, loading) {
+        return !loading && (!this._items || !this._items.length);
       }
     }
 

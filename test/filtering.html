@@ -153,12 +153,14 @@
         setInputValue('a');
 
         expect(getFilteredItems()).to.eql(['bar', 'baz']);
+        expect(comboBox.hasAttribute('has-items')).to.be.true;
       });
 
       it('should filter out all items with a invalid filter', () => {
         setInputValue('qux');
 
         expect(getFilteredItems()).to.be.empty;
+        expect(comboBox.hasAttribute('has-items')).to.be.false;
       });
 
       it('should be reset after closing the dropdown', () => {
