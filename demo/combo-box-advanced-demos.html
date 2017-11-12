@@ -68,25 +68,6 @@
     </vaadin-demo-snippet>
 
 
-    <h3>Replacing the Input with an &lt;iron-input></h3>
-    <vaadin-demo-snippet id='combo-box-advanced-demos-replacing-the-input-with-an-iron-input'>
-      <template preserve-content>
-        <vaadin-combo-box-light id="demo3" attr-for-value="bind-value">
-          <iron-input>
-            <input>
-          </iron-input>
-        </vaadin-combo-box-light>
-        <script>
-          window.addDemoReadyListener('#combo-box-advanced-demos-replacing-the-input-with-an-iron-input', function(document) {
-            var combobox = document.querySelector('#demo3');
-            // Array of String values.
-            combobox.items = elements;
-          });
-        </script>
-      </template>
-    </vaadin-demo-snippet>
-
-
     <h3>Replacing the Input with a &lt;paper-input></h3>
     <vaadin-demo-snippet id='combo-box-advanced-demos-replacing-the-input-with-a-paper-input'>
       <template preserve-content>
