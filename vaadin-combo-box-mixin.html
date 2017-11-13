@@ -454,10 +454,9 @@ This program is available under Apache License Version 2.0, available at https:/
         this.value = '';
       }
 
-      if (this.opened) {
-        this.close();
-      } else {
+      if (!this.opened) {
         this._detectAndDispatchChange();
+        this.open();
       }
     }
 
@@ -508,8 +507,6 @@ This program is available under Apache License Version 2.0, available at https:/
         }
         // make sure input field is updated in case value doesn't change (i.e. FOO -> foo)
         this._inputElementValue = this._getItemLabel(this.selectedItem);
-      } else if (this._inputElementValue === '' || this._inputElementValue === undefined) {
-        this._clear();
       } else {
         if (this.allowCustomValue) {
           const e = new CustomEvent('custom-value-set', {detail: this._inputElementValue, composed: true, cancelable: true, bubbles: true});
