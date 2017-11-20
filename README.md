@@ -20,6 +20,11 @@
     <link rel="import" href="../iron-ajax/iron-ajax.html">
     <link rel="import" href="../paper-item/all-imports.html">
     <link rel="import" href="vaadin-combo-box.html">
+    <style>
+      vaadin-combo-box {
+        width: 300px;
+      }
+    </style>
     <next-code-block></next-code-block>
   </template>
 </custom-element-demo>
@@ -27,14 +32,6 @@
 -->
 ```html
 <custom-style>
-  <style is="custom-style">
-    paper-icon-item {
-      margin: -13px -16px;
-    }
-    paper-icon-item img {
-      border-radius: 50%;
-    }
-  </style>
 </custom-style>
 <dom-bind>
   <template is="dom-bind">
@@ -42,6 +39,15 @@
 
     <vaadin-combo-box items="[[response.results]]" item-value-path="email" item-label-path="email">
       <template>
+        <style>
+          paper-icon-item {
+            margin: -13px -70px;
+          }
+          paper-icon-item img {
+            border-radius: 50%;
+            margin-right: 10px;
+          }
+        </style>
         <paper-icon-item>
           <img src="[[item.picture.thumbnail]]" item-icon>
           <paper-item-body two-line>
