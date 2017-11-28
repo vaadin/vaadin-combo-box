@@ -67,7 +67,7 @@
 
 1. Make sure you have [npm](https://www.npmjs.com/) installed.
 
-1. When in the `vaadin-combo-box` directory, run `npm install` and then `bower install` to install dependencies.
+1. When in the `vaadin-combo-box` directory, run `npm install`, `npm install -g bower`, `bower install` then 'npm install -g polymer-cli' to install dependencies.
 
 1. Run `polymer serve --open`, browser will automatically open the component API documentation.
 
