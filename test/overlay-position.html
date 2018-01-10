@@ -8,6 +8,7 @@
   <script src='../../web-component-tester/browser.js'></script>
   <link rel='import' href='common.html'>
   <script src="common.js"></script>
+  <link rel="import" href="../../paper-input/paper-input-container.html">
 </head>
 
 <body>
@@ -47,7 +48,7 @@
   <template>
     <x-fixed>
       <paper-input-container>
-        <input>
+        <input slot="input">
       </paper-input-container>
 
       <vaadin-combo-box label='combobox' style='width: 300px'></vaadin-combo-box>
@@ -121,7 +122,7 @@
       it('should be below the input box', () => {
         comboBox.open();
 
-        expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom + comboBox.$.overlay.verticalOffset, 1);
+        expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom, 1);
       });
 
       it('should position correctly if items are populated after opening', done => {
@@ -131,7 +132,7 @@
         setTimeout(() => {
           comboBox.items = [1, 2, 3];
           setTimeout(() => {
-            expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom + comboBox.$.overlay.verticalOffset, 1);
+            expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom, 1);
             done();
           }, 1);
         }, 1);
@@ -166,7 +167,7 @@
 
         expect(Math.round(dropContentRect().left)).to.be.closeTo(Math.round(inputContentRect().left), 1);
 
-        expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom + comboBox.$.overlay.verticalOffset, 1);
+        expect(dropContentRect().top).to.be.closeTo(inputContentRect().bottom, 1);
       });
 
       it('when the input position width changes overlay width should change', () => {

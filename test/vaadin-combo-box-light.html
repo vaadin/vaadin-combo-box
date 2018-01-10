@@ -9,6 +9,7 @@
   <link rel="import" href="../vaadin-combo-box-light.html">
   <link rel="import" href="../../iron-input/iron-input.html">
   <link rel="import" href="../../paper-input/paper-input.html">
+  <link rel="import" href="../../paper-button/paper-button.html">
 </head>
 
 <body>
@@ -27,9 +28,8 @@
     <template>
       <vaadin-combo-box-light>
         <paper-input>
-          <!-- slot="suffix" for 2.0, suffix for 1.x -->
-          <paper-button slot="suffix" suffix class="clear-button">Clear</paper-button>
-          <paper-button slot="suffix" suffix class="toggle-button">Toggle</paper-button>
+          <paper-button slot="suffix" class="clear-button">Clear</paper-button>
+          <paper-button slot="suffix" class="toggle-button">Toggle</paper-button>
         </paper-input>
       </vaadin-combo-box-light>
     </template>

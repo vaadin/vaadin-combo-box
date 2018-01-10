@@ -48,11 +48,11 @@
       });
 
       describe('Inside flexbox', () => {
-        it('combo-box should have width 175px', () => {
+        it('combo-box should stretch to fit the flex container', () => {
           const container = fixture('combobox-in-flexbox');
           const combobox = container.querySelector('vaadin-combo-box');
           expect(window.getComputedStyle(container).width).to.eql('500px');
-          expect(window.getComputedStyle(combobox).width).to.eql('175px');
+          expect(window.getComputedStyle(combobox).width).to.eql('500px');
         });
       });
 
@@ -124,16 +124,10 @@
         });
       });
 
-      describe('hasValue property', () => {
-        it('should be readOnly', () => {
-          expect(comboBox.hasValue).to.be.false;
-          comboBox.hasValue = true;
-          expect(comboBox.hasValue).to.be.false;
-        });
-
+      describe('has-value attribute', () => {
         it('should be updated when setting the value', () => {
           comboBox.value = 'foo';
-          expect(comboBox.hasValue).to.be.true;
+          expect(comboBox.hasAttribute('has-value')).to.be.true;
         });
       });
 
@@ -247,15 +241,7 @@
       });
 
       describe('focus API', () => {
-        it('should have readOnly focused property', () => {
-          comboBox.focused = true;
-
-          expect(comboBox.focused).to.be.false;
-          expect(comboBox.hasAttribute('focused')).to.be.false;
-        });
-
         it('should not be focused by default', () => {
-          expect(comboBox.focused).to.be.false;
           expect(comboBox.hasAttribute('focused')).to.be.false;
         });
 
@@ -263,7 +249,6 @@
           it('should focus the input with focus method', () => {
             comboBox.focus();
 
-            expect(comboBox.focused).to.be.true;
             expect(comboBox.hasAttribute('focused')).to.be.true;
           });
 
@@ -271,7 +256,6 @@
             comboBox.focus();
             comboBox.blur();
 
-            expect(comboBox.focused).to.be.false;
             expect(comboBox.hasAttribute('focused')).to.be.false;
           });
         });

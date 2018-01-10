@@ -8,6 +8,7 @@
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="common.html">
   <script src="common.js"></script>
+  <link rel="import" href="../../iron-input/iron-input.html">
 </head>
 
 <body>
@@ -139,17 +140,17 @@
 
         if (touchDevice) {
           it('should not focus input on dropdown open', () => {
-            expect(combobox.inputElement.focused).to.equal(false);
+            expect(combobox.inputElement.hasAttribute('focused')).to.equal(false);
           });
 
           it('should not refocus the input field when closed from icon', () => {
             clickToggleIcon();
-            expect(combobox.inputElement.focused).to.equal(false);
+            expect(combobox.inputElement.hasAttribute('focused')).to.equal(false);
           });
         } else {
           it('should focus input on dropdown open', done => {
             setTimeout(() => { // IE11
-              expect(combobox.inputElement.focused).to.be.true;
+              expect(combobox.inputElement.hasAttribute('focused')).to.be.true;
               done();
             }, 1);
           });
@@ -157,7 +158,7 @@
           it('should refocus the input field when closed from icon', done => {
             clickToggleIcon();
             setTimeout(() => { // IE11
-              expect(combobox.inputElement.focused).to.be.true;
+              expect(combobox.inputElement.hasAttribute('focused')).to.be.true;
               done();
             }, 1);
           });

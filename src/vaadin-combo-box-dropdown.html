@@ -4,9 +4,9 @@ Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 -->
 
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../vaadin-overlay/vaadin-overlay.html">
-<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../../vaadin-overlay/vaadin-overlay.html">
+<link rel="import" href="../../iron-resizable-behavior/iron-resizable-behavior.html">
 
 <dom-module id="vaadin-combo-box-dropdown">
   <template>
@@ -34,6 +34,8 @@ This program is available under Apache License Version 2.0, available at https:/
      *
      * See [`<vaadin-overlay>` documentation](https://github.com/vaadin/vaadin-overlay/blob/master/vaadin-overlay.html)
      * for `<vaadin-combo-box-overlay>` parts.
+     * 
+     * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
      *
      * @memberof Vaadin
      * @private
@@ -90,14 +92,6 @@ This program is available under Apache License Version 2.0, available at https:/
            */
           positionTarget: {
             type: Object
-          },
-
-          /**
-           * Vertical offset for the overlay position.
-           */
-          verticalOffset: {
-            type: Number,
-            value: 0
           },
 
           /**
@@ -210,11 +204,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _verticalOffset(overlayRect, targetRect) {
-        if (this.alignedAbove) {
-          return -overlayRect.height;
-        } else {
-          return targetRect.height + this.verticalOffset;
-        }
+        return this.alignedAbove ? -overlayRect.height : targetRect.height;
       }
 
       _shouldAlignAbove() {
