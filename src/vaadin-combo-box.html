@@ -85,7 +85,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
     <vaadin-combo-box-dropdown-wrapper id="overlay"
       opened=[[opened]]
-      position-target="[[_getPositionTarget()]]"
+      position-target="[[_positionTarget]]"
       _focused-index="[[_focusedIndex]]"
       _item-label-path="[[itemLabelPath]]"
       loading="[[loading]]">
@@ -256,6 +256,10 @@ This program is available under Apache License Version 2.0, available at https:/
             readonly: {
               type: Boolean,
               value: false
+            },
+
+            _positionTarget: {
+              type: Element
             }
           };
         }
@@ -287,6 +291,7 @@ This program is available under Apache License Version 2.0, available at https:/
           this._nativeInput.setAttribute('role', 'combobox');
           this._nativeInput.setAttribute('aria-autocomplete', 'list');
           this._updateAriaExpanded();
+          this._positionTarget = this.$.input.root.querySelector('[part=input-field]');
         }
 
         connectedCallback() {
@@ -297,10 +302,6 @@ This program is available under Apache License Version 2.0, available at https:/
         disconnectedCallback() {
           super.disconnectedCallback();
           this._restoreInputBlur();
-        }
-
-        _getPositionTarget() {
-          return this.$.input;
         }
 
         _updateAriaExpanded() {
