@@ -10,6 +10,19 @@
         overflow: hidden;
         border-radius: var(--lumo-border-radius);
       }
+
+      [part="content"] {
+        padding: var(--lumo-space-xs) 0;
+
+        /* TODO using a legacy mixin (unsupported) */
+        --iron-list-items-container: {
+          border-right: var(--lumo-space-xs) solid transparent;
+          border-left: var(--lumo-space-xs) solid transparent;
+
+          /* TODO fix scroll bar not visible in Safari with "Show scroll bars: Always" setting */
+          box-shadow: 0 0 0 white;
+        };
+      }
     </style>
   </template>
 </dom-module>
