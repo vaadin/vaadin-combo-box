@@ -1,0 +1,7 @@
+# The default behavior
+* text=auto
+
+*.json text
+
+.gitattributes text
+.gitignore text
