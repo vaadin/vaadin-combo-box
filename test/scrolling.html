@@ -109,6 +109,14 @@
             done();
           }, 1);
         });
+
+        it('should only render the limited number of physical nodes', () => {
+          combobox.value = combobox.items[99];
+          combobox.open();
+
+          const items = combobox.$.overlay._selector.querySelectorAll('vaadin-combo-box-item');
+          expect(items.length).to.not.equal(combobox.items.length);
+        });
       });
     });
   </script>
