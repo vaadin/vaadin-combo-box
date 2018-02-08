@@ -85,7 +85,6 @@
 
       beforeEach(() => {
         ironForm = fixture('combobox-in-form');
-        ironForm._nodeObserver.flush();
         comboBox = ironForm.querySelector('vaadin-combo-box');
         form = ironForm.querySelector('form');
         comboBox.name = 'foo';
