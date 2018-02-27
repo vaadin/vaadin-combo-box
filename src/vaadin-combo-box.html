@@ -11,6 +11,7 @@ This program is available under Apache License Version 2.0, available at https:/
 <link rel="import" href="../../vaadin-themable-mixin/vaadin-themable-mixin.html">
 <link rel="import" href="vaadin-combo-box-mixin.html">
 <link rel="import" href="vaadin-combo-box-dropdown-wrapper.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../vaadin-element-mixin/vaadin-element-mixin.html">
 
 <dom-module id="vaadin-combo-box">
@@ -90,6 +91,8 @@ This program is available under Apache License Version 2.0, available at https:/
       _item-label-path="[[itemLabelPath]]"
       loading="[[loading]]">
     </vaadin-combo-box-dropdown-wrapper>
+
+    <iron-media-query query="(min-width: 600px)" query-matches="{{_desktopMode}}"></iron-media-query>
   </template>
 </dom-module>
 
