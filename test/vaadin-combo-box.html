@@ -40,11 +40,6 @@
 
       beforeEach(() => {
         comboBox = fixture('combobox');
-
-        // make iron-input pick up child input
-        if (comboBox._bindableInput._initSlottedInput) {
-          comboBox._bindableInput._initSlottedInput();
-        }
       });
 
       describe('Inside flexbox', () => {
@@ -101,7 +96,7 @@
           comboBox.items = ['foo', 'bar'];
 
           expect(comboBox.selectedItem).to.eql('foo');
-          expect(comboBox._bindableInput.value).to.eql('foo');
+          expect(comboBox.inputElement.value).to.eql('foo');
         });
 
         it('should be able to be set before object items', () => {
@@ -111,7 +106,7 @@
           comboBox.items = [item];
 
           expect(comboBox.selectedItem).to.eql(item);
-          expect(comboBox._bindableInput.value).to.eql('foo');
+          expect(comboBox.inputElement.value).to.eql('foo');
         });
       });
 
@@ -146,7 +141,7 @@
         it('should set bind value after setting value property', () => {
           comboBox.value = 'foo';
 
-          expect(comboBox._bindableInput.value).to.eql('foo');
+          expect(comboBox.inputElement.value).to.eql('foo');
         });
 
         it('should set value after setting a custom input value', () => {
@@ -220,7 +215,7 @@
           comboBox.selectedItem = 'foo';
 
           expect(comboBox.value).to.eql('foo');
-          expect(comboBox._bindableInput.value).to.eql('foo');
+          expect(comboBox.inputElement.value).to.eql('foo');
         });
 
         it('should default back to null when value set to undefined', () => {
