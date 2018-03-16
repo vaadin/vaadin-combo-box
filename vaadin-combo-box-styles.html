@@ -50,11 +50,19 @@ This program is available under Apache License Version 2.0, available at https:/
 <dom-module id="vaadin-combo-box-overlay-default-theme">
   <template>
     <style>
+      /* Workaround ShadyCSS issue when using inside of the dom-if */
+      :host([opened]) {
+        --iron-list-items-container_-_border-width: 8px 0;
+        --iron-list-items-container_-_border-style: solid;
+        --iron-list-items-container_-_border-color: transparent;
+      }
+
       /* Workaround iron-list measurements */
       iron-list {
         --iron-list-items-container: {
-          border-top: 8px solid transparent;
-          border-bottom: 8px solid transparent;
+          border-width: 8px 0;
+          border-style: solid;
+          border-color: transparent;
         };
       }
     </style>
