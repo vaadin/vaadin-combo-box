@@ -81,7 +81,7 @@
       it('should use the default label property in overlay items', done => {
         setTimeout(() => {
           const firstItem = combobox.$.overlay._selector.querySelector('vaadin-combo-box-item');
-          expect(firstItem.root.textContent).to.contain('foo');
+          expect(firstItem.textContent).to.contain('foo');
           done();
         }, 1);
       });

@@ -3,23 +3,7 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 -->
-<link rel="import" href="../../polymer/polymer-element.html">
-<link rel="import" href="../../vaadin-themable-mixin/vaadin-themable-mixin.html">
-
-<dom-module id="vaadin-combo-box-item">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-
-      :host([hidden]) {
-         display: none;
-      }
-    </style>
-    <div part="content" id="content"></div>
-  </template>
-</dom-module>
+<link rel="import" href="../../vaadin-item/src/vaadin-item.html">
 
 <script>
   (function() {
@@ -44,10 +28,9 @@ This program is available under Apache License Version 2.0, available at https:/
      * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
      *
      * @memberof Vaadin
-     * @mixes Vaadin.ThemableMixin
      * @private
      */
-    class ComboBoxItemElement extends Vaadin.ThemableMixin(Polymer.Element) {
+    class ComboBoxItemElement extends Vaadin.ItemElement {
       static get is() {
         return 'vaadin-combo-box-item';
       }
@@ -117,16 +100,16 @@ This program is available under Apache License Version 2.0, available at https:/
           comboBox._ensureTemplatized();
           if (comboBox._TemplateClass) {
             this._itemTemplateInstance = new comboBox._TemplateClass({});
-            this.$.content.textContent = '';
-            this.$.content.appendChild(this._itemTemplateInstance.root);
+            this.textContent = '';
+            this.appendChild(this._itemTemplateInstance.root);
           }
         }
       }
 
       _updateLabel(label, _itemTemplateInstance) {
-        if (_itemTemplateInstance === undefined && this.$.content) {
+        if (_itemTemplateInstance === undefined) {
           // Only set label to textContent no template
-          this.$.content.textContent = label;
+          this.textContent = label;
         }
       }
 
@@ -139,5 +122,10 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     customElements.define(ComboBoxItemElement.is, ComboBoxItemElement);
+
+    /**
+     * @namespace Vaadin
+     */
+    window.Vaadin.ComboBoxItemElement = ComboBoxItemElement;
   })();
 </script>
