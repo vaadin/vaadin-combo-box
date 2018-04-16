@@ -116,6 +116,50 @@
     </vaadin-demo-snippet>
 
 
+    <h3>Styling Items from Parent Scope</h3>
+
+    <vaadin-demo-snippet id="combo-box-item-template-demos-styling-items-from-parent-scope">
+      <template preserve-content>
+        <style>
+          .my-user {
+            display: flex;
+          }
+
+          .my-user > img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            flex: none;
+          }
+
+          .my-user > div {
+            flex: auto;
+            display: flex;
+            flex-direction: column;
+          }
+        </style>
+        <vaadin-combo-box id="styled-users-box" label="User" item-label-path="email" item-value-path="email" style="width: 240px;">
+          <template>
+            <div class="my-user">
+              <img src="[[item.picture.thumbnail]]">
+              <div>
+                <b>[[item.name.first]] [[item.name.last]]</b>
+                <i>[[item.email]]</i>
+              </div>
+            </div>
+          </template>
+        </vaadin-combo-box>
+
+        <script>
+          window.addDemoReadyListener('#combo-box-item-template-demos-styling-items-from-parent-scope', function(document) {
+            var elementsMyItemBox = document.querySelector('#styled-users-box');
+            elementsMyItemBox.items = users;
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
+
     <h3>Item Template with Paper Item Elements</h3>
 
     <vaadin-demo-snippet id="combo-box-item-template-demos-item-template-with-paper-item-elements">
