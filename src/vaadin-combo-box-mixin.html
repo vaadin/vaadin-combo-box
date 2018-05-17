@@ -285,7 +285,10 @@ This program is available under Apache License Version 2.0, available at https:/
         if (path.indexOf(this._toggleElement) > -1 && this.opened) {
           this.close();
         } else {
+          // In touch devices we avoid opening soft keyboard until a second touch
+          const blurOnOpen = !this.opened && this.$.overlay.touchDevice;
           this.open();
+          blurOnOpen && this.inputElement.blur();
         }
       }
 
