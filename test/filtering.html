@@ -354,7 +354,7 @@
 
       it('should properly display all items in the selector', done => {
         comboBox.opened = true;
-        comboBox.filteredItems = new Array(10).fill(0).map((_, i) => `item${i}`);
+        comboBox.filteredItems = Array.apply(null, Array(10)).map((_, i) => `item${i}`);
         setTimeout(() => {
           expect(comboBox.$.overlay._selector.querySelectorAll('vaadin-combo-box-item').length).to.equal(10);
           done();
