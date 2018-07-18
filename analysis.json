@@ -3320,7 +3320,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `owner`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`owner` the `<vaadin-combo-box>` element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `comboBox`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`comboBox` the reference to the combo box element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
               "privacy": "public",
               "sourceRange": {
                 "file": "vaadin-combo-box-mixin.html",
@@ -3705,11 +3705,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 130,
+                  "line": 131,
                   "column": 6
                 },
                 "end": {
-                  "line": 132,
+                  "line": 133,
                   "column": 7
                 }
               },
@@ -3772,11 +3772,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 107,
+                  "line": 108,
                   "column": 6
                 },
                 "end": {
-                  "line": 109,
+                  "line": 110,
                   "column": 7
                 }
               },
@@ -3793,11 +3793,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 126,
+                  "line": 127,
                   "column": 6
                 },
                 "end": {
-                  "line": 128,
+                  "line": 129,
                   "column": 7
                 }
               },
@@ -3814,11 +3814,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 89,
+                  "line": 90,
                   "column": 10
                 },
                 "end": {
-                  "line": 92,
+                  "line": 93,
                   "column": 11
                 }
               },
@@ -3836,11 +3836,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 94,
+                  "line": 95,
                   "column": 10
                 },
                 "end": {
-                  "line": 97,
+                  "line": 98,
                   "column": 11
                 }
               },
@@ -3859,11 +3859,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 101,
+                  "line": 102,
                   "column": 6
                 },
                 "end": {
-                  "line": 105,
+                  "line": 106,
                   "column": 7
                 }
               },
@@ -5018,11 +5018,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 111,
+                  "line": 112,
                   "column": 6
                 },
                 "end": {
-                  "line": 118,
+                  "line": 119,
                   "column": 7
                 }
               },
@@ -5038,11 +5038,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 120,
+                  "line": 121,
                   "column": 6
                 },
                 "end": {
-                  "line": 124,
+                  "line": 125,
                   "column": 7
                 }
               },
@@ -5136,11 +5136,11 @@
           "metadata": {},
           "sourceRange": {
             "start": {
-              "line": 75,
+              "line": 76,
               "column": 4
             },
             "end": {
-              "line": 139,
+              "line": 140,
               "column": 5
             }
           },
@@ -5204,7 +5204,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `owner`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`owner` the `<vaadin-combo-box>` element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `comboBox`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`comboBox` the reference to the combo box element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
               "sourceRange": {
                 "file": "vaadin-combo-box-mixin.html",
                 "start": {
@@ -5423,11 +5423,11 @@
               "description": "Name of the two-way data-bindable property representing the\nvalue of the custom input field.",
               "sourceRange": {
                 "start": {
-                  "line": 89,
+                  "line": 90,
                   "column": 10
                 },
                 "end": {
-                  "line": 92,
+                  "line": 93,
                   "column": 11
                 }
               },
@@ -5439,11 +5439,11 @@
               "description": "",
               "sourceRange": {
                 "start": {
-                  "line": 94,
+                  "line": 95,
                   "column": 10
                 },
                 "end": {
-                  "line": 97,
+                  "line": 98,
                   "column": 11
                 }
               },
@@ -5696,7 +5696,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `owner`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`owner` the `<vaadin-combo-box>` element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `comboBox`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`comboBox` the reference to the combo box element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
               "privacy": "public",
               "sourceRange": {
                 "file": "vaadin-combo-box-mixin.html",
@@ -7922,7 +7922,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `owner`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`owner` the `<vaadin-combo-box>` element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `comboBox`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`comboBox` the reference to the combo box element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
               "sourceRange": {
                 "file": "vaadin-combo-box-mixin.html",
                 "start": {
@@ -8390,7 +8390,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `owner`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`owner` the `<vaadin-combo-box>` element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `comboBox`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`comboBox` the reference to the combo box element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
               "privacy": "public",
               "sourceRange": {
                 "start": {
@@ -9935,7 +9935,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `owner`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`owner` the `<vaadin-combo-box>` element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>`.\nReceives arguments `root`, `comboBox`, `model`\n\n`root` the `<vaadin-combo-box-item>` internal container element\n\n`comboBox` the reference to the combo box element\n\n`model` Object with properties that could be required during the rendering process.\nObject is in the format { index: 'the item index', item: 'the item object' }\n\n**NOTE:** The renderer callback can be called multiple times with the previous content.",
               "sourceRange": {
                 "start": {
                   "line": 63,
