@@ -153,7 +153,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from `<vaadin-combo-box>`.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.",
               "privacy": "public",
               "sourceRange": {
                 "start": {
@@ -161,13 +161,33 @@
                   "column": 10
                 },
                 "end": {
-                  "line": 101,
-                  "column": 11
+                  "line": 98,
+                  "column": 28
                 }
               },
               "metadata": {
                 "polymer": {
-                  "observer": "\"_rendererChanged\"",
+                  "attributeType": "Function"
+                }
+              }
+            },
+            {
+              "name": "_oldRenderer",
+              "type": "Function | null | undefined",
+              "description": "Saved instance of a custom renderer function.",
+              "privacy": "protected",
+              "sourceRange": {
+                "start": {
+                  "line": 103,
+                  "column": 10
+                },
+                "end": {
+                  "line": 103,
+                  "column": 32
+                }
+              },
+              "metadata": {
+                "polymer": {
                   "attributeType": "Function"
                 }
               }
@@ -180,11 +200,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 116,
+                  "line": 118,
                   "column": 6
                 },
                 "end": {
-                  "line": 127,
+                  "line": 129,
                   "column": 7
                 }
               },
@@ -195,40 +215,16 @@
               }
             },
             {
-              "name": "_rendererChanged",
-              "description": "",
-              "privacy": "protected",
-              "sourceRange": {
-                "start": {
-                  "line": 129,
-                  "column": 6
-                },
-                "end": {
-                  "line": 133,
-                  "column": 7
-                }
-              },
-              "metadata": {},
-              "params": [
-                {
-                  "name": "renderer"
-                }
-              ],
-              "return": {
-                "type": "void"
-              }
-            },
-            {
               "name": "_render",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 135,
+                  "line": 131,
                   "column": 6
                 },
                 "end": {
-                  "line": 146,
+                  "line": 151,
                   "column": 7
                 }
               },
@@ -236,6 +232,9 @@
               "params": [
                 {
                   "name": "renderer"
+                },
+                {
+                  "name": "index"
                 },
                 {
                   "name": "item"
@@ -251,11 +250,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 148,
+                  "line": 153,
                   "column": 6
                 },
                 "end": {
-                  "line": 159,
+                  "line": 164,
                   "column": 7
                 }
               },
@@ -271,11 +270,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 161,
+                  "line": 166,
                   "column": 6
                 },
                 "end": {
-                  "line": 166,
+                  "line": 171,
                   "column": 7
                 }
               },
@@ -298,11 +297,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 168,
+                  "line": 173,
                   "column": 6
                 },
                 "end": {
-                  "line": 173,
+                  "line": 178,
                   "column": 7
                 }
               },
@@ -410,7 +409,7 @@
               "column": 4
             },
             "end": {
-              "line": 174,
+              "line": 179,
               "column": 5
             }
           },
@@ -500,15 +499,15 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from `<vaadin-combo-box>`.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.",
               "sourceRange": {
                 "start": {
                   "line": 98,
                   "column": 10
                 },
                 "end": {
-                  "line": 101,
-                  "column": 11
+                  "line": 98,
+                  "column": 28
                 }
               },
               "metadata": {},
@@ -2328,7 +2327,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from `<vaadin-combo-box>`.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.",
               "privacy": "public",
               "sourceRange": {
                 "start": {
@@ -3176,7 +3175,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from `<vaadin-combo-box>`.",
+              "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.",
               "sourceRange": {
                 "start": {
                   "line": 103,
@@ -10242,7 +10241,7 @@
         {
           "name": "renderer",
           "type": "Function | null | undefined",
-          "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from `<vaadin-combo-box>`.",
+          "description": "Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.",
           "privacy": "public",
           "sourceRange": {
             "start": {
