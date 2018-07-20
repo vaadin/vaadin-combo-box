@@ -12,9 +12,13 @@ addons:
   chrome: stable
 
 env:
-  - POLYMER=2 TEST_SUITE=unit_tests
+  - POLYMER=2 TEST_SUITE=mobile
+  - POLYMER=2 TEST_SUITE=microsoft
+  - POLYMER=2 TEST_SUITE=desktop
   - POLYMER=2 TEST_SUITE=visual_tests
-  - POLYMER=3
+  - POLYMER=3 TEST_SUITE=mobile
+  - POLYMER=3 TEST_SUITE=microsoft
+  - POLYMER=3 TEST_SUITE=desktop
 
 script:
   - if [[ "$POLYMER" = "2" ]]; then
@@ -26,7 +30,7 @@ script:
           npm i -q --no-save gemini@^4.0.0 gemini-sauce gemini-polyserve &&
           gemini test test/visual && gemini test test/visual -c .gemini-ff.yml;
         else
-          wct --env saucelabs;
+          wct --env saucelabs:$TEST_SUITE;
         fi;
       else
         xvfb-run -s '-screen 0 1024x768x24' wct;
@@ -42,7 +46,7 @@ script:
       magi p3-convert --out . --import-style=name &&
       yarn install --flat &&
       if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then
-        wct --module-resolution=node --npm --env saucelabs;
+        wct --module-resolution=node --npm --env saucelabs:$TEST_SUITE;
       else
         xvfb-run -s '-screen 0 1024x768x24' wct --module-resolution=node --npm;
       fi;
