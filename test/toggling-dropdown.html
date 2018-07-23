@@ -332,6 +332,17 @@
         expect(combobox.opened).to.be.false;
       });
     });
+
+    describe('empty list', () => {
+
+      it('dropdown should not be shown when filteredItems is empty', () => {
+        combobox.filteredItems = undefined;
+        combobox.open();
+
+        expect(combobox.opened).to.be.false;
+        combobox.filteredItems = [];
+      });
+    });
   });
 </script>
 
