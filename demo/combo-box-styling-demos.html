@@ -55,6 +55,32 @@
       </template>
     </vaadin-demo-snippet>
 
+    <h3>Content Renderer Function</h3>
+    <p>
+      The content can be provided using the renderer callback function.
+    </p>
+    <vaadin-demo-snippet id="combo-box-styling-demos-renderer">
+      <template preserve-content>
+        <vaadin-combo-box id="elements-renderer" label="Element" item-label-path="name" item-value-path="symbol" style="width: 240px;">
+        </vaadin-combo-box>
+        <script>
+          window.addDemoReadyListener('#combo-box-styling-demos-renderer', function(document) {
+            const comboBox = document.querySelector('#elements-renderer');
+            comboBox.items = elementsJson;
+            comboBox.renderer = function(root, owner, model) {
+              // Avoid rendering if rendered content is already for the same item
+              if (root._rendered !== model.item.number) {
+                root.innerHTML = '<b>' + model.item.name
+                  + ', <sub>' + model.item.number + '</sub>'
+                  + model.item.symbol + '</b><br> array index: ' + model.index;
+                root._rendered = model.item.number;
+              }
+            };
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
     <h3>Replacing the Input</h3>
     <p>
       If you are using other custom input fields like &lt;iron-input>, you

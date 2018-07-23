@@ -91,12 +91,23 @@ This program is available under Apache License Version 2.0, available at https:/
           /**
            * The template instance corresponding to the item
            */
-          _itemTemplateInstance: Object
+          _itemTemplateInstance: Object,
+
+          /**
+           * Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.
+           */
+          renderer: Function,
+
+          /**
+           * Saved instance of a custom renderer function.
+           */
+          _oldRenderer: Function
         };
       }
 
       static get observers() {
         return [
+          '_render(renderer, index, item.*)',
           '_updateLabel(label, _itemTemplateInstance)',
           '_updateTemplateInstanceVariable("index", index, _itemTemplateInstance)',
           '_updateTemplateInstanceVariable("item", item, _itemTemplateInstance)',
@@ -108,23 +119,53 @@ This program is available under Apache License Version 2.0, available at https:/
       connectedCallback() {
         super.connectedCallback();
 
+        // 2.0 has __dataHost. Might want to consider assigning combobox reference directly to item.
+        const overlay = this.getRootNode().host.getRootNode().host;
+        const dropdown = overlay.__dataHost;
+        const comboBoxOverlay = dropdown.getRootNode().host;
+        this._comboBox = comboBoxOverlay.getRootNode().host;
         if (!this._itemTemplateInstance) {
-          // 2.0 has __dataHost. Might want to consider assigning combobox reference directly to item.
-          const overlay = this.getRootNode().host.getRootNode().host;
-          const dropdown = overlay.__dataHost;
-          const comboBoxOverlay = dropdown.getRootNode().host;
-          const comboBox = comboBoxOverlay.getRootNode().host;
-          comboBox._ensureTemplatized();
-          if (comboBox._TemplateClass) {
-            this._itemTemplateInstance = new comboBox._TemplateClass({});
-            this.$.content.textContent = '';
-            this.$.content.appendChild(this._itemTemplateInstance.root);
-          }
+          this._ensureTemplatized();
+        }
+      }
+
+      _render(renderer, index, item) {
+        if (item === undefined || index === undefined) {
+          return;
+        }
+
+        if (this._oldRenderer !== renderer) {
+          this.$.content.innerHTML = '';
+        }
+
+        if (renderer) {
+          this._oldRenderer = renderer;
+          const model = {
+            index: index,
+            item: item.value
+          };
+
+          this.renderer(this.$.content, this._comboBox, model);
+        } else if (this._oldRenderer) {
+          this._ensureTemplatized();
+        }
+      }
+
+      _ensureTemplatized() {
+        if (!this._comboBox) {
+          return;
+        }
+
+        this._comboBox._ensureTemplatized();
+        if (this._comboBox._TemplateClass) {
+          this._itemTemplateInstance = new this._comboBox._TemplateClass({});
+          this.$.content.innerHTML = '';
+          this.$.content.appendChild(this._itemTemplateInstance.root);
         }
       }
 
       _updateLabel(label, _itemTemplateInstance) {
-        if (_itemTemplateInstance === undefined && this.$.content) {
+        if (_itemTemplateInstance === undefined && this.$.content && !this.renderer) {
           // Only set label to textContent no template
           this.$.content.textContent = label;
         }

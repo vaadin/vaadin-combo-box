@@ -43,6 +43,7 @@ This program is available under Apache License Version 2.0, available at https:/
                 item="[[item]]"
                 label="[[getItemLabel(item)]]"
                 selected="[[_isItemSelected(item, _selectedItem)]]"
+                renderer="[[renderer]]"
                 role$="[[_getAriaRole(index)]]"
                 aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
                 focused="[[_isItemFocused(_focusedIndex,index)]]"
@@ -96,6 +97,11 @@ This program is available under Apache License Version 2.0, available at https:/
           positionTarget: {
             type: Object
           },
+
+          /**
+           * Custom function for rendering the content of the `<vaadin-combo-box-item>` propagated from the combo box element.
+           */
+          renderer: Function,
 
           /**
            * `true` when new items are being loaded.
