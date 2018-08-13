@@ -260,6 +260,27 @@
         expect(combobox.opened).to.equal(false);
       });
 
+      it('should not close on blur caused by mousedown on the overlay scroller', function() {
+        combobox.open();
+
+        combobox.$.overlay.fire('mousedown', 1, {node: combobox.$.overlay.$.scroller});
+        combobox.$.input.fire('blur');
+
+        expect(combobox.opened).to.be.true;
+      });
+
+      it('should not close asyncronously on blur caused by mousedown on the overlay scroller', function(done) {
+        combobox.open();
+
+        combobox.$.overlay.fire('mousedown', 1, {node: combobox.$.overlay.$.scroller});
+        combobox.$.input.fire('blur');
+
+        setTimeout(function() {
+          expect(combobox.opened).to.be.true;
+          done();
+        }, 100);
+      });
+
       // When using Shadow DOM polyfill, the style scope of the combobox might
       // not get added to the overlay after it's moved back to the combobox.
       // The following test ensures that the overlay doesn't keep the style

@@ -403,7 +403,7 @@ Custom property | Description | Default
     _focusBlurHandler: function(event) {
       Polymer.IronControlState._focusBlurHandler.call(this, event);
       // Forward the focus to the nested input.
-      if (!this.focused) {
+      if (!this.focused && !this._closeOnBlurIsPrevented) {
         this.async(this.close, 100);
       }
       if (this.focused && !this._shiftTabPressed) {
