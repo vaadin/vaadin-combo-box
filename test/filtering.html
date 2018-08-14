@@ -345,6 +345,24 @@
         comboBox = fixture('configured');
         expect(comboBox._focusedIndex).to.eql(1);
       });
+
+      it('should not notify resize the dropdown if not opened', () => {
+        const resizeSpy = sinon.spy(comboBox.$.overlay.$.dropdown, 'notifyResize');
+        comboBox.filteredItems = ['foo', 'bar', 'baz'];
+
+        expect(resizeSpy).to.not.have.been.called;
+      });
+
+      it('should not re-position the overlay if not opened', done => {
+        const resizeSpy = sinon.spy(comboBox.$.overlay, 'updateViewportBoundaries');
+        comboBox.filteredItems = ['foo', 'bar', 'baz'];
+
+        // note: the re-positioning logic has 1ms timeout
+        setTimeout(() => {
+          expect(resizeSpy).to.not.have.been.called;
+          done();
+        }, 2);
+      });
     });
 
     describe('setting items when opened', () => {
