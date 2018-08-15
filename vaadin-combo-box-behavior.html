@@ -185,6 +185,18 @@
     },
 
     _onOverlayDown: function(event) {
+      if (event.detail &&
+          event.detail.sourceEvent &&
+          event.detail.sourceEvent.type === 'mousedown' &&
+          event.target === this.$.overlay.$.scroller) {
+        // Mousedown on the scroller (e. g., when scrolling with mouse) makes
+        // an unintentional blur that should not close. It is hard to prevent
+        // the blur, so instead let us set a flag for the blur listeners.
+        this._closeOnBlurIsPrevented = true;
+        setTimeout(function() {
+          this._closeOnBlurIsPrevented = false;
+        });
+      }
       if (this.$.overlay.touchDevice && event.target !== this.$.overlay.$.scroller) {
         // On touch devices, blur the input on touch start inside the overlay, in order to hide
         // the virtual keyboard. But don't close the overlay on this blur.
