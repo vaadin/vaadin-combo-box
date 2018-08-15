@@ -1,28 +1,58 @@
-var argv = require('yargs').argv;
+var envIndex = process.argv.indexOf('--env') + 1;
+var env = envIndex ? process.argv[envIndex] : undefined;
 
 module.exports = {
+  testTimeout: 180 * 1000,
+  verbose: false,
   plugins: {
+    'local': {
+      browserOptions: {
+        chrome: [
+          'headless',
+          'disable-gpu',
+          'no-sandbox'
+        ]
+      }
+    },
     'random-output': true
   },
   registerHooks: function(context) {
-    var saucelabsPlatforms = [
-      'macOS 10.12/iphone@10.3',
-      'macOS 10.12/ipad@10.3',
-      'Windows 10/microsoftedge@15',
-      'Windows 10/internet explorer@11',
-      'macOS 10.12/safari@11.0',
-      'macOS 9.3.2/iphone@9.3'
+    const saucelabsPlatformsMobile = [
+      'iOS Simulator/iphone@11.3',
+      'iOS Simulator/iphone@9.3'
     ];
 
-    var cronPlatforms = [
-      'Android/chrome',
-      'Windows 10/chrome@59',
-      'Windows 10/firefox@54'
+    const saucelabsPlatformsMicrosoft = [
+      'Windows 10/microsoftedge@17',
+      'Windows 10/internet explorer@11'
     ];
 
-    if (argv.env === 'saucelabs') {
+    const saucelabsPlatformsDesktop = [
+      'macOS 10.13/safari@11.1'
+    ];
+
+    const saucelabsPlatforms = [
+      ...saucelabsPlatformsMobile,
+      ...saucelabsPlatformsMicrosoft,
+      ...saucelabsPlatformsDesktop
+    ];
+
+    const cronPlatforms = [
+      {
+        deviceName: 'Android GoogleAPI Emulator',
+        platformName: 'Android',
+        platformVersion: '7.1',
+        browserName: 'chrome'
+      },
+      'iOS Simulator/ipad@11.3',
+      'iOS Simulator/iphone@10.3',
+      'Windows 10/chrome@latest',
+      'Windows 10/firefox@latest'
+    ];
+
+    if (env === 'saucelabs') {
       context.options.plugins.sauce.browsers = saucelabsPlatforms;
-    } else if (argv.env === 'saucelabs-cron') {
+    } else if (env === 'saucelabs-cron') {
       context.options.plugins.sauce.browsers = cronPlatforms;
     }
   }
