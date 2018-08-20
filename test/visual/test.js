@@ -14,6 +14,7 @@ gemini.suite('vaadin-combo-box', function(rootSuite) {
     .before(wait)
     .after(goToAboutBlank);
 
+  // Lumo theme
   gemini.suite('default-tests', function(suite) {
     suite
       .setUrl('default.html')
@@ -29,6 +30,37 @@ gemini.suite('vaadin-combo-box', function(rootSuite) {
   });
 
   gemini.suite('dropdown', function(suite) {
+    suite
+      .setUrl('dropdown.html')
+      .setCaptureElements('#dropdown-tests')
+      .capture('default', function(actions) {
+        actions.executeJS(function(window) {
+          window.document.querySelector('#plain').open();
+        });
+      })
+      .capture('template', function(actions) {
+        actions.executeJS(function(window) {
+          window.document.querySelector('#template').open();
+        });
+      });
+  });
+
+  // Material theme
+  gemini.suite('material-default-tests', function(suite) {
+    suite
+      .setUrl('default.html')
+      .setCaptureElements('#default-tests')
+      .capture('default');
+  });
+
+  gemini.suite('material-icons', function(suite) {
+    suite
+      .setUrl('icons.html')
+      .setCaptureElements('#icons-tests')
+      .capture('default');
+  });
+
+  gemini.suite('material-dropdown', function(suite) {
     suite
       .setUrl('dropdown.html')
       .setCaptureElements('#dropdown-tests')
