@@ -12,6 +12,15 @@ This program is available under Apache License Version 2.0, available at https:/
 <script>
   window.Vaadin = window.Vaadin || {};
 
+  const TOUCH_DEVICE = (() => {
+    try {
+      document.createEvent('TouchEvent');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  })();
+
   /**
    * @polymerMixin
    * @memberof Vaadin
@@ -305,7 +314,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._openedWithFocusRing = this.hasAttribute('focus-ring') || (this.focusElement && this.focusElement.hasAttribute('focus-ring'));
         // For touch devices, we don't want to popup virtual keyboard on touch devices unless input
         // is explicitly focused by the user.
-        if (!this.$.overlay.touchDevice) {
+        if (!TOUCH_DEVICE) {
           // Check to see if there is a focused property and if it's already true.
           if (!this.focused) {
             this.focus();
