@@ -1,0 +1,157 @@
+<!--
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<script>
+  window.Vaadin = window.Vaadin || {};
+  /**
+   * @polymerMixin
+   */
+   Vaadin.ComboBoxDataProviderMixin = superClass => class DataProviderMixin extends superClass {
+
+    static get properties() {
+      return {
+
+        /**
+         * Number of items fetched at a time from the dataprovider.
+         */
+        pageSize: {
+          type: Number,
+          value: 50,
+          observer: '_pageSizeChanged'
+        },
+
+        size: {
+          observer: '_sizeChanged'
+        },
+
+        dataProvider: {
+          type: Object,
+          notify: true,
+          observer: '_dataProviderChanged'
+        },
+
+        /**
+         * `true` while data is being requested from the data provider.
+         */
+        loading: {
+          type: Boolean,
+          notify: true,
+          readOnly: true,
+          reflectToAttribute: true
+        },
+
+        /**
+         * Path to an item sub-property that identifies the item.
+         */
+        itemIdPath: {
+          type: String,
+          value: null
+        },
+
+        _pendingRequests: {
+          value: () => {
+            return {};
+          }
+        }
+
+      };
+    }
+
+    static get observers() {
+      return [
+        '_dataProviderFilterChanged(filter)'
+      ]
+    }
+
+    ready() {
+      super.ready();
+      this.clearCache();
+      this.$.overlay.addEventListener('item-requested', e => {
+        const index = this.filteredItems.indexOf(e.detail.item);
+        const page = this._getPageForIndex(index);
+        const loadedItem = this.filteredItems[page * this.pageSize];
+        const hasPage = loadedItem && !loadedItem.vaadinComboBoxPlaceholder;
+        if (!hasPage) {
+          this._loadPage(page);
+        }
+      });
+    }
+
+    _dataProviderFilterChanged() {
+      this._pendingRequests = {};
+      this.clearCache();
+      this._loadPage(0);
+    }
+
+    /**
+     * Returns a value that identifies the item. Uses `itemIdPath` if available.
+     * Can be customized by overriding.
+     */
+    getItemId(item) {
+      return this.itemIdPath ? this.get(this.itemIdPath, item) : item;
+    }
+
+    _loadPage(page) {
+      // make sure same page isn't requested multiple times.
+      if (!this._pendingRequests[page] && this.dataProvider) {
+        // this._setLoading(true);
+
+        const params = {
+          page,
+          pageSize: this.pageSize,
+          filter: this.filter
+        };
+
+        const callback = (items, size) => {
+          if (this._pendingRequests[page] === callback) {
+            this.size = size;
+            this.splice(`filteredItems`, params.page * params.pageSize , items.length, ...items);
+            // this.splice(`_items`, 0, this.items.length, ...this.items);
+
+            delete this._pendingRequests[page];
+
+            // this._setLoading(Object.keys(this._pendingRequests).length);
+          }
+        };
+        this._pendingRequests[page] = callback;
+        this.dataProvider(params, callback);
+      }
+    }
+
+    _getPageForIndex(index) {
+      return Math.floor(index / this.pageSize);
+    }
+
+    /**
+     * Clears the cached pages and reloads data from dataprovider when needed.
+     */
+    clearCache() {
+      this.filteredItems = Array.from(new Array(this.size)).map(() => {return {vaadinComboBoxPlaceholder: true};});
+    }
+
+    _sizeChanged(size, oldSize = 0) {
+      let filteredItems = (this.filteredItems || []).slice();
+      if (size > oldSize) {
+        const added = Array.from(new Array(size - oldSize)).map(() => {return {vaadinComboBoxPlaceholder: true};});
+        filteredItems = filteredItems.concat(added);
+      } else if (size < oldSize) {
+        filteredItems = filteredItems.slice(0, size);
+      }
+      this.filteredItems = filteredItems;
+    }
+
+    _pageSizeChanged() {
+      this.clearCache();
+    }
+
+    _dataProviderChanged(dataProvider, oldDataProvider) {
+      if (oldDataProvider !== undefined) {
+        this.clearCache();
+      }
+    }
+
+  };
+</script>

@@ -386,7 +386,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _getItemLabel(item) {
-      return this.$.overlay.getItemLabel(item);
+      return item.vaadinComboBoxPlaceholder ? '' : this.$.overlay.getItemLabel(item);
     }
 
     _getItemValue(item) {
@@ -576,7 +576,7 @@ This program is available under Apache License Version 2.0, available at https:/
             this.value = customValue;
           }
         } else {
-          this._inputElementValue = this._getItemLabel(this.selectedItem);
+          this._inputElementValue = this.selectedItem ? this._getItemLabel(this.selectedItem) : '';
         }
       }
 
