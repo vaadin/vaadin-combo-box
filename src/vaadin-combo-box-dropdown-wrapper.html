@@ -275,6 +275,11 @@ This program is available under Apache License Version 2.0, available at https:/
        * @return {String}
        */
       getItemLabel(item) {
+        if (item.vaadinComboBoxPlaceholder) {
+          this.dispatchEvent(new CustomEvent('item-requested', {detail: {item}}));
+          return '';
+        }
+
         let label = item ? this.get(this._itemLabelPath, item) : undefined;
         if (label === undefined || label === null) {
           label = item ? item.toString() : '';
