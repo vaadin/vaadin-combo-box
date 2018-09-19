@@ -90,20 +90,20 @@
 
             it('should receive params argument', () => {
               comboBox.dataProvider = spyDataProvider;
-              const args = spyDataProvider.lastCall;
-              expect(typeof args[0]).to.equal('object');
+              const params = spyDataProvider.lastCall.args[0];
+              expect(typeof params).to.equal('object');
             });
 
             it('should have filter param', () => {
               comboBox.dataProvider = spyDataProvider;
               const params = spyDataProvider.lastCall.args[0];
-              expect(params.filter).to.equal(0);
+              expect(params.filter).to.equal('');
             });
 
             it('should receive callback argument', () => {
               comboBox.dataProvider = spyDataProvider;
-              const args = spyDataProvider.lastCall;
-              expect(typeof args[1]).to.equal('function');
+              const callback = spyDataProvider.lastCall.args[1];
+              expect(typeof callback).to.equal('function');
             });
 
             it('should request page 0', () => {
