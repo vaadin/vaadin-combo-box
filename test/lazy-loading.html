@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-combo basic tests</title>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <link rel="import" href="common-imports.html">
+  <script src="common.js"></script>
+  <link rel="import" href="../vaadin-combo-box-light.html">
+  <link rel="import" href="../../iron-input/iron-input.html">
+</head>
+
+<body>
+
+  <test-fixture id="comboBox">
+    <template>
+      <vaadin-combo-box></vaadin-combo-box>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="comboBoxLight">
+    <template>
+      <vaadin-combo-box-light attr-for-value="bind-value">
+        <iron-input>
+          <input>
+        </iron-input>
+      </vaadin-combo-box-light>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('lazy loading', () => {
+      const SIZE = 70;
+      let dataProviderItems;
+
+      const spyDataProvider = sinon.spy((params, callback) => {
+        const offset = params.page * params.pageSize;
+        const n = Math.min(offset + pageSize, SIZE) - offset;
+        dataProviderItems = Array(...new Array(n)).map((_, i) => `item ${i}`);
+        callback(dataProviderItems, SIZE);
+      });
+
+      beforeEach(() => spyDataProvider.reset());
+
+      let comboBox;
+
+      const describeLazyLoading = () => {
+        describe('dataProvider', () => {
+          it('should not be invoked when set', () => {
+            comboBox.dataProvider = spyDataProvider;
+            expect(spyDataProvider).to.be.notCalled;
+          });
+
+          it('should be invoked on open', () => {
+            comboBox.dataProvider = spyDataProvider;
+            comboBox.opened = true;
+            expect(spyDataProvider).to.be.calledOnce;
+          });
+
+          it('should throw if set after items', () => {
+            comboBox.items = ['foo'];
+            expect(() => {
+              comboBox.dataProvider = spyDataProvider;
+            }).to.throw();
+            expect(spyDataProvider).to.be.notCalled;
+            expect(comboBox.dataProvider).to.be.undefined;
+          });
+
+          it('should throw if items are set after', () => {
+            comboBox.dataProvider = spyDataProvider;
+            expect(() => {
+              comboBox.items = ['foo'];
+            }).to.throw();
+            expect(comboBox.items).to.be.undefined;
+          });
+
+          describe('when open', () => {
+            beforeEach(() => comboBox.opened = true);
+
+            it('should be invoked when set', () => {
+              comboBox.dataProvider = spyDataProvider;
+              expect(spyDataProvider).to.be.calledOnce;
+            });
+
+            it('should receive params argument', () => {
+              comboBox.dataProvider = spyDataProvider;
+              const args = spyDataProvider.lastCall;
+              expect(typeof args[0]).to.equal('object');
+            });
+
+            it('should have filter param', () => {
+              comboBox.dataProvider = spyDataProvider;
+              const params = spyDataProvider.lastCall.args[0];
+              expect(params.filter).to.equal(0);
+            });
+
+            it('should receive callback argument', () => {
+              comboBox.dataProvider = spyDataProvider;
+              const args = spyDataProvider.lastCall;
+              expect(typeof args[1]).to.equal('function');
+            });
+
+            it('should request page 0', () => {
+              comboBox.dataProvider = spyDataProvider;
+              const params = spyDataProvider.lastCall.args[0];
+              expect(params.page).to.equal(0);
+            });
+
+            it('should populate filteredItems', () => {
+              expect(comboBox.filteredItems).to.be.undefined;
+              comboBox.dataProvider = spyDataProvider;
+              expect(comboBox.filteredItems).to.be.instanceof(Array);
+              expect(comboBox.filteredItems.length).to.equal(comboBox.pageSize);
+              expect(comboBox.filteredItems).to.eql(dataProviderItems);
+            });
+
+            it('should toggle loading', done => {
+              expect(comboBox.loading).to.be.false;
+              comboBox.dataProvider = (params, callback) => {
+                expect(comboBox.loading).to.be.true;
+                callback([], 0);
+                expect(comboBox.loading).to.be.false;
+                done();
+              };
+            });
+          });
+        });
+
+        describe('pageSize', () => {
+          it('should have default value', () => {
+            expect(typeof comboBox.pageSize).to.equal('number');
+            expect(comboBox.pageSize).to.be.above(0);
+            expect(comboBox.pageSize).to.be.below(Infinity);
+          });
+
+          it('should use default value in dataProvider', () => {
+            comboBox.dataProvider = spyDataProvider;
+            const params = spyDataProvider.lastCall.args[0];
+            expect(typeof comboBox.pageSize).to.equal('number');
+            expect(params.pageSize).to.equal(comboBox.pageSize);
+          });
+
+          it('should use a custom value in dataProvider', () => {
+            comboBox.pageSize = 123;
+            comboBox.dataProvider = spyDataProvider;
+            const params = spyDataProvider.lastCall.args[0];
+            expect(params.pageSize).to.equal(123);
+          });
+        });
+
+        describe('size', () => {
+          it('should not have default value', () => {
+            expect(comboBox.size).to.be.undefined;
+          });
+
+          it('should be set from dataProvider callback', () => {
+            comboBox.dataProvider = spyDataProvider;
+            expect(comboBox.size).to.equal(SIZE);
+          });
+        });
+      };
+
+      describe('combo-box', () => {
+        beforeEach(() => comboBox = fixture('comboBox'));
+
+        describeLazyLoading();
+      });
+
+      describe('combo-box-light', () => {
+        beforeEach(() => comboBox = fixture('comboBoxLight'));
+
+        describeLazyLoading();
+      });
+    });
+  </script>
