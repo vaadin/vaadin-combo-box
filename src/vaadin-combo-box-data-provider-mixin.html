@@ -62,8 +62,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
     static get observers() {
       return [
-        '_dataProviderFilterChanged(filter)'
-      ]
+        '_dataProviderFilterChanged(filter)',
+        '_ensureFirstPage(opened)'
+      ];
     }
 
     ready() {
@@ -72,9 +73,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this.$.overlay.addEventListener('item-requested', e => {
         const index = this.filteredItems.indexOf(e.detail.item);
         const page = this._getPageForIndex(index);
-        const loadedItem = this.filteredItems[page * this.pageSize];
-        const hasPage = loadedItem && !loadedItem.vaadinComboBoxPlaceholder;
-        if (!hasPage) {
+        if (!this._hasPage(page)) {
           this._loadPage(page);
         }
       });
@@ -91,6 +90,17 @@ This program is available under Apache License Version 2.0, available at https:/
      */
     getItemId(item) {
       return this.itemIdPath ? this.get(this.itemIdPath, item) : item;
+    }
+
+    _ensureFirstPage(opened) {
+      if (opened && !this._hasPage(0)) {
+        this._loadPage(0);
+      }
+    }
+
+    _hasPage(page) {
+      const loadedItem = this.filteredItems[page * this.pageSize];
+      return loadedItem && !loadedItem.vaadinComboBoxPlaceholder;
     }
 
     _loadPage(page) {
