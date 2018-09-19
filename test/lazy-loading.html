@@ -113,11 +113,13 @@
             });
 
             it('should populate filteredItems', () => {
-              expect(comboBox.filteredItems).to.be.undefined;
+              expect(comboBox.filteredItems).to.be.instanceof(Array);
+              expect(comboBox.filteredItems.length).to.equal(0);
               comboBox.dataProvider = spyDataProvider;
               expect(comboBox.filteredItems).to.be.instanceof(Array);
-              expect(comboBox.filteredItems.length).to.equal(comboBox.pageSize);
-              expect(comboBox.filteredItems).to.eql(dataProviderItems);
+              expect(comboBox.filteredItems.length).to.equal(SIZE);
+              const filteredItemsFirstPage = comboBox.filteredItems.slice(0, comboBox.pageSize);
+              expect(filteredItemsFirstPage).to.eql(dataProviderItems);
             });
 
             it('should toggle loading', done => {
