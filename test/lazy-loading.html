@@ -63,18 +63,20 @@
 
           it('should throw if set after items', () => {
             comboBox.items = ['foo'];
-            expect(() => {
+            function setDataProvider() {
               comboBox.dataProvider = spyDataProvider;
-            }).to.throw();
+            }
+            expect(setDataProvider).to.throw();
             expect(spyDataProvider).to.be.notCalled;
             expect(comboBox.dataProvider).to.be.undefined;
           });
 
           it('should throw if items are set after', () => {
             comboBox.dataProvider = spyDataProvider;
-            expect(() => {
+            function setItems() {
               comboBox.items = ['foo'];
-            }).to.throw();
+            }
+            expect(setItems).to.throw();
             expect(comboBox.items).to.be.undefined;
           });
 
