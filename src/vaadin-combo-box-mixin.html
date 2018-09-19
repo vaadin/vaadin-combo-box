@@ -385,7 +385,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _getItemLabel(item) {
-      return item.vaadinComboBoxPlaceholder ? '' : this.$.overlay.getItemLabel(item);
+      return this.$.overlay.getItemLabel(item);
     }
 
     _getItemValue(item) {
