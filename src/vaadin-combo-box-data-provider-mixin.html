@@ -38,6 +38,7 @@ This program is available under Apache License Version 2.0, available at https:/
          */
         loading: {
           type: Boolean,
+          value: false,
           notify: true,
           readOnly: true,
           reflectToAttribute: true
@@ -106,7 +107,7 @@ This program is available under Apache License Version 2.0, available at https:/
     _loadPage(page) {
       // make sure same page isn't requested multiple times.
       if (!this._pendingRequests[page] && this.dataProvider) {
-        // this._setLoading(true);
+        this.loading = true;
 
         const params = {
           page,
@@ -122,7 +123,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
             delete this._pendingRequests[page];
 
-            // this._setLoading(Object.keys(this._pendingRequests).length);
+            if (Object.keys(this._pendingRequests).length === 0) {
+              this.loading = false;
+            }
           }
         };
         this._pendingRequests[page] = callback;
