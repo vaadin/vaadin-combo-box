@@ -39,8 +39,8 @@
 
       const spyDataProvider = sinon.spy((params, callback) => {
         const offset = params.page * params.pageSize;
-        const n = Math.min(offset + pageSize, SIZE) - offset;
-        dataProviderItems = Array(...new Array(n)).map((_, i) => `item ${i}`);
+        const n = Math.min(offset + params.pageSize, SIZE) - offset;
+        dataProviderItems = Array(...new Array(n)).map((_, i) => `item ${offset + i}`);
         callback(dataProviderItems, SIZE);
       });
 
