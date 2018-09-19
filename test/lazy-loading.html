@@ -142,6 +142,7 @@
           });
 
           it('should use default value in dataProvider', () => {
+            comboBox.opened = true;
             comboBox.dataProvider = spyDataProvider;
             const params = spyDataProvider.lastCall.args[0];
             expect(typeof comboBox.pageSize).to.equal('number');
@@ -149,6 +150,7 @@
           });
 
           it('should use a custom value in dataProvider', () => {
+            comboBox.opened = true;
             comboBox.pageSize = 123;
             comboBox.dataProvider = spyDataProvider;
             const params = spyDataProvider.lastCall.args[0];
@@ -162,6 +164,7 @@
           });
 
           it('should be set from dataProvider callback', () => {
+            comboBox.opened = true;
             comboBox.dataProvider = spyDataProvider;
             expect(comboBox.size).to.equal(SIZE);
           });
