@@ -66,7 +66,7 @@
             function setDataProvider() {
               comboBox.dataProvider = spyDataProvider;
             }
-            expect(setDataProvider).to.throw();
+            expect(setDataProvider).to.throw('not supported');
             expect(spyDataProvider).to.be.notCalled;
             expect(comboBox.dataProvider).to.be.undefined;
           });
@@ -76,7 +76,7 @@
             function setItems() {
               comboBox.items = ['foo'];
             }
-            expect(setItems).to.throw();
+            expect(setItems).to.throw('not supported');
             expect(comboBox.items).to.be.undefined;
           });
 

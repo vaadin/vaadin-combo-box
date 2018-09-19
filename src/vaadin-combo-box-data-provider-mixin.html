@@ -64,7 +64,7 @@ This program is available under Apache License Version 2.0, available at https:/
     static get observers() {
       return [
         '_dataProviderFilterChanged(filter)',
-        '_ensureFirstPage(opened)'
+        '_ensureFirstPage(opened)',
       ];
     }
 
@@ -163,8 +163,18 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _dataProviderChanged(dataProvider, oldDataProvider) {
+      this._ensureItemsOrDataProvider(() => {
+        this.dataProvider = oldDataProvider;
+      });
       if (this.opened) {
         this.clearCache();
+      }
+    }
+
+    _ensureItemsOrDataProvider(restoreOldValueCallback) {
+      if (this.items !== undefined && this.dataProvider !== undefined) {
+        restoreOldValueCallback();
+        throw 'Using items and dataProvider together is not supported';
       }
     }
 
