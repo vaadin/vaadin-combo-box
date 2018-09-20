@@ -177,7 +177,7 @@ This program is available under Apache License Version 2.0, available at https:/
           this._scroller.setAttribute('unselectable', 'on');
         }
 
-        this.$.dropdown.$.overlay.addEventListener('touchend', e => this._fireTouchAction(e));
+        this.$.dropdown.$.overlay.addEventListener('touchend', e => this._fireTouchAction(e), {passive: true});
         this.$.dropdown.$.overlay.addEventListener('touchmove', e => this._fireTouchAction(e));
 
         // Prevent blurring the input when clicking inside the overlay.
@@ -360,7 +360,7 @@ This program is available under Apache License Version 2.0, available at https:/
           } else if (scrolledToBottom && e.deltaY > 0) {
             e.preventDefault();
           }
-        });
+        }, {passive: true});
       }
 
       updateViewportBoundaries() {
