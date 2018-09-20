@@ -34,17 +34,26 @@
 
   <script>
     describe('lazy loading', () => {
-      const SIZE = 70;
+      const SIZE = 200;
       let dataProviderItems;
 
-      const spyDataProvider = sinon.spy((params, callback) => {
+      const dataProvider = (params, callback) => {
         const offset = params.page * params.pageSize;
         const n = Math.min(offset + params.pageSize, SIZE) - offset;
         dataProviderItems = Array(...new Array(n)).map((_, i) => `item ${offset + i}`);
         callback(dataProviderItems, SIZE);
+      };
+
+      const spyDataProvider = sinon.spy(dataProvider);
+
+      const spyAsyncDataProvider = sinon.spy((params, callback) => {
+        setTimeout(() => dataProvider(params, callback));
       });
 
-      beforeEach(() => spyDataProvider.reset());
+      beforeEach(() => {
+        spyDataProvider.reset();
+        spyAsyncDataProvider.reset();
+      });
 
       let comboBox;
 
@@ -56,6 +65,13 @@
           });
 
           it('should be invoked on open', () => {
+            comboBox.dataProvider = spyDataProvider;
+            comboBox.opened = true;
+            expect(spyDataProvider).to.be.calledOnce;
+          });
+
+          it('should be invoked with size set', () => {
+            comboBox.size = SIZE;
             comboBox.dataProvider = spyDataProvider;
             comboBox.opened = true;
             expect(spyDataProvider).to.be.calledOnce;
@@ -130,6 +146,21 @@
                 expect(comboBox.loading).to.be.false;
                 done();
               };
+            });
+          });
+
+          describe('async', () => {
+            it('should be invoked on open', () => {
+              comboBox.dataProvider = spyAsyncDataProvider;
+              comboBox.opened = true;
+              expect(spyAsyncDataProvider).to.be.calledOnce;
+            });
+
+            it('should be invoked on open with pre-defined size', () => {
+              comboBox.size = SIZE;
+              comboBox.dataProvider = spyAsyncDataProvider;
+              comboBox.opened = true;
+              expect(spyAsyncDataProvider).to.be.calledOnce;
             });
           });
         });
