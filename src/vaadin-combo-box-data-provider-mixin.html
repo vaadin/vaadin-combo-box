@@ -101,7 +101,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
     _hasPage(page) {
       const loadedItem = this.filteredItems[page * this.pageSize];
-      return loadedItem && !loadedItem.vaadinComboBoxPlaceholder;
+      return loadedItem !== undefined && !loadedItem.vaadinComboBoxPlaceholder;
     }
 
     _loadPage(page) {
