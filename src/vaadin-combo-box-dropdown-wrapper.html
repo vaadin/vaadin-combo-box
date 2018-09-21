@@ -26,13 +26,13 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     </style>
     <vaadin-combo-box-dropdown id="dropdown"
-        hidden="[[_hidden(_items.*, loading)]]"
+        hidden="[[_hidden(_items.*)]]"
         position-target="[[positionTarget]]"
         on-template-changed="_templateChanged"
         on-position-changed="_setOverlayHeight"
         theme="[[theme]]">
       <template>
-        <div id="scroller" on-click="_stopPropagation" hidden$="[[loading]]">
+        <div id="scroller" on-click="_stopPropagation">
           <iron-list id="selector" role="listbox" items="[[_items]]" scroll-target="[[_scroller]]">
             <template>
               <vaadin-combo-box-item
@@ -343,7 +343,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       adjustScrollPosition() {
-        if (this._items) {
+        if (this.opened && this._items) {
           this._scrollIntoView(this._focusedIndex);
         }
       }
@@ -420,8 +420,8 @@ This program is available under Apache License Version 2.0, available at https:/
         e.stopPropagation();
       }
 
-      _hidden(itemsChange, loading) {
-        return !loading && (!this._items || !this._items.length);
+      _hidden(itemsChange) {
+        return !this._items || !this._items.length;
       }
     }
 
