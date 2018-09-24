@@ -63,7 +63,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
     static get observers() {
       return [
-        '_dataProviderFilterChanged(filter)',
+        '_dataProviderFilterChanged(filter, dataProvider)',
         '_ensureFirstPage(opened)',
       ];
     }
@@ -71,18 +71,23 @@ This program is available under Apache License Version 2.0, available at https:/
     ready() {
       super.ready();
       this.clearCache();
-      this.$.overlay.addEventListener('item-requested', e => {
-        const index = this.filteredItems.indexOf(e.detail.item);
-        const page = this._getPageForIndex(index);
-        if (!this._hasPage(page)) {
-          this._loadPage(page);
+      this.$.overlay.addEventListener('index-requested', e => {
+        const index = e.detail.index;
+        if (!this.loading && index !== undefined) {
+          const page = this._getPageForIndex(index);
+          if (!this._hasPage(page)) {
+            this._loadPage(page);
+          }
         }
       });
     }
 
     _dataProviderFilterChanged() {
-      this._pendingRequests = {};
-      this.clearCache();
+      if (this.dataProvider) {
+        this.size = undefined;
+        this._pendingRequests = {};
+        this.clearCache();
+      }
     }
 
     /**
@@ -100,6 +105,9 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _hasPage(page) {
+      if (!this.filteredItems) {
+        return false;
+      }
       const loadedItem = this.filteredItems[page * this.pageSize];
       return loadedItem !== undefined && !loadedItem.vaadinComboBoxPlaceholder;
     }
@@ -117,9 +125,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
         const callback = (items, size) => {
           if (this._pendingRequests[page] === callback) {
-            this.size = size;
             this.splice(`filteredItems`, params.page * params.pageSize , items.length, ...items);
-            // this.splice(`_items`, 0, this.items.length, ...this.items);
+            this.size = size;
 
             delete this._pendingRequests[page];
 
@@ -141,6 +148,9 @@ This program is available under Apache License Version 2.0, available at https:/
      * Clears the cached pages and reloads data from dataprovider when needed.
      */
     clearCache() {
+      if (!this.dataProvider) {
+        return;
+      }
       this.filteredItems = Array.from(new Array(this.size || 0)).map(() => {return {vaadinComboBoxPlaceholder: true};});
       if (this.opened) {
         this._loadPage(0);
@@ -148,14 +158,18 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _sizeChanged(size, oldSize = 0) {
-      let filteredItems = (this.filteredItems || []).slice();
-      if (size > oldSize) {
-        const added = Array.from(new Array(size - oldSize)).map(() => {return {vaadinComboBoxPlaceholder: true};});
-        filteredItems = filteredItems.concat(added);
-      } else if (size < oldSize) {
-        filteredItems = filteredItems.slice(0, size);
-      }
-      this.filteredItems = filteredItems;
+      const filteredItems = this.filteredItems || [];
+      filteredItems.length = size || 0;
+      this.filteredItems = new Array(...filteredItems)
+        .map(item => item !== undefined ? item : {vaadinComboBoxPlaceholder: true});
+      // let filteredItems = (this.filteredItems || []).slice();
+      // if (size > oldSize) {
+      //   const added = Array.from(new Array(size - oldSize)).map(() => {return {vaadinComboBoxPlaceholder: true};});
+      //   filteredItems = filteredItems.concat(added);
+      // } else if (size < oldSize) {
+      //   filteredItems = filteredItems.slice(0, size);
+      // }
+      // this.filteredItems = filteredItems;
     }
 
     _pageSizeChanged() {

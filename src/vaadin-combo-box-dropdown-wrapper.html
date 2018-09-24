@@ -26,7 +26,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     </style>
     <vaadin-combo-box-dropdown id="dropdown"
-        hidden="[[_hidden(_items.*)]]"
+        hidden="[[_hidden(_items.*, loading)]]"
         position-target="[[positionTarget]]"
         on-template-changed="_templateChanged"
         on-position-changed="_setOverlayHeight"
@@ -39,7 +39,7 @@ This program is available under Apache License Version 2.0, available at https:/
                 on-click="_onItemClick"
                 index="[[index]]"
                 item="[[item]]"
-                label="[[getItemLabel(item)]]"
+                label="[[getItemLabel(item, index)]]"
                 selected="[[_isItemSelected(item, _selectedItem)]]"
                 renderer="[[renderer]]"
                 role$="[[_getAriaRole(index)]]"
@@ -274,9 +274,9 @@ This program is available under Apache License Version 2.0, available at https:/
        * Gets the label string for the item based on the `_itemLabelPath`.
        * @return {String}
        */
-      getItemLabel(item) {
-        if (item !== undefined && item.vaadinComboBoxPlaceholder) {
-          this.dispatchEvent(new CustomEvent('item-requested', {detail: {item}}));
+      getItemLabel(item, index) {
+        if (item !== undefined && item.vaadinComboBoxPlaceholder && index !== undefined) {
+          this.dispatchEvent(new CustomEvent('index-requested', {detail: {index}}));
           return '';
         }
 
@@ -421,7 +421,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _hidden(itemsChange) {
-        return !this._items || !this._items.length;
+        return !this.loading && (!this._items || !this._items.length);
       }
     }
 
