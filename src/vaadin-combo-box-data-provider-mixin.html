@@ -29,7 +29,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
         dataProvider: {
           type: Object,
-          notify: true,
           observer: '_dataProviderChanged'
         },
 
@@ -83,7 +82,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _dataProviderFilterChanged() {
-      if (this.dataProvider) {
+      if (this.dataProvider && this.opened) {
         this.size = undefined;
         this._pendingRequests = {};
         this.clearCache();
@@ -125,7 +124,13 @@ This program is available under Apache License Version 2.0, available at https:/
 
         const callback = (items, size) => {
           if (this._pendingRequests[page] === callback) {
-            this.splice(`filteredItems`, params.page * params.pageSize , items.length, ...items);
+            if (!this.filteredItems) {
+              const filteredItems = [];
+              filteredItems.splice(params.page * params.pageSize, items.length, ...items);
+              this.filteredItems = filteredItems;
+            } else {
+              this.splice(`filteredItems`, params.page * params.pageSize , items.length, ...items);
+            }
             this.size = size;
 
             delete this._pendingRequests[page];
@@ -180,9 +185,6 @@ This program is available under Apache License Version 2.0, available at https:/
       this._ensureItemsOrDataProvider(() => {
         this.dataProvider = oldDataProvider;
       });
-      if (this.opened) {
-        this.clearCache();
-      }
     }
 
     _ensureItemsOrDataProvider(restoreOldValueCallback) {
