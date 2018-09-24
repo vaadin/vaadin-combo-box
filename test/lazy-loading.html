@@ -130,18 +130,20 @@
 
             it('should request page 1 on scroll', () => {
               comboBox.dataProvider = spyDataProvider;
-              comboBox.$.overlay._scrollIntoView(51);
-              expect(spyDataProvider).to.be.calledTwice;
-              const params = spyDataProvider.lastCall.args[0];
-              expect(params.page).to.equal(1);
+              spyDataProvider.reset();
+              comboBox.$.overlay._scrollIntoView(75);
+              expect(spyDataProvider).to.be.called;
+              const pages = spyDataProvider.getCalls().map(call => call.args[0].page);
+              expect(pages).to.contain(1);
             });
 
             it('should request page 2 on scroll', () => {
               comboBox.dataProvider = spyDataProvider;
-              comboBox.$.overlay._scrollIntoView(101);
-              expect(spyDataProvider).to.be.calledTwice;
-              const params = spyDataProvider.lastCall.args[0];
-              expect(params.page).to.equal(2);
+              spyDataProvider.reset();
+              comboBox.$.overlay._scrollIntoView(125);
+              expect(spyDataProvider).to.be.called;
+              const pages = spyDataProvider.getCalls().map(call => call.args[0].page);
+              expect(pages).to.contain(2);
             });
 
             it('should request with empty filter', () => {
@@ -154,14 +156,13 @@
               comboBox.dataProvider = spyDataProvider;
               spyDataProvider.reset();
               comboBox.filter = 'item 1';
-              expect(spyDataProvider).to.be.calledOnce;
+              expect(spyDataProvider).to.be.called;
               const params = spyDataProvider.lastCall.args[0];
               expect(params.filter).to.equal('item 1');
             });
 
             it('should populate filteredItems', () => {
-              expect(comboBox.filteredItems).to.be.instanceof(Array);
-              expect(comboBox.filteredItems.length).to.equal(0);
+              expect(comboBox.filteredItems).to.be.undefined;
               comboBox.dataProvider = spyDataProvider;
               expect(comboBox.filteredItems).to.be.instanceof(Array);
               expect(comboBox.filteredItems.length).to.equal(SIZE);
