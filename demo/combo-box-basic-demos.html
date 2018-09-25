@@ -83,7 +83,6 @@
             const combo = document.querySelector('vaadin-combo-box');
             combo.size = elements.length;
             combo.dataProvider = function(params, callback) {
-              console.log(params);
               setTimeout(function() {
                 const filter = (params.filter || '').toLowerCase();
                 const filteredElements = elements.filter(e => e.toLowerCase().indexOf(filter) > -1);

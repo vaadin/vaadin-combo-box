@@ -129,7 +129,7 @@ This program is available under Apache License Version 2.0, available at https:/
               filteredItems.splice(params.page * params.pageSize, items.length, ...items);
               this.filteredItems = filteredItems;
             } else {
-              this.splice(`filteredItems`, params.page * params.pageSize , items.length, ...items);
+              this.splice(`filteredItems`, params.page * params.pageSize, items.length, ...items);
             }
             this.size = size;
 
@@ -156,7 +156,9 @@ This program is available under Apache License Version 2.0, available at https:/
       if (!this.dataProvider) {
         return;
       }
-      this.filteredItems = Array.from(new Array(this.size || 0)).map(() => {return {vaadinComboBoxPlaceholder: true};});
+      this.filteredItems = Array.from(new Array(this.size || 0)).map(() => {
+        return {vaadinComboBoxPlaceholder: true};
+      });
       if (this.opened) {
         this._loadPage(0);
       }
@@ -166,7 +168,7 @@ This program is available under Apache License Version 2.0, available at https:/
       const filteredItems = this.filteredItems || [];
       filteredItems.length = size || 0;
       this.filteredItems = new Array(...filteredItems)
-        .map(item => item !== undefined ? item : {vaadinComboBoxPlaceholder: true});
+        .map(item => (item !== undefined ? item : {vaadinComboBoxPlaceholder: true}));
       // let filteredItems = (this.filteredItems || []).slice();
       // if (size > oldSize) {
       //   const added = Array.from(new Array(size - oldSize)).map(() => {return {vaadinComboBoxPlaceholder: true};});
@@ -190,7 +192,7 @@ This program is available under Apache License Version 2.0, available at https:/
     _ensureItemsOrDataProvider(restoreOldValueCallback) {
       if (this.items !== undefined && this.dataProvider !== undefined) {
         restoreOldValueCallback();
-        throw 'Using items and dataProvider together is not supported';
+        throw new Error('Using items and dataProvider together is not supported');
       }
     }
 
