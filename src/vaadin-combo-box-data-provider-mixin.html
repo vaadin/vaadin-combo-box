@@ -3,6 +3,7 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 -->
+<link rel="import" href="vaadin-combo-box-placeholder.html">
 
 <script>
   window.Vaadin = window.Vaadin || {};
@@ -108,7 +109,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return false;
       }
       const loadedItem = this.filteredItems[page * this.pageSize];
-      return loadedItem !== undefined && !loadedItem.vaadinComboBoxPlaceholder;
+      return loadedItem !== undefined && !(loadedItem instanceof Vaadin.ComboBoxPlaceholder);
     }
 
     _loadPage(page) {
@@ -157,7 +158,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return;
       }
       this.filteredItems = Array.from(new Array(this.size || 0)).map(() => {
-        return {vaadinComboBoxPlaceholder: true};
+        return new Vaadin.ComboBoxPlaceholder();
       });
       if (this.opened) {
         this._loadPage(0);
@@ -167,16 +168,9 @@ This program is available under Apache License Version 2.0, available at https:/
     _sizeChanged(size, oldSize = 0) {
       const filteredItems = this.filteredItems || [];
       filteredItems.length = size || 0;
-      this.filteredItems = new Array(...filteredItems)
-        .map(item => (item !== undefined ? item : {vaadinComboBoxPlaceholder: true}));
-      // let filteredItems = (this.filteredItems || []).slice();
-      // if (size > oldSize) {
-      //   const added = Array.from(new Array(size - oldSize)).map(() => {return {vaadinComboBoxPlaceholder: true};});
-      //   filteredItems = filteredItems.concat(added);
-      // } else if (size < oldSize) {
-      //   filteredItems = filteredItems.slice(0, size);
-      // }
-      // this.filteredItems = filteredItems;
+      this.filteredItems = new Array(...filteredItems).map(item => {
+        return item !== undefined ? item : new Vaadin.ComboBoxPlaceholder();
+      });
     }
 
     _pageSizeChanged() {
