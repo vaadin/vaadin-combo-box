@@ -194,6 +194,29 @@
               comboBox.opened = true;
               expect(spyAsyncDataProvider).to.be.calledOnce;
             });
+
+            it('should request page 1 on scroll', () => {
+              comboBox.size = SIZE;
+              comboBox.dataProvider = spyAsyncDataProvider;
+              comboBox.opened = true;
+              spyAsyncDataProvider.reset();
+              comboBox.$.overlay._scrollIntoView(75);
+              expect(spyAsyncDataProvider).to.be.called;
+              const pages = spyAsyncDataProvider.getCalls().map(call => call.args[0].page);
+              expect(pages).to.contain(1);
+            });
+
+            it('should request page 2 on scroll', () => {
+              comboBox.size = SIZE;
+              comboBox.dataProvider = spyAsyncDataProvider;
+              comboBox.opened = true;
+              spyAsyncDataProvider.reset();
+              comboBox.$.overlay._scrollIntoView(125);
+              expect(spyAsyncDataProvider).to.be.called;
+              const pages = spyAsyncDataProvider.getCalls().map(call => call.args[0].page);
+              expect(pages).to.contain(2);
+            });
+
           });
         });
 

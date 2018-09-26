@@ -73,7 +73,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this.clearCache();
       this.$.overlay.addEventListener('index-requested', e => {
         const index = e.detail.index;
-        if (!this.loading && index !== undefined) {
+        if (index !== undefined) {
           const page = this._getPageForIndex(index);
           if (!this._hasPage(page)) {
             this._loadPage(page);
