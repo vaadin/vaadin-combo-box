@@ -38,9 +38,9 @@ This program is available under Apache License Version 2.0, available at https:/
             <template>
               <vaadin-combo-box-item
                 on-click="_onItemClick"
-                index="[[index]]"
+                index="[[__requestItemByIndex(item, index)]]"
                 item="[[item]]"
-                label="[[getItemLabel(item, index)]]"
+                label="[[getItemLabel(item)]]"
                 selected="[[_isItemSelected(item, _selectedItem)]]"
                 renderer="[[renderer]]"
                 role$="[[_getAriaRole(index)]]"
@@ -272,14 +272,24 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       /**
-       * Gets the label string for the item based on the `_itemLabelPath`.
-       * @return {String}
+       * If dataProvider is used, dispatch a request for the item’s index if
+       * the item is a placeholder object.
+       *
+       * @return {Number}
        */
-      getItemLabel(item, index) {
+      __requestItemByIndex(item, index) {
         if ((item instanceof Vaadin.ComboBoxPlaceholder) && index !== undefined) {
           this.dispatchEvent(new CustomEvent('index-requested', {detail: {index}}));
         }
 
+        return index;
+      }
+
+      /**
+       * Gets the label string for the item based on the `_itemLabelPath`.
+       * @return {String}
+       */
+      getItemLabel(item) {
         let label = item ? this.get(this._itemLabelPath, item) : undefined;
         if (label === undefined || label === null) {
           label = item ? item.toString() : '';
