@@ -46,6 +46,7 @@ This program is available under Apache License Version 2.0, available at https:/
     static get observers() {
       return [
         '_dataProviderFilterChanged(filter, dataProvider)',
+        '_warnDataProviderValue(dataProvider, value)',
         '_ensureFirstPage(opened)',
       ];
     }
@@ -99,6 +100,12 @@ This program is available under Apache License Version 2.0, available at https:/
 
         const callback = (items, size) => {
           if (this._pendingRequests[page] === callback) {
+            if (this.value) {
+              const valueMatchingItem = items.filter(item => this._getItemValue(item) === this.value)[0];
+              if (valueMatchingItem !== undefined && valueMatchingItem !== this.selectedItem) {
+                this.selectedItem = valueMatchingItem;
+              }
+            }
             if (!this.filteredItems) {
               const filteredItems = [];
               filteredItems.splice(params.page * params.pageSize, items.length, ...items);
@@ -150,7 +157,7 @@ This program is available under Apache License Version 2.0, available at https:/
     _pageSizeChanged(pageSize, oldPageSize) {
       if (Math.floor(pageSize) !== pageSize || pageSize === 0) {
         this.pageSize = oldPageSize;
-        throw new Error('pageSize value must be an integer > 0');
+        throw new Error('`pageSize` value must be an integer > 0');
       }
       this.clearCache();
     }
@@ -164,7 +171,24 @@ This program is available under Apache License Version 2.0, available at https:/
     _ensureItemsOrDataProvider(restoreOldValueCallback) {
       if (this.items !== undefined && this.dataProvider !== undefined) {
         restoreOldValueCallback();
-        throw new Error('Using items and dataProvider together is not supported');
+        throw new Error('Using `items` and `dataProvider` together is not supported');
+      }
+    }
+
+    _warnDataProviderValue(dataProvider, value) {
+      if (dataProvider && value !== '' && (this.selectedItem === undefined || this.selectedItem === null)) {
+        const valueIndex = this._indexOfValue(value, this.filteredItems);
+        if (valueIndex < 0 || !this._getItemLabel(this.filteredItems[valueIndex])) {
+          /* eslint-disable no-console */
+          console.warn(
+            'Warning: unable to determine the label for the provided `value`. ' +
+            'Nothing to display in the text field. This usually happens when ' +
+            'setting an initial `value` before any items are returned from ' +
+            'the `dataProvider` callback. Consider setting `selectedItem` ' +
+            'instead of `value`'
+          );
+          /* eslint-enable no-console */
+        }
       }
     }
 

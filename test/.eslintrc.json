@@ -10,6 +10,7 @@
     "linux": false,
     "getItemArray": false,
     "before": false,
+    "after": false,
     "beforeEach": false,
     "afterEach": false,
     "describe": false,
