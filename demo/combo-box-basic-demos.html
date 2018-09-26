@@ -85,7 +85,9 @@
             combo.dataProvider = function(params, callback) {
               setTimeout(function() {
                 const filter = (params.filter || '').toLowerCase();
-                const filteredElements = elements.filter(e => e.toLowerCase().indexOf(filter) > -1);
+                const filteredElements = elements.filter(function(element) {
+                  return element.toLowerCase().indexOf(filter) > -1;
+                });
                 const index = params.page * params.pageSize;
                 const slice = filteredElements.slice(index, index + params.pageSize);
                 callback(slice, filteredElements.length);
