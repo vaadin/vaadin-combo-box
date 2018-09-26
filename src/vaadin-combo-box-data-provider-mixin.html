@@ -147,7 +147,11 @@ This program is available under Apache License Version 2.0, available at https:/
       });
     }
 
-    _pageSizeChanged() {
+    _pageSizeChanged(pageSize, oldPageSize) {
+      if (Math.floor(pageSize) !== pageSize || pageSize === 0) {
+        this.pageSize = oldPageSize;
+        throw new Error('pageSize value must be an integer > 0')
+      }
       this.clearCache();
     }
 
