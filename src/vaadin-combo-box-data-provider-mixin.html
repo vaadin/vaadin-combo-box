@@ -104,7 +104,7 @@ This program is available under Apache License Version 2.0, available at https:/
               filteredItems.splice(params.page * params.pageSize, items.length, ...items);
               this.filteredItems = filteredItems;
             } else {
-              this.splice(`filteredItems`, params.page * params.pageSize, items.length, ...items);
+              this.splice('filteredItems', params.page * params.pageSize, items.length, ...items);
             }
             this.size = size;
 
