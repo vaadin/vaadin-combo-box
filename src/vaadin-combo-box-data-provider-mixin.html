@@ -25,31 +25,13 @@ This program is available under Apache License Version 2.0, available at https:/
         },
 
         size: {
+          type: Number,
           observer: '_sizeChanged'
         },
 
         dataProvider: {
           type: Object,
           observer: '_dataProviderChanged'
-        },
-
-        /**
-         * `true` while data is being requested from the data provider.
-         */
-        loading: {
-          type: Boolean,
-          value: false,
-          notify: true,
-          readOnly: true,
-          reflectToAttribute: true
-        },
-
-        /**
-         * Path to an item sub-property that identifies the item.
-         */
-        itemIdPath: {
-          type: String,
-          value: null
         },
 
         _pendingRequests: {
@@ -88,14 +70,6 @@ This program is available under Apache License Version 2.0, available at https:/
         this._pendingRequests = {};
         this.clearCache();
       }
-    }
-
-    /**
-     * Returns a value that identifies the item. Uses `itemIdPath` if available.
-     * Can be customized by overriding.
-     */
-    getItemId(item) {
-      return this.itemIdPath ? this.get(this.itemIdPath, item) : item;
     }
 
     _ensureFirstPage(opened) {
