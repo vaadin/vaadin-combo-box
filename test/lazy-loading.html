@@ -34,6 +34,7 @@
 
   <script>
     describe('lazy loading', () => {
+      const DEFAULT_PAGE_SIZE = 50;
       const SIZE = 200;
       let dataProviderItems;
 
@@ -223,8 +224,7 @@
         describe('pageSize', () => {
           it('should have default value', () => {
             expect(typeof comboBox.pageSize).to.equal('number');
-            expect(comboBox.pageSize).to.be.above(0);
-            expect(comboBox.pageSize).to.be.below(Infinity);
+            expect(comboBox.pageSize).to.equal(DEFAULT_PAGE_SIZE);
           });
 
           it('should use default value in dataProvider', () => {
@@ -232,7 +232,7 @@
             comboBox.dataProvider = spyDataProvider;
             const params = spyDataProvider.lastCall.args[0];
             expect(typeof comboBox.pageSize).to.equal('number');
-            expect(params.pageSize).to.equal(comboBox.pageSize);
+            expect(params.pageSize).to.equal(DEFAULT_PAGE_SIZE);
           });
 
           it('should use a custom value in dataProvider', () => {
@@ -241,6 +241,22 @@
             comboBox.dataProvider = spyDataProvider;
             const params = spyDataProvider.lastCall.args[0];
             expect(params.pageSize).to.equal(123);
+          });
+
+          it('should throw when set to zero', () => {
+            comboBox.pageSize = 123;
+            expect(() => comboBox.pageSize = 0).to.throw('pageSize');
+            expect(comboBox.pageSize).to.equal(123);
+          });
+
+          it('should throw when set to non-integer', () => {
+            comboBox.pageSize = 123;
+            expect(() => comboBox.pageSize = undefined).to.throw('pageSize');
+            expect(() => comboBox.pageSize = null).to.throw('pageSize');
+            expect(() => comboBox.pageSize = NaN).to.throw('pageSize');
+            expect(() => comboBox.pageSize = 10.5).to.throw('pageSize');
+            expect(() => comboBox.pageSize = '10').to.throw('pageSize');
+            expect(comboBox.pageSize).to.equal(123);
           });
         });
 
