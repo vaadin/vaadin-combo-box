@@ -11,6 +11,7 @@
   <link rel="import" href="common-imports.html">
   <script src="common.js"></script>
   <link rel="import" href="../vaadin-combo-box-light.html">
+  <link rel="import" href="../src/vaadin-combo-box-placeholder.html">
   <link rel="import" href="../../iron-input/iron-input.html">
 </head>
 
@@ -227,6 +228,16 @@
               expect(pages).to.contain(2);
             });
 
+            it('should not select placeholder items', () => {
+              comboBox.size = SIZE;
+              comboBox.dataProvider = spyAsyncDataProvider;
+              comboBox.opened = true;
+              const itemElement = comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item');
+              expect(itemElement.item).to.be.instanceof(Vaadin.ComboBoxPlaceholder);
+              itemElement.click();
+              expect(comboBox.opened).to.equal(true);
+              expect(comboBox.selectedItem).to.not.be.instanceOf(Vaadin.ComboBoxPlaceholder);
+            });
           });
         });
 

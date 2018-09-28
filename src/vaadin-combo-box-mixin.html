@@ -10,6 +10,7 @@ This program is available under Apache License Version 2.0, available at https:/
 <link rel="import" href="../../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../../polymer/lib/utils/flattened-nodes-observer.html">
+<link rel="import" href="vaadin-combo-box-placeholder.html">
 
 <script>
   window.Vaadin = window.Vaadin || {};
@@ -827,6 +828,14 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _overlaySelectedItemChanged(e) {
+      // stop this private event from leaking outside.
+      e.stopPropagation();
+
+      if (e.detail.item instanceof Vaadin.ComboBoxPlaceholder) {
+        // Placeholder items should not be selectable.
+        return;
+      }
+
       if (this.selectedItem !== e.detail.item) {
         this.selectedItem = e.detail.item;
       }
@@ -834,9 +843,6 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this.opened) {
         this.close();
       }
-
-      // stop this private event from leaking outside.
-      e.stopPropagation();
     }
 
 
