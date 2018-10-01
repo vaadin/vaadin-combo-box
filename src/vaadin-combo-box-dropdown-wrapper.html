@@ -41,7 +41,7 @@ This program is available under Apache License Version 2.0, available at https:/
                 index="[[__requestItemByIndex(item, index)]]"
                 item="[[item]]"
                 label="[[getItemLabel(item)]]"
-                selected="[[_isItemSelected(item, _selectedItem)]]"
+                selected="[[_isItemSelected(item, _selectedItem, _itemIdPath)]]"
                 renderer="[[renderer]]"
                 role$="[[_getAriaRole(index)]]"
                 aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
@@ -242,8 +242,12 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
-      _isItemSelected(item, selectedItem) {
-        return item === selectedItem;
+      _isItemSelected(item, selectedItem, itemIdPath) {
+        if (itemIdPath && item !== undefined && selectedItem !== undefined) {
+          return this.get(itemIdPath, item) === this.get(itemIdPath, selectedItem);
+        } else {
+          return item === selectedItem;
+        }
       }
 
       _onItemClick(e) {

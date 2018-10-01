@@ -100,18 +100,16 @@ This program is available under Apache License Version 2.0, available at https:/
 
         const callback = (items, size) => {
           if (this._pendingRequests[page] === callback) {
-            if (this.value) {
-              const valueMatchingItem = items.filter(item => this._getItemValue(item) === this.value)[0];
-              if (valueMatchingItem !== undefined && valueMatchingItem !== this.selectedItem) {
-                this.selectedItem = valueMatchingItem;
-              }
-            }
             if (!this.filteredItems) {
               const filteredItems = [];
               filteredItems.splice(params.page * params.pageSize, items.length, ...items);
               this.filteredItems = filteredItems;
             } else {
               this.splice('filteredItems', params.page * params.pageSize, items.length, ...items);
+            }
+            // Update selectedItem from filteredItems if value is set
+            if (this._isValidValue(this.value) && this._getItemValue(this.selectedItem) !== this.value) {
+              this._selectItemForValue(this.value);
             }
             this.size = size;
 
