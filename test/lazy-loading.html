@@ -515,6 +515,55 @@
               .to.eql({id: 0, value: 'value 0', label: 'label 0', db: {key: '#0'}});
           });
         });
+
+        describe('clearCache', () => {
+          describe('before open', () => {
+            beforeEach(() => comboBox.dataProvider = spyDataProvider);
+
+            it('should not request first page', () => {
+              comboBox.clearCache();
+              expect(spyDataProvider).to.be.not.called;
+            });
+          });
+
+          describe('when open', () => {
+            beforeEach(() => comboBox.opened = true);
+
+            it('should replace filteredItems with placeholders', () => {
+              comboBox.dataProvider = spyAsyncDataProvider;
+              comboBox.size = SIZE;
+              comboBox.filteredItems = ['item 0', 'item 1'];
+              comboBox.clearCache();
+              expect(comboBox.filteredItems.length).to.equal(SIZE);
+              comboBox.filteredItems.forEach(item => {
+                expect(item).to.be.instanceOf(Vaadin.ComboBoxPlaceholder);
+              });
+            });
+
+            it('should request first page', () => {
+              comboBox.dataProvider = spyDataProvider;
+              spyDataProvider.reset();
+              comboBox.clearCache();
+              expect(spyDataProvider).to.be.called;
+              const params = spyDataProvider.firstCall.args[0];
+              expect(params.page).to.equal(0);
+            });
+          });
+
+          describe('after closed', () => {
+            beforeEach(() =>{
+              comboBox.opened = true;
+              comboBox.dataProvider = spyDataProvider;
+              comboBox.opened = false;
+              spyDataProvider.reset();
+            });
+
+            it('should not request first page', () => {
+              comboBox.clearCache();
+              expect(spyDataProvider).to.be.not.called;
+            });
+          });
+        });
       };
 
       describe('combo-box', () => {

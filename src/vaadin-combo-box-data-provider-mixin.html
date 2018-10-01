@@ -136,9 +136,9 @@ This program is available under Apache License Version 2.0, available at https:/
       if (!this.dataProvider) {
         return;
       }
-      this.filteredItems = Array.from(new Array(this.size || 0)).map(() => {
+      this.filteredItems = this.opened ? Array.from(new Array(this.size || 0)).map(() => {
         return new Vaadin.ComboBoxPlaceholder();
-      });
+      }) : undefined;
       if (this.opened) {
         this._loadPage(0);
       }
