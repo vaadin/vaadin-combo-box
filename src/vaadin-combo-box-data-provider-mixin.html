@@ -46,9 +46,16 @@ This program is available under Apache License Version 2.0, available at https:/
     static get observers() {
       return [
         '_dataProviderFilterChanged(filter, dataProvider)',
+        '_dataProviderValueChanged(value, dataProvider)',
         '_warnDataProviderValue(dataProvider, value)',
         '_ensureFirstPage(opened)',
       ];
+    }
+
+    _dataProviderValueChanged(value, dataProvider) {
+      if (dataProvider) {
+        this.filter = '';
+      }
     }
 
     ready() {
