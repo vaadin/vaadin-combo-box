@@ -29,6 +29,7 @@
     "touchDevice": false,
     "hackIE11Focus": false,
     "_fixture": false,
-    "gemini": false
+    "gemini": false,
+    "flush": false
   }
 }
