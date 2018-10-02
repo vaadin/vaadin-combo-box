@@ -46,9 +46,21 @@ This program is available under Apache License Version 2.0, available at https:/
     static get observers() {
       return [
         '_dataProviderFilterChanged(filter, dataProvider)',
+        '_dataProviderClearFilter(dataProvider, opened, value)',
         '_warnDataProviderValue(dataProvider, value)',
         '_ensureFirstPage(opened)',
       ];
+    }
+
+    _dataProviderClearFilter(dataProvider, opened, value) {
+      // Can't depend on filter in this obsever as we don't want
+      // to clear the filter whenever it's set
+      if (dataProvider && this.filter) {
+        this.size = undefined;
+        this._pendingRequests = {};
+        this.filter = '';
+        this.clearCache();
+      }
     }
 
     ready() {

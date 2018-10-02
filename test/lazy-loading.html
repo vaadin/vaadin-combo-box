@@ -172,6 +172,45 @@
               expect(params.filter).to.equal('item 1');
             });
 
+            it('should clear filter on value change', () => {
+              comboBox.dataProvider = spyDataProvider;
+              comboBox.filter = 'item 1';
+              spyDataProvider.reset();
+              comboBox.value = 'foo';
+              const params = spyDataProvider.lastCall.args[0];
+              expect(params.filter).to.equal('');
+            });
+
+            it('should clear filter on value clear', () => {
+              comboBox.dataProvider = spyDataProvider;
+              comboBox.filter = 'item 1';
+              comboBox.value = 'item 1';
+              spyDataProvider.reset();
+              comboBox.value = '';
+              Polymer.flush();
+              const params = spyDataProvider.lastCall.args[0];
+              expect(comboBox.filter).to.equal('');
+            });
+
+            it('should clear filter on opened change', () => {
+              comboBox.dataProvider = spyDataProvider;
+              comboBox.filter = 'item 1';
+              spyDataProvider.reset();
+              comboBox.opened = false;
+              Polymer.flush();
+              expect(comboBox.filter).to.equal('');
+            });
+
+            it('should not request on value change', done => {
+              comboBox.dataProvider = spyDataProvider;
+              flush(() => {
+                spyDataProvider.reset();
+                comboBox.value = 'item 1';
+                expect(spyDataProvider).not.to.be.called;
+                done();
+              });
+            });
+
             it('should populate filteredItems', () => {
               expect(comboBox.filteredItems).to.be.undefined;
               comboBox.dataProvider = spyDataProvider;
