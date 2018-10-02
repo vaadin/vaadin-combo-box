@@ -136,15 +136,15 @@ This program is available under Apache License Version 2.0, available at https:/
       if (!this.dataProvider) {
         return;
       }
-      this.filteredItems = this.opened ? Array.from(new Array(this.size || 0)).map(() => {
+      this.filteredItems = Array.from(new Array(this.size || 0)).map(() => {
         return new Vaadin.ComboBoxPlaceholder();
-      }) : undefined;
+      });
       if (this.opened) {
         this._loadPage(0);
       }
     }
 
-    _sizeChanged(size, oldSize = 0) {
+    _sizeChanged(size) {
       const filteredItems = this.filteredItems || [];
       filteredItems.length = size || 0;
       this.filteredItems = new Array(...filteredItems).map(item => {

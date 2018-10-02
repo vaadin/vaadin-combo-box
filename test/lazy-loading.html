@@ -562,6 +562,15 @@
               comboBox.clearCache();
               expect(spyDataProvider).to.be.not.called;
             });
+
+            it('should request page 1 on scroll after reopen', () => {
+              comboBox.clearCache();
+              comboBox.opened = true;
+              comboBox.$.overlay._scrollIntoView(75);
+              expect(spyDataProvider).to.be.called;
+              const pages = spyDataProvider.getCalls().map(call => call.args[0].page);
+              expect(pages).to.contain(1);
+            });
           });
         });
       };
