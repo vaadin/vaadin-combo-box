@@ -229,6 +229,17 @@
                 done();
               };
             });
+
+            it('should request page after partial filter & cancel & reopen', () => {
+              comboBox.dataProvider = spyDataProvider;
+              comboBox.filter = 'it';
+              spyDataProvider.reset();
+              comboBox.cancel();
+              Polymer.flush();
+              comboBox.opened = true;
+              const params = spyDataProvider.lastCall.args[0];
+              expect(params.filter).to.equal('');
+            });
           });
 
           describe('async', () => {
