@@ -54,12 +54,28 @@
     afterEach(() => comboBox.opened = false);
 
     describe('when combo-box is attached', () => {
-      it('should contain appropriate aria attributes', () => {
-        expect(getNativeInput().getAttribute('role')).to.equal('combobox');
-        expect(getNativeInput().getAttribute('aria-autocomplete')).to.equal('list');
+      const assertAriaAttributes = () => {
         expect(getNativeInput().hasAttribute('aria-labelledby')).to.be.true;
         expect(getToggleIcon().getAttribute('role')).to.equal('button');
         expect(getToggleIcon().getAttribute('aria-label')).to.equal('Toggle');
+        expect(comboBox.getAttribute('role')).to.equal('combobox');
+      };
+
+      it('should contain appropriate aria attributes', () => {
+        expect(getNativeInput().getAttribute('aria-autocomplete')).to.equal('list');
+        assertAriaAttributes();
+      });
+
+      it('should contain appropriate aria attributes for readonly input', () => {
+        comboBox.readonly = true;
+        expect(getNativeInput().getAttribute('aria-autocomplete')).to.equal('none');
+        assertAriaAttributes();
+      });
+
+      it('should contain appropriate aria attributes for disabled input', () => {
+        comboBox.disabled = true;
+        expect(getNativeInput().getAttribute('aria-autocomplete')).to.equal('none');
+        assertAriaAttributes();
       });
     });
 
@@ -72,15 +88,13 @@
       });
 
       it('should set aria-expanded attribute when opened', () => {
-        expect(getNativeInput().getAttribute('aria-expanded')).to.equal('true');
-        expect(getToggleIcon().getAttribute('aria-expanded')).to.equal('true');
+        expect(comboBox.getAttribute('aria-expanded')).to.equal('true');
       });
 
       it('should unset aria-expanded attribute when closed', () => {
         esc();
 
-        expect(getNativeInput().getAttribute('aria-expanded')).to.equal('false');
-        expect(getToggleIcon().getAttribute('aria-expanded')).to.equal('false');
+        expect(comboBox.getAttribute('aria-expanded')).to.equal('false');
       });
     });
 

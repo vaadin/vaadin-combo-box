@@ -292,7 +292,8 @@ This program is available under Apache License Version 2.0, available at https:/
              */
             disabled: {
               type: Boolean,
-              value: false
+              value: false,
+              observer: '_disabledChanged'
             },
 
             /**
@@ -330,7 +331,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
             readonly: {
               type: Boolean,
-              value: false
+              value: false,
+              observer: '_readonlyChanged'
             },
 
             /**
@@ -381,9 +383,9 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           }, true);
 
-          this._nativeInput.setAttribute('role', 'combobox');
-          this._nativeInput.setAttribute('aria-autocomplete', 'list');
+          this.setAttribute('role', 'combobox');
           this._updateAriaExpanded();
+          this._updateNativeInputAriaAutoComplete();
         }
 
         connectedCallback() {
@@ -401,10 +403,24 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
         _updateAriaExpanded() {
+          this.setAttribute('aria-expanded', this.opened);
+        }
+
+        _updateNativeInputAriaAutoComplete() {
           if (this._nativeInput) {
-            this._nativeInput.setAttribute('aria-expanded', this.opened);
-            this._toggleElement.setAttribute('aria-expanded', this.opened);
+            this.readonly || this.disabled ?
+              this._nativeInput.setAttribute('aria-autocomplete', 'none') :
+              this._nativeInput.setAttribute('aria-autocomplete', 'list');
           }
+        }
+
+        _readonlyChanged() {
+          this._updateAriaExpanded();
+          this._updateNativeInputAriaAutoComplete();
+        }
+
+        _disabledChanged() {
+          this._updateNativeInputAriaAutoComplete();
         }
 
         get inputElement() {
