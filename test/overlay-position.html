@@ -88,7 +88,7 @@
   }
 
   function inputContentRect() {
-    return comboBox.$.input.getBoundingClientRect();
+    return comboBox.$.input.shadowRoot.querySelector('[part~="input-field"]').getBoundingClientRect();
   }
 
   describe('overlay', () => {
