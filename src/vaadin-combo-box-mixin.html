@@ -263,7 +263,20 @@ This program is available under Apache License Version 2.0, available at https:/
 
       this._observer = new Polymer.FlattenedNodesObserver(this, info => {
         this._setTemplateFromNodes(info.addedNodes);
+        this._updatePositionTarget();
       });
+
+      this._updatePositionTarget();
+    }
+
+    _updatePositionTarget() {
+      this.$.overlay.positionTarget = this._getPositionTarget();
+    }
+
+    _getPositionTarget() {
+      // Use `[part="input-field"]` if found (for `<vaadin-text-field>` and such)
+      return this.inputElement && this.inputElement.shadowRoot && this.inputElement.shadowRoot.querySelector('[part="input-field"]') ||
+             this.inputElement;
     }
 
 

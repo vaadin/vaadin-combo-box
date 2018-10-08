@@ -89,7 +89,6 @@ This program is available under Apache License Version 2.0, available at https:/
     <vaadin-combo-box-dropdown-wrapper id="overlay"
       opened=[[opened]]
       renderer=[[renderer]]
-      position-target="[[_getPositionTarget()]]"
       _focused-index="[[_focusedIndex]]"
       _item-id-path="[[itemIdPath]]"
       _item-label-path="[[itemLabelPath]]"
@@ -391,10 +390,6 @@ This program is available under Apache License Version 2.0, available at https:/
         disconnectedCallback() {
           super.disconnectedCallback();
           this._restoreInputBlur();
-        }
-
-        _getPositionTarget() {
-          return this.$.input;
         }
 
         _updateAriaExpanded() {
