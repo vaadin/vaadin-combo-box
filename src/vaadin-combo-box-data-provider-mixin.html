@@ -175,12 +175,11 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
-    _sizeChanged(size) {
-      const filteredItems = this.filteredItems || [];
-      filteredItems.length = size || 0;
-      this.filteredItems = new Array(...filteredItems).map(item => {
-        return item !== undefined ? item : new Vaadin.ComboBoxPlaceholder();
-      });
+    _sizeChanged(size = 0) {
+      this.filteredItems = Array.from(new Array(size))
+        .map((_, index) => (this.filteredItems && this.filteredItems[index] !== undefined)
+          ? this.filteredItems[index]
+          : new Vaadin.ComboBoxPlaceholder());
     }
 
     _pageSizeChanged(pageSize, oldPageSize) {
