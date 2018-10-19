@@ -33,25 +33,23 @@ This program is available under Apache License Version 2.0, available at https:/
         on-position-changed="_setOverlayHeight"
         theme="[[theme]]">
       <template>
-        <div id="scroller" on-click="_stopPropagation">
-          <iron-list id="selector" role="listbox" items="[[_getItems(opened, _items)]]" scroll-target="[[_scroller]]">
-            <template>
-              <vaadin-combo-box-item
-                on-click="_onItemClick"
-                index="[[__requestItemByIndex(item, index)]]"
-                item="[[item]]"
-                label="[[getItemLabel(item)]]"
-                selected="[[_isItemSelected(item, _selectedItem, _itemIdPath)]]"
-                renderer="[[renderer]]"
-                role$="[[_getAriaRole(index)]]"
-                aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
-                focused="[[_isItemFocused(_focusedIndex,index)]]"
-                tabindex="-1"
-                theme$="[[theme]]">
-              </vaadin-combo-box-item>
-            </template>
-          </iron-list>
-        </div>
+        <iron-list id="selector" role="listbox" items="[[_getItems(opened, _items)]]" scroll-target="[[_scroller]]">
+          <template>
+            <vaadin-combo-box-item
+              on-click="_onItemClick"
+              index="[[__requestItemByIndex(item, index)]]"
+              item="[[item]]"
+              label="[[getItemLabel(item)]]"
+              selected="[[_isItemSelected(item, _selectedItem, _itemIdPath)]]"
+              renderer="[[renderer]]"
+              role$="[[_getAriaRole(index)]]"
+              aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
+              focused="[[_isItemFocused(_focusedIndex,index)]]"
+              tabindex="-1"
+              theme$="[[theme]]">
+            </vaadin-combo-box-item>
+          </template>
+        </iron-list>
       </template>
     </vaadin-combo-box-dropdown>
   </template>
@@ -156,7 +154,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       static get observers() {
-        return ['_selectorChanged(_selector)', '_loadingChanged(loading)', '_openedChanged(opened, _items)'];
+        return ['_selectorChanged(_selector)', '_loadingChanged(loading)', '_openedChanged(opened, _items, loading)'];
       }
 
       _fireTouchAction(sourceEvent) {
@@ -169,10 +167,10 @@ This program is available under Apache License Version 2.0, available at https:/
         return opened ? items : [];
       }
 
-      _openedChanged(opened, items) {
+      _openedChanged(opened, items, loading) {
         // Do not attach if no items
         // Do not dettach if opened but user types an invalid search
-        this.$.dropdown.opened = !!(opened && (this.$.dropdown.opened || items && items.length));
+        this.$.dropdown.opened = !!(opened && (loading || this.$.dropdown.opened || items && items.length));
       }
 
       ready() {
@@ -193,7 +191,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _templateChanged(e) {
         this._selector = this.$.dropdown.$.overlay.content.querySelector('#selector');
-        this._scroller = this.$.dropdown.$.overlay.content.querySelector('#scroller');
+        this._scroller = this.$.dropdown.$.overlay.shadowRoot.querySelector('[part~="overlay"]');
       }
 
       _loadingChanged(loading) {
@@ -259,6 +257,8 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _onItemClick(e) {
+        e.stopPropagation();
+
         if (e.detail && e.detail.sourceEvent && e.detail.sourceEvent.stopPropagation) {
           this._stopPropagation(e.detail.sourceEvent);
         }
@@ -378,7 +378,7 @@ This program is available under Apache License Version 2.0, available at https:/
       _patchWheelOverScrolling() {
         const selector = this._selector;
         selector.addEventListener('wheel', e => {
-          const scroller = selector._scroller || selector.scrollTarget;
+          const scroller = selector.scrollTarget;
           const scrolledToTop = scroller.scrollTop === 0;
           const scrolledToBottom = (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight) <= 1;
 
@@ -436,10 +436,6 @@ This program is available under Apache License Version 2.0, available at https:/
         if (e.cancelable) {
           e.preventDefault();
         }
-      }
-
-      _stopPropagation(e) {
-        e.stopPropagation();
       }
 
       _hidden(itemsChange) {
