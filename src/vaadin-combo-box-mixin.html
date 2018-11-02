@@ -266,6 +266,13 @@ This program is available under Apache License Version 2.0, available at https:/
       });
     }
 
+    _getPositionTarget() {
+      // Use `[part="input-field"]` if found (for `<vaadin-text-field>` and such)
+      return this.inputElement && this.inputElement.shadowRoot && this.inputElement.shadowRoot.querySelector('[part="input-field"]') ||
+             this.inputElement;
+    }
+
+
 
     /**
      * Manually invoke existing renderer.
@@ -300,6 +307,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * Opens the dropdown list.
      */
     open() {
+      this.positionTarget = this._getPositionTarget();
       // Prevent _open() being called when input is disabled or read-only
       if (!this.disabled && !this.readonly) {
         this.opened = true;
