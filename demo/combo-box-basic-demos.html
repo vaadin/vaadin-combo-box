@@ -7,20 +7,42 @@
     </style>
 
     <h3>Combo Box</h3>
+    <script>
+      window.addCombo = function() {
+        const combo = document.createElement('vaadin-combo-box');
+        // combo.hidden=true;
+        
+        const template = document.createElement('template');
+        
+        template.innerHTML = '<div>[[item]]</div>'
+        combo.items = [...Array(100).keys()].map(i => '' + i*2);
+        combo.appendChild(template);
+        document.body.appendChild(combo);
+        
+      }
+    </script>
 
     <vaadin-demo-snippet id="combo-box-basic-combo-box">
       <template preserve-content>
-        <vaadin-combo-box label="Element"></vaadin-combo-box>
+        <!-- <vaadin-combo-box label="Element"></vaadin-combo-box> -->
+        <div id="container"></div>
+        <button>add</button>
+        <input type="number" value="1">
         <script>
           window.addDemoReadyListener('#combo-box-basic-combo-box', function(document) {
-            document.querySelector('vaadin-combo-box').items = ['Hydrogen', 'Helium', 'Lithium'];
+            document.querySelector('button').addEventListener('click', e => {
+                const count = parseInt(document.querySelector('input').value);
+                [...Array(count).keys()].forEach(i => {
+                  addCombo();
+                });
+            })
           });
         </script>
       </template>
     </vaadin-demo-snippet>
 
 
-    <h3>Configuring the Combo Box</h3>
+    <!-- <h3>Configuring the Combo Box</h3>
 
     <vaadin-demo-snippet id="combo-box-basic-demos-configuring-the-combo-box">
       <template preserve-content>
@@ -106,7 +128,7 @@
           });
         </script>
       </template>
-    </vaadin-demo-snippet>
+    </vaadin-demo-snippet> -->
 
   </template>
   <script>
