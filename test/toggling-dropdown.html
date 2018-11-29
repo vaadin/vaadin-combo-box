@@ -140,7 +140,9 @@
       // of the combobox when moved during open.
       it('should not leak combobox style scope to the overlay', () => {
         // Test only when style scope classes are used
-        combobox.open();combobox.close();
+        combobox.open();
+        combobox.close();
+
         if (overlay().classList.contains('style-scope') &&
             overlay().classList.contains('vaadin-combo-box')) {
           combobox.open();

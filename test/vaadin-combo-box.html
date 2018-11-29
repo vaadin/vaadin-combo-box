@@ -245,7 +245,9 @@
         });
 
         it('should not open the overlay after clearing the value', () => {
-          comboBox.open();comboBox.close();
+          comboBox.open();
+          comboBox.close();
+
           const overlayElement = comboBox.$.overlay.$.dropdown.$.overlay;
           comboBox.value = 'foo';
 
@@ -276,8 +278,13 @@
         });
 
         describe('touch-devices', () => {
+
+          beforeEach(() => {
+            comboBox.open();
+            comboBox.close();
+          });
+
           it('should blur the input on touchend', () => {
-            comboBox.open();comboBox.close();
             comboBox.focus();
 
             const spy = sinon.spy(comboBox.inputElement, 'blur');
@@ -286,7 +293,6 @@
           });
 
           it('should blur the input on touchmove', () => {
-            comboBox.open();comboBox.close();
             comboBox.focus();
 
             const spy = sinon.spy(comboBox.inputElement, 'blur');
@@ -295,7 +301,6 @@
           });
 
           it('should not blur the input on touchstart', () => {
-            comboBox.open();comboBox.close();
             comboBox.focus();
 
             const spy = sinon.spy(comboBox.inputElement, 'blur');
@@ -327,7 +332,9 @@
         });
 
         it('should propagate theme attribute to overlay', () => {
-          comboBox.open();comboBox.close();
+          comboBox.open();
+          comboBox.close();
+
           expect(comboBox.$.overlay.$.dropdown.$.overlay.getAttribute('theme')).to.equal('foo');
         });
 
