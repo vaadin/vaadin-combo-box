@@ -211,13 +211,19 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _templateChanged(e) {
-        if (!this.$.dropdown) return;
+        if (!this.$.dropdown) {
+          return;
+        }
+
         this._selector = this.$.dropdown.$.overlay.content.querySelector('#selector');
         this._scroller = this.$.dropdown.$.overlay.content.querySelector('#scroller');
       }
 
       _loadingChanged(loading) {
-        if (!this.$.dropdown) return;
+        if (!this.$.dropdown) {
+          return;
+        }
+
         if (loading) {
           this.$.dropdown.$.overlay.setAttribute('loading', '');
         } else {
