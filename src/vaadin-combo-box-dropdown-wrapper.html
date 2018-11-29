@@ -12,6 +12,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
 <dom-module id="vaadin-combo-box-dropdown-wrapper">
   <template>
+    <!-- Stamping the content is postponed until the combo box is opened for the first time -->
     <template id="dropdown-template" is="dom-if" if="[[_renderDropdown]]">
       <style>
         #scroller {
