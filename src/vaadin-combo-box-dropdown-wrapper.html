@@ -13,7 +13,7 @@ This program is available under Apache License Version 2.0, available at https:/
 <dom-module id="vaadin-combo-box-dropdown-wrapper">
   <template>
     <!-- Stamping the content is postponed until the combo box is opened for the first time -->
-    <template id="dropdown-template" is="dom-if" if="[[_renderDropdown]]">
+    <template id="dropdown-template" is="dom-if">
       <style>
         #scroller {
           overflow: auto;
@@ -187,8 +187,9 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _initDropdown() {
-        this._renderDropdown = true;
-        this.shadowRoot.querySelector('#dropdown-template').render();
+        const template = this.shadowRoot.querySelector('#dropdown-template');
+        template.if = true;
+        template.render();
 
         this.$.dropdown = this.shadowRoot.querySelector('#dropdown');
         this.$.dropdown.$.overlay = this.$.dropdown.shadowRoot.querySelector('#overlay');
