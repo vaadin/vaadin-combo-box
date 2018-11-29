@@ -12,22 +12,21 @@ This program is available under Apache License Version 2.0, available at https:/
 
 <dom-module id="vaadin-combo-box-dropdown-wrapper">
   <template>
-    <style>
-      #scroller {
-        overflow: auto;
-
-        /* Fixes item background from getting on top of scrollbars on Safari */
-        transform: translate3d(0, 0, 0);
-
-        /* Enable momentum scrolling on iOS (iron-list v1.2+ no longer does it for us) */
-        -webkit-overflow-scrolling: touch;
-
-        /* Fixes scrollbar disappearing when "Show scroll bars: Always" enabled in Safari */
-        box-shadow: 0 0 0 white;
-      }
-    </style>
-
     <template id="dropdown-template" is="dom-if" if="[[_renderDropdown]]">
+      <style>
+        #scroller {
+          overflow: auto;
+
+          /* Fixes item background from getting on top of scrollbars on Safari */
+          transform: translate3d(0, 0, 0);
+
+          /* Enable momentum scrolling on iOS (iron-list v1.2+ no longer does it for us) */
+          -webkit-overflow-scrolling: touch;
+
+          /* Fixes scrollbar disappearing when "Show scroll bars: Always" enabled in Safari */
+          box-shadow: 0 0 0 white;
+        }
+      </style>
       <vaadin-combo-box-dropdown id="dropdown"
           hidden="[[_hidden(_items.*, loading)]]"
           position-target="[[positionTarget]]"
@@ -186,16 +185,6 @@ This program is available under Apache License Version 2.0, available at https:/
         this.$.dropdown.opened = !!(opened && (loading || this.$.dropdown.opened || items && items.length));
       }
 
-      ready() {
-        super.ready();
-        // IE11: when scrolling with mouse, the focus goes to the scroller.
-        // This causes the overlay closing due to defocusing the input field.
-        // Prevent focusing the scroller by setting `unselectable="on"`.
-        if (/Trident/.test(navigator.userAgent)) {
-          this._scroller.setAttribute('unselectable', 'on');
-        }
-      }
-
       _initDropdown() {
         this._renderDropdown = true;
         this.shadowRoot.querySelector('#dropdown-template').render();
@@ -211,6 +200,13 @@ This program is available under Apache License Version 2.0, available at https:/
 
         // Prevent blurring the input when clicking inside the overlay.
         this.$.dropdown.$.overlay.addEventListener('mousedown', e => e.preventDefault());
+
+        // IE11: when scrolling with mouse, the focus goes to the scroller.
+        // This causes the overlay closing due to defocusing the input field.
+        // Prevent focusing the scroller by setting `unselectable="on"`.
+        if (/Trident/.test(navigator.userAgent)) {
+          this._scroller.setAttribute('unselectable', 'on');
+        }
       }
 
       _templateChanged(e) {
