@@ -27,7 +27,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     </style>
 
-    <template is="dom-if" if="[[_firstOpened]]">
+    <template id="dropdown-template" is="dom-if" if="[[_renderDropdown]]">
       <vaadin-combo-box-dropdown id="dropdown"
           hidden="[[_hidden(_items.*, loading)]]"
           position-target="[[positionTarget]]"
@@ -173,12 +173,13 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _openedChanged(opened, items, loading) {
-        if (!this._firstOpened) {
+        if (!this.$.dropdown) {
           if (opened) {
-            this._firstOpened = true;
             this._initDropdown();
           }
-          else return;
+          else {
+            return;
+          }
         }
         // Do not attach if no items
         // Do not dettach if opened but user types an invalid search
@@ -196,14 +197,20 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _initDropdown() {
+        this._renderDropdown = true;
+        this.shadowRoot.querySelector('#dropdown-template').render();
 
-        // this.$.dropdown.opened = !!(this.opened && (this.loading || this.$.dropdown.opened || this._items && this._items.length));
+        this.$.dropdown = this.shadowRoot.querySelector('#dropdown');
+        this.$.dropdown.$.overlay = this.$.dropdown.shadowRoot.querySelector('#overlay');
+
+        this._templateChanged();
+        this._loadingChanged(this.loading);
 
         this.$.dropdown.$.overlay.addEventListener('touchend', e => this._fireTouchAction(e));
         this.$.dropdown.$.overlay.addEventListener('touchmove', e => this._fireTouchAction(e));
- 
-         // Prevent blurring the input when clicking inside the overlay.
-         this.$.dropdown.$.overlay.addEventListener('mousedown', e => e.preventDefault())
+
+        // Prevent blurring the input when clicking inside the overlay.
+        this.$.dropdown.$.overlay.addEventListener('mousedown', e => e.preventDefault());
       }
 
       _templateChanged(e) {
