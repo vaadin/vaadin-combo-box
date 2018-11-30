@@ -174,11 +174,10 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _openedChanged(opened, items, loading) {
         if (!this.$.dropdown) {
-          if (opened) {
-            this._initDropdown();
-          }
-          else {
+          if (!opened) {
             return;
+          } else {
+            this._initDropdown();
           }
         }
         // Do not attach if no items
