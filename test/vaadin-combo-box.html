@@ -262,6 +262,10 @@
           expect(comboBox.hasAttribute('focused')).to.be.false;
         });
 
+        it('should not throw on focusout', () => {
+          expect(() => comboBox.dispatchEvent(new Event('focusout'))).not.to.throw(Error);
+        });
+
         describe('methods', () => {
           it('should focus the input with focus method', () => {
             comboBox.focus();
