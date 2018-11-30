@@ -14,20 +14,6 @@ This program is available under Apache License Version 2.0, available at https:/
   <template>
     <!-- Stamping the content is postponed until the combo box is opened for the first time -->
     <template id="dropdown-template" is="dom-if">
-      <style>
-        #scroller {
-          overflow: auto;
-
-          /* Fixes item background from getting on top of scrollbars on Safari */
-          transform: translate3d(0, 0, 0);
-
-          /* Enable momentum scrolling on iOS (iron-list v1.2+ no longer does it for us) */
-          -webkit-overflow-scrolling: touch;
-
-          /* Fixes scrollbar disappearing when "Show scroll bars: Always" enabled in Safari */
-          box-shadow: 0 0 0 white;
-        }
-      </style>
       <vaadin-combo-box-dropdown id="dropdown"
           hidden="[[_hidden(_items.*, loading)]]"
           position-target="[[positionTarget]]"
@@ -35,6 +21,20 @@ This program is available under Apache License Version 2.0, available at https:/
           on-position-changed="_setOverlayHeight"
           theme="[[theme]]">
         <template>
+          <style>
+            #scroller {
+              overflow: auto;
+
+              /* Fixes item background from getting on top of scrollbars on Safari */
+              transform: translate3d(0, 0, 0);
+
+              /* Enable momentum scrolling on iOS (iron-list v1.2+ no longer does it for us) */
+              -webkit-overflow-scrolling: touch;
+
+              /* Fixes scrollbar disappearing when 'Show scroll bars: Always' enabled in Safari */
+              box-shadow: 0 0 0 white;
+            }
+          </style>
           <div id="scroller" on-click="_stopPropagation">
             <iron-list id="selector" role="listbox" items="[[_getItems(opened, _items)]]" scroll-target="[[_scroller]]">
               <template>
