@@ -118,6 +118,16 @@
           expect(comboBox.selectedItem).to.eql(item);
           expect(comboBox.inputElement.value).to.eql('foo');
         });
+
+        it('should be empty string when setting invalid value multiple times', () => {
+          comboBox.items = [];
+
+          comboBox.value = 1;
+          expect(comboBox.value).to.eql('');
+
+          comboBox.value = 2;
+          expect(comboBox.value).to.eql('');
+        });
       });
 
       describe('pattern property', () => {
