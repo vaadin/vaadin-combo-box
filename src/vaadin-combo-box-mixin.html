@@ -670,6 +670,11 @@ This program is available under Apache License Version 2.0, available at https:/
       } else {
         this.removeAttribute('has-value');
       }
+
+      // https://github.com/vaadin/vaadin-combo-box/issues/746
+      if (!(window.ShadyCSS && window.ShadyCSS.nativeCss)) {
+        this.updateStyles();
+      }
     }
 
     _selectedItemChanged(selectedItem) {
