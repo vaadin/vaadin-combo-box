@@ -20,6 +20,11 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="combobox-undefined-paths">
+    <template>
+      <vaadin-combo-box></vaadin-combo-box>
+    </template>
+  </test-fixture>
 
   <script>
     describe('using object values', () => {
@@ -257,6 +262,45 @@
           combobox.value = 'not found';
 
           expect(combobox.inputElement.value).to.eql('not found');
+        });
+      });
+
+      describe('when item label and value paths are undefined', () => {
+        let error;
+        let comboboxUndefinedPaths;
+
+        const selectItemComboboxUndefinedPaths = (index) => {
+          // simulates clicking on the overlay items, but it more reliable in tests.
+          comboboxUndefinedPaths.$.overlay.dispatchEvent(new CustomEvent('selection-changed', {
+            detail: {item: comboboxUndefinedPaths.items[index]}
+          }));
+        };
+
+        beforeEach(() => {
+          error = sinon.stub(console, 'error');
+          comboboxUndefinedPaths = fixture('combobox-undefined-paths');
+          comboboxUndefinedPaths.itemValuePath = undefined;
+          comboboxUndefinedPaths.itemLabelPath = undefined;
+          comboboxUndefinedPaths.items = [{}, {}];
+          comboboxUndefinedPaths.open();
+        });
+
+        it('should use toString if provided label and value paths are undefined and then log error', () => {
+          comboboxUndefinedPaths.items[0].toString = () => 'default';
+
+          selectItemComboboxUndefinedPaths(0);
+
+          error.restore();
+          expect(comboboxUndefinedPaths.inputElement.value).to.eql('default');
+          expect(comboboxUndefinedPaths.value).to.eql('default');
+          expect(error.called).to.be.true;
+        });
+
+        it('should open the dropdown if provided label and value paths are undefined', () => {
+          const overlay = comboboxUndefinedPaths.$.overlay.$.dropdown.$.overlay;
+
+          error.restore();
+          expect(window.getComputedStyle(overlay).display).not.to.eql('none');
         });
       });
     });
