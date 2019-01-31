@@ -398,7 +398,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _getItemValue(item) {
-      let value = item ? this.get(this.itemValuePath, item) : undefined;
+      let value = item && this.itemValuePath ? this.get(this.itemValuePath, item) : undefined;
       if (value === undefined) {
         value = item ? item.toString() : '';
       }
@@ -624,7 +624,10 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _filterChanged(filter, itemValuePath, itemLabelPath) {
-      if (filter === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
+      if (typeof itemLabelPath !== 'string') {
+        console.error('You should set itemLabelPath to a valid string');
+      }
+      if (filter === undefined) {
         return;
       }
       if (this.items) {
@@ -742,7 +745,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _itemsOrPathsChanged(e, itemValuePath, itemLabelPath) {
-      if (e.value === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
+      if (e.value === undefined) {
         return;
       }
       if (e.path === 'items' || e.path === 'items.splices') {
@@ -759,7 +762,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _filteredItemsChanged(e, itemValuePath, itemLabelPath) {
-      if (e.value === undefined || itemValuePath === undefined || itemLabelPath === undefined) {
+      if (e.value === undefined) {
         return;
       }
       if (e.path === 'filteredItems' || e.path === 'filteredItems.splices') {
@@ -860,7 +863,6 @@ This program is available under Apache License Version 2.0, available at https:/
         this.close();
       }
     }
-
 
     /**
      * Returns true if `value` is valid, and sets the `invalid` flag appropriately.

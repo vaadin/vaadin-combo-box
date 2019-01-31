@@ -328,7 +328,7 @@ This program is available under Apache License Version 2.0, available at https:/
        * @return {String}
        */
       getItemLabel(item) {
-        let label = item ? this.get(this._itemLabelPath, item) : undefined;
+        let label = item && this._itemLabelPath ? this.get(this._itemLabelPath, item) : undefined;
         if (label === undefined || label === null) {
           label = item ? item.toString() : '';
         }
