@@ -269,7 +269,7 @@
         let error;
         let comboboxUndefinedPaths;
 
-        const selectItemComboboxUndefinedPaths = (index) => {
+        const selectItem = (index) => {
           // simulates clicking on the overlay items, but it more reliable in tests.
           comboboxUndefinedPaths.$.overlay.dispatchEvent(new CustomEvent('selection-changed', {
             detail: {item: comboboxUndefinedPaths.items[index]}
@@ -285,12 +285,13 @@
           comboboxUndefinedPaths.open();
         });
 
+        afterEach(() => error.restore());
+
         it('should use toString if provided label and value paths are undefined and then log error', () => {
           comboboxUndefinedPaths.items[0].toString = () => 'default';
 
-          selectItemComboboxUndefinedPaths(0);
+          selectItem(0);
 
-          error.restore();
           expect(comboboxUndefinedPaths.inputElement.value).to.eql('default');
           expect(comboboxUndefinedPaths.value).to.eql('default');
           expect(error.called).to.be.true;
@@ -299,7 +300,6 @@
         it('should open the dropdown if provided label and value paths are undefined', () => {
           const overlay = comboboxUndefinedPaths.$.overlay.$.dropdown.$.overlay;
 
-          error.restore();
           expect(window.getComputedStyle(overlay).display).not.to.eql('none');
         });
       });
