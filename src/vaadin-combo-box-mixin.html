@@ -159,7 +159,8 @@ This program is available under Apache License Version 2.0, available at https:/
          */
         itemLabelPath: {
           type: String,
-          value: 'label'
+          value: 'label',
+          observer: '_itemLabelPathChanged'
         },
 
         /**
@@ -623,13 +624,29 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
-    _filterChanged(filter, itemValuePath, itemLabelPath) {
+    _itemLabelPathChanged(itemLabelPath, oldItemLabelPath) {
       if (typeof itemLabelPath !== 'string') {
         console.error('You should set itemLabelPath to a valid string');
       }
+
+      if (this.selectedItem) {
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+      }
+
+      const selector = this.$.overlay._selector;
+      const items = this.items || this.filteredItems;
+      if (selector && items) {
+        selector.querySelectorAll('vaadin-combo-box-item').forEach((item, i) => {
+          item.label = this._getItemLabel(items[i]);
+        });
+      }
+    }
+
+    _filterChanged(filter, itemValuePath, itemLabelPath) {
       if (filter === undefined) {
         return;
       }
+
       if (this.items) {
         this.filteredItems = this._filterItems(this.items, filter);
       } else {
