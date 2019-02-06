@@ -128,6 +128,15 @@
         expect(combobox.value).to.eql('default');
       });
 
+      it('should refresh labels if the label path is changed', () => {
+        selectItem(0);
+
+        combobox.itemLabelPath = 'custom';
+
+        expect(combobox.inputElement.value).to.eql('bazs');
+        expect(combobox.$.overlay._selector.querySelector('vaadin-combo-box-item').label).to.eql('bazs');
+      });
+
       it('should use toString if default label and value paths are not found', () => {
         combobox.items = [{}, {}];
         combobox.items[0].toString = () => 'default';
