@@ -632,14 +632,6 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this.selectedItem) {
         this._inputElementValue = this._getItemLabel(this.selectedItem);
       }
-
-      const selector = this.$.overlay._selector;
-      const items = this.items || this.filteredItems;
-      if (selector && items) {
-        selector.querySelectorAll('vaadin-combo-box-item').forEach((item, i) => {
-          item.label = this._getItemLabel(items[i]);
-        });
-      }
     }
 
     _filterChanged(filter, itemValuePath, itemLabelPath) {
