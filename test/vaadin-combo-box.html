@@ -371,6 +371,18 @@
         });
       });
     });
+
+    describe('Methods', () => {
+      let comboBox;
+
+      beforeEach(() => {
+        comboBox = fixture('combobox');
+      });
+
+      it('should not throw if render() called before opening', () => {
+        expect(() => comboBox.render()).not.to.throw(Error);
+      });
+    });
   </script>
 
 </body>
