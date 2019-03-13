@@ -63,12 +63,12 @@ This program is available under Apache License Version 2.0, available at https:/
 
         on-change="_stopPropagation"
         on-input="_inputValueChanged"
+        clear-button-visible="[[clearButtonVisible]]"
 
         theme$="[[theme]]"
       >
       <slot name="prefix" slot="prefix"></slot>
 
-      <div part="clear-button" id="clearButton" slot="suffix" role="button" aria-label="Clear"></div>
       <div part="toggle-button" id="toggleButton" slot="suffix" role="button" aria-label="Toggle"></div>
 
     </vaadin-text-field>
@@ -336,6 +336,11 @@ This program is available under Apache License Version 2.0, available at https:/
             },
 
             readonly: {
+              type: Boolean,
+              value: false
+            },
+
+            clearButtonVisible: {
               type: Boolean,
               value: false
             }

@@ -350,6 +350,9 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onClick(e) {
+      if (e.composedPath().find(node => node.id === 'clearButton')) {
+        return;
+      }
       this._closeOnBlurIsPrevented = true;
 
       const path = e.composedPath();
