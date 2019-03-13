@@ -283,9 +283,15 @@
             });
 
             it('should not be invoked if items are filtered', () => {
-              comboBox.inputElement.value = '1';
-              comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
+              // workaround for applying filter for combo-box-light
+              if (comboBox.inputElement.tagName === 'IRON-INPUT') {
+                comboBox.inputElement._initSlottedInput();
+                comboBox.inputElement.inputElement.value = '1';
+              } else {
+                comboBox.inputElement.value = '1';
+              }
 
+              comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
               Polymer.flush();
               spyDataProvider.reset();
 
