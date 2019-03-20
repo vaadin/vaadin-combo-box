@@ -350,13 +350,11 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onClick(e) {
-      if (e.composedPath().find(node => node.id === 'clearButton')) {
-        return;
-      }
       this._closeOnBlurIsPrevented = true;
 
+      const clearButton = this.$.input ? this.$.input.$.clearButton : this._clearElement;
       const path = e.composedPath();
-      if (path.indexOf(this._clearElement) !== -1) {
+      if (path.indexOf(clearButton) !== -1) {
         this._clear();
         this.focus();
       } else if (path.indexOf(this.inputElement) !== -1) {
@@ -936,8 +934,9 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this._toggleElement) {
         this._toggleElement.addEventListener('click', this._preventDefault);
       }
-      if (this._clearElement) {
-        this._clearElement.addEventListener('click', this._preventDefault);
+      const clearButton = this.$.input ? this.$.input.$.clearButton : this._clearElement;
+      if (clearButton) {
+        clearButton.addEventListener('click', this._preventDefault);
       }
     }
 
@@ -945,8 +944,9 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this._toggleElement) {
         this._toggleElement.removeEventListener('click', this._preventDefault);
       }
-      if (this._clearElement) {
-        this._clearElement.removeEventListener('click', this._preventDefault);
+      const clearButton = this.$.input ? this.$.input.$.clearButton : this._clearElement;
+      if (clearButton) {
+        clearButton.removeEventListener('click', this._preventDefault);
       }
     }
 

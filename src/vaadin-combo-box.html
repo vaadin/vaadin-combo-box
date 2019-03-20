@@ -33,12 +33,6 @@ This program is available under Apache License Version 2.0, available at https:/
         width: 100%;
         min-width: 0;
       }
-
-      :host([disabled]) [part="clear-button"],
-      :host([readonly]) [part="clear-button"],
-      :host(:not([has-value])) [part="clear-button"] {
-        display: none;
-      }
     </style>
 
     <vaadin-text-field part="text-field" id="input"
@@ -340,6 +334,9 @@ This program is available under Apache License Version 2.0, available at https:/
               value: false
             },
 
+            /**
+             * Set to true to display the clear icon which clears the input.
+             */
             clearButtonVisible: {
               type: Boolean,
               value: false
@@ -366,9 +363,20 @@ This program is available under Apache License Version 2.0, available at https:/
         ready() {
           super.ready();
 
-          this._nativeInput = this.$.input.focusElement;
+          this._nativeInput = this.inputElement.focusElement;
           this._toggleElement = this.$.toggleButton;
-          this._clearElement = this.$.clearButton;
+
+          // Stop propagation of Esc in capturing phase so that
+          // vaadin-text-field will not handle Esc as a shortcut
+          // to clear the value
+          this.addEventListener('keydown', e => {
+            if (this._isEventKey(e, 'esc')) {
+              this._stopPropagation(e);
+              // Trigger _onEscape method of vaadin-combo-box-mixin because
+              // bubbling phase is not reached.
+              this._onEscape(e);
+            }
+          }, true);
 
           this._nativeInput.setAttribute('role', 'combobox');
           this._nativeInput.setAttribute('aria-autocomplete', 'list');
