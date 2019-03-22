@@ -65,7 +65,45 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="combobox-light-attr-for-value">
+    <template>
+      <vaadin-combo-box-light attr-for-value="custom-value">
+        <my-input class="input"></my-input>
+      </vaadin-combo-box-light>
+    </template>
+  </test-fixture>
+
   <script>
+    class MyInput extends Polymer.Element {
+      static get is() {
+        return 'my-input';
+      }
+
+      static get template() {
+        const {html} = Polymer;
+        return html`
+        <style>
+          :host {
+            display: inline-block;
+          }
+        </style>
+        <iron-input id="input" bind-value="{{customValue}}">
+          <input>
+        </iron-input>
+        `;
+      }
+    
+      static get properties() {
+        return {
+          customValue: {
+            type: String,
+            notify: true
+          }
+        };
+      }
+    }
+    window.customElements.define('my-input', MyInput);
+
     describe('vaadin-combo-box-light', () => {
       let comboBox, ironInput;
 
@@ -80,7 +118,7 @@
           expect(comboBox.inputElement).to.eql(ironInput);
         });
 
-        it('should bind the input value correctly', () => {
+        it('should bind the input value correctly when setting combo box value', () => {
           // Empty string by default.
           expect(comboBox._inputElementValue).to.eql('');
           expect(ironInput.value).to.eql('');
@@ -138,6 +176,66 @@
             expect(comboBox.value).to.equal('foo');
             done();
           }, {emulateTouch: true});
+        });
+      });
+    });
+
+    describe('vaadin-combobox-light-attr-for-value', () => {
+      let comboBox, customInput, ironInput, nativeInput;
+
+      function whenIronInputReady(ironInput, callback) {
+        if (ironInput.inputElement) {
+          callback();
+        } else {
+          ironInput.addEventListener('iron-input-ready', callback);
+        }
+      }
+
+      beforeEach(() => {
+        comboBox = fixture('combobox-light-attr-for-value');
+        comboBox.items = ['foo', 'bar', 'baz'];
+        customInput = comboBox.querySelector('.input');
+        ironInput = customInput.$.input;
+        nativeInput = ironInput.querySelector('input');
+      });
+
+      describe('using custom input with custom attr-for-value', () => {
+        it('should find the input element correctly', () => {
+          expect(comboBox.inputElement).to.eql(customInput);
+        });
+
+        it('should bind the input value correctly when setting combo box value', () => {
+          // Empty string by default.
+          expect(comboBox._inputElementValue).to.eql('');
+          expect(customInput.customValue).to.eql('');
+
+          comboBox.value = 'foo';
+          expect(comboBox._inputElementValue).to.eql('foo');
+          expect(customInput.customValue).to.eql('foo');
+        });
+
+        it('should bind the input value correctly when typing in input', done => {
+          // Empty string by default.
+          expect(comboBox._inputElementValue).to.eql('');
+          expect(customInput.customValue).to.eql('');
+
+          // We need to wait until <iron-input> is ready before trying to input text
+          // into the input, otherwise the test will fail when iron-input throws
+          // an error in `_onInput` because it tries to read `inputElement.value`
+          // but `inputElement` may still be undefined because iron-input hasn't yet
+          // detected the slotted <input> element.
+          whenIronInputReady(ironInput, () => {
+            // Simulate typing an option with a keyboard and confirming it via Enter
+            nativeInput.focus();
+            document.execCommand('insertText', false, 'foo');
+            MockInteractions.pressAndReleaseKeyOn(nativeInput, 13, null, 'Enter');
+
+            expect(comboBox.value).to.eql('foo');
+            expect(comboBox._inputElementValue).to.eql('foo');
+            expect(customInput.customValue).to.eql('foo');
+
+            done();
+          });
         });
       });
     });
