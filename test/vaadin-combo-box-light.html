@@ -185,10 +185,11 @@
           expect(customInput.customValue).to.eql('foo');
         });
 
-        it('should bind the input value correctly when typing in input', done => {
+        it('should bind the input value correctly when getting input', done => {
           // Empty string by default.
           expect(comboBox._inputElementValue).to.eql('');
           expect(customInput.customValue).to.eql('');
+          expect(nativeInput.value).to.eql('');
 
           // We need to wait until <iron-input> is ready before trying to input text
           // into the input, otherwise the test will fail when iron-input throws
@@ -202,13 +203,7 @@
             setTimeout(() => {
 
               // Simulate typing an option with a keyboard and confirming it via Enter
-              nativeInput.focus();
-              const success = document.execCommand('insertText', false, 'foo');
-              if (!success && typeof nativeInput.setRangeText === 'function') {
-                // Needed for Firefox ("insertText" won't work)
-                nativeInput.setRangeText('foo');
-                nativeInput.selectionStart = nativeInput.selectionEnd = 'foo'.length;
-              }
+              nativeInput.value = 'foo';
               fire('input', nativeInput);
               MockInteractions.pressAndReleaseKeyOn(nativeInput, 13, null, 'Enter');
 
