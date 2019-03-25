@@ -196,16 +196,28 @@
           // but `inputElement` may still be undefined because iron-input hasn't yet
           // detected the slotted <input> element.
           whenIronInputReady(ironInput, () => {
-            // Simulate typing an option with a keyboard and confirming it via Enter
-            nativeInput.focus();
-            document.execCommand('insertText', false, 'foo');
-            MockInteractions.pressAndReleaseKeyOn(nativeInput, 13, null, 'Enter');
+            // Use a timeout to get out of "iron-input-ready" event context, otherwise
+            // any thrown error (e.g. failed assertion) will result in a huge obscure
+            // error message in Firefox without any info about the assertion failure.
+            setTimeout(() => {
 
-            expect(comboBox.value).to.eql('foo');
-            expect(comboBox._inputElementValue).to.eql('foo');
-            expect(customInput.customValue).to.eql('foo');
+              // Simulate typing an option with a keyboard and confirming it via Enter
+              nativeInput.focus();
+              const success = document.execCommand('insertText', false, 'foo');
+              if (!success && typeof nativeInput.setRangeText === 'function') {
+                // Needed for Firefox ("insertText" won't work)
+                nativeInput.setRangeText('foo');
+                nativeInput.selectionStart = nativeInput.selectionEnd = 'foo'.length;
+              }
+              fire('input', nativeInput);
+              MockInteractions.pressAndReleaseKeyOn(nativeInput, 13, null, 'Enter');
 
-            done();
+              expect(comboBox.value).to.eql('foo');
+              expect(comboBox._inputElementValue).to.eql('foo');
+              expect(customInput.customValue).to.eql('foo');
+
+              done();
+            }, 0);
           });
         });
       });
