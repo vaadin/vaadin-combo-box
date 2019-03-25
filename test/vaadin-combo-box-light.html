@@ -8,6 +8,7 @@
   <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../../iron-test-helpers/mock-interactions.html">
   <link rel="import" href="common-imports.html">
+  <link rel="import" href="my-input.html">
   <script src="common.js"></script>
   <link rel="import" href="../vaadin-combo-box-light.html">
   <link rel="import" href="../../iron-input/iron-input.html">
@@ -74,36 +75,6 @@
   </test-fixture>
 
   <script>
-    class MyInput extends Polymer.Element {
-      static get is() {
-        return 'my-input';
-      }
-
-      static get template() {
-        const {html} = Polymer;
-        return html`
-        <style>
-          :host {
-            display: inline-block;
-          }
-        </style>
-        <iron-input id="input" bind-value="{{customValue}}">
-          <input>
-        </iron-input>
-        `;
-      }
-    
-      static get properties() {
-        return {
-          customValue: {
-            type: String,
-            notify: true
-          }
-        };
-      }
-    }
-    window.customElements.define('my-input', MyInput);
-
     describe('vaadin-combo-box-light', () => {
       let comboBox, ironInput;
 

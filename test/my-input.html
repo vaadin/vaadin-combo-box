@@ -1,0 +1,36 @@
+<!--
+  This custom element is needed for testing the "attr-for-value" feature of
+  <vaadin-combo-box-light>
+-->
+<link rel="import" href="../../polymer/polymer-element.html">
+<script>
+  class MyInput extends Polymer.Element {
+    static get is() {
+      return 'my-input';
+    }
+
+    static get template() {
+      const {html} = Polymer;
+      return html`
+      <style>
+        :host {
+          display: inline-block;
+        }
+      </style>
+      <iron-input id="input" bind-value="{{customValue}}">
+        <input>
+      </iron-input>
+      `;
+    }
+  
+    static get properties() {
+      return {
+        customValue: {
+          type: String,
+          notify: true
+        }
+      };
+    }
+  }
+  window.customElements.define('my-input', MyInput);
+</script>
