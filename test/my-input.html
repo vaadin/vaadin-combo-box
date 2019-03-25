@@ -3,34 +3,32 @@
   <vaadin-combo-box-light>
 -->
 <link rel="import" href="../../polymer/polymer-element.html">
-<script>
-  class MyInput extends Polymer.Element {
-    static get is() {
-      return 'my-input';
-    }
+<dom-module id="my-input">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+    </style>
+    <iron-input id="input" bind-value="{{customValue}}">
+      <input>
+    </iron-input>
+  </template>
+  <script>
+    class MyInput extends Polymer.Element {
+      static get is() {
+        return 'my-input';
+      }
 
-    static get template() {
-      const {html} = Polymer;
-      return html`
-      <style>
-        :host {
-          display: inline-block;
-        }
-      </style>
-      <iron-input id="input" bind-value="{{customValue}}">
-        <input>
-      </iron-input>
-      `;
+      static get properties() {
+        return {
+          customValue: {
+            type: String,
+            notify: true
+          }
+        };
+      }
     }
-  
-    static get properties() {
-      return {
-        customValue: {
-          type: String,
-          notify: true
-        }
-      };
-    }
-  }
-  window.customElements.define('my-input', MyInput);
-</script>
+    window.customElements.define('my-input', MyInput);
+  </script>
+</dom-module>
