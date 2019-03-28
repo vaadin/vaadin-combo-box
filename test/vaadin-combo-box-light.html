@@ -188,10 +188,17 @@
           if (!result) {
             return null;
           }
+          // Prevent infinite loop due to slotted elements with shadow roots
           if (result === root.host) {
             return result;
           }
-          return result.shadowRoot ? elementFromPointDeep(x, y, result.shadowRoot) : result;
+          // At least Safari on iOS 9 doesn't have "elementFromPoint" on a
+          // shady root and in case of ShadyDOM we should already get the target
+          // we're looking for from the first "root.elementFromPoint"
+          if (result.shadowRoot && !(window.ShadyDOM && ShadyDOM.isShadyRoot(result.shadowRoot))) {
+            return elementFromPointDeep(x, y, result.shadowRoot);
+          }
+          return result;
         }
 
         /**
@@ -210,13 +217,19 @@
           if (rect.width === 0 || rect.height === 0) {
             return;
           }
-          const x = Math.round(rect.x);
-          const y = Math.round(rect.y);
+          const x = Math.ceil(rect.left);
+          const y = Math.ceil(rect.top);
           // Get the element which would be targeted, when the user
           // tries to click on this position
-          const target = elementFromPointDeep(x, y, elem.ownerDocument);
+          let target = elementFromPointDeep(x, y, elem.ownerDocument);
           if (!target) {
             return;
+          }
+
+          // Check if the found element contains a slot (needed for other browsers than Chrome)
+          const slot = target.querySelector('slot');
+          if (slot && slot.assignedNodes({flatten: true}).indexOf(elem) !== -1) {
+            target = elem;
           }
 
           fire('click', target);
