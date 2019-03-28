@@ -143,7 +143,7 @@
     });
 
     describe('vaadin-combo-box-light-paper-input', () => {
-      let comboBox, paperInput;
+      let comboBox;
 
       beforeEach(() => {
         comboBox = fixture('combobox-light-paper-input');
@@ -178,9 +178,63 @@
       describe('custom clear-button', () => {
         let clearButton;
 
+        /**
+         * Get the most specific element at the given viewport coordinates.
+         * Same as "document.elementFromPoint()" but recursively digging through
+         * shadow roots.
+         */
+        function elementFromPointDeep(x, y, root = document) {
+          const result = root.elementFromPoint(x, y);
+          if (!result) {
+            return null;
+          }
+          if (result === root.host) {
+            return result;
+          }
+          return result.shadowRoot ? elementFromPointDeep(x, y, result.shadowRoot) : result;
+        }
+
+        /**
+         * Simulate a click at the position of the given element.
+         * This can be used for more accurate testing of what would happen
+         * when a user tries to click on a specific element.
+         *
+         * This needs to be used when we need to consider the effect of
+         * possibly overlapping elements or "pointer-events: none"
+         */
+        function clickAtPositionOf(elem) {
+          // Scroll the element into view if it's not already
+          elem.scrollIntoView();
+          // Get the viewport relative position of the element
+          const rect = elem.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) {
+            return;
+          }
+          const x = Math.round(rect.x);
+          const y = Math.round(rect.y);
+          // Get the element which would be targeted, when the user
+          // tries to click on this position
+          const target = elementFromPointDeep(x, y, elem.ownerDocument);
+          if (!target) {
+            return;
+          }
+
+          fire('click', target);
+        }
+
         beforeEach(() => {
           clearButton = comboBox.querySelector('.clear-button');
           comboBox.value = 'foo';
+        });
+
+        it('should be clickable when overlay is open', () => {
+          const clickSpy = sinon.spy();
+          clearButton.addEventListener('click', clickSpy);
+
+          comboBox.open();
+          clickAtPositionOf(clearButton);
+
+          expect(clickSpy.callCount).to.equal(1);
         });
 
         it('should fire `change` event on clear', () => {
@@ -188,6 +242,7 @@
           comboBox.addEventListener('change', changeSpy);
 
           fire('click', clearButton);
+
           expect(changeSpy.callCount).to.equal(1);
         });
 
