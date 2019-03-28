@@ -49,7 +49,9 @@
         <vaadin-combo-box label="Element" clear-button-visible></vaadin-combo-box>
         <script>
           window.addDemoReadyListener('#combo-box-basic-demos-clear-button', function(document) {
-            document.querySelector('vaadin-combo-box').items = ['Hydrogen', 'Helium', 'Lithium'];
+            const comboBox = document.querySelector('vaadin-combo-box');
+            comboBox.items = ['Hydrogen', 'Helium', 'Lithium'];
+            comboBox.value = 'Hydrogen';
           });
         </script>
       </template>
