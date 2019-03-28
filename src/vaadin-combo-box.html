@@ -364,6 +364,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
           this._nativeInput = this.inputElement.focusElement;
           this._toggleElement = this.$.toggleButton;
+          this._clearElement = this.inputElement.shadowRoot.querySelector('[part="clear-button"]');
 
           // Stop propagation of Esc in capturing phase so that
           // vaadin-text-field will not handle Esc as a shortcut
