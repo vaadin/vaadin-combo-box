@@ -163,20 +163,6 @@ This program is available under Apache License Version 2.0, available at https:/
           this.inputElement[this._propertyForValue] = value;
         }
       }
-
-      /**
-       * Focusable element used by vaadin-control-state-mixin
-       */
-      /*
-      get focusElement() {
-        // Needed for focusing a paper-input properly
-        if (this.inputElement && this.inputElement._focusableElement) {
-          return this.inputElement._focusableElement;
-        }
-        // inputElement might not be defined on property changes before ready.
-        return this.inputElement || this;
-      }
-      */
     }
 
     customElements.define(ComboBoxLightElement.is, ComboBoxLightElement);
