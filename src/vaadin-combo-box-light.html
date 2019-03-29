@@ -5,7 +5,6 @@ This program is available under Apache License Version 2.0, available at https:/
 -->
 
 <link rel="import" href="../../polymer/polymer-element.html">
-<link rel="import" href="../../vaadin-control-state-mixin/vaadin-control-state-mixin.html">
 <link rel="import" href="../../vaadin-themable-mixin/vaadin-themable-mixin.html">
 <link rel="import" href="../../vaadin-themable-mixin/vaadin-theme-property-mixin.html">
 <link rel="import" href="vaadin-combo-box-mixin.html">
@@ -80,18 +79,16 @@ This program is available under Apache License Version 2.0, available at https:/
      * </vaadin-combo-box-light>
      * ```
      * @memberof Vaadin
-     * @mixes Vaadin.ControlStateMixin
      * @mixes Vaadin.ComboBoxDataProviderMixin
      * @mixes Vaadin.ComboBoxMixin
      * @mixes Vaadin.ThemableMixin
      * @mixes Vaadin.ThemePropertyMixin
      */
     class ComboBoxLightElement extends
-      Vaadin.ControlStateMixin(
-        Vaadin.ThemePropertyMixin(
-          Vaadin.ThemableMixin(
-            Vaadin.ComboBoxDataProviderMixin(
-              Vaadin.ComboBoxMixin(Polymer.Element))))) {
+      Vaadin.ThemePropertyMixin(
+        Vaadin.ThemableMixin(
+          Vaadin.ComboBoxDataProviderMixin(
+            Vaadin.ComboBoxMixin(Polymer.Element)))) {
 
       static get is() {
         return 'vaadin-combo-box-light';
@@ -124,6 +121,18 @@ This program is available under Apache License Version 2.0, available at https:/
         super.ready();
         this._toggleElement = this.querySelector('.toggle-button');
         this._clearElement = this.querySelector('.clear-button');
+
+        if (this._clearElement) {
+          this._clearElement.addEventListener('mousedown', e => {
+            e.preventDefault(); // Prevent native focus changes
+            // _focusableElement is needed for paper-input
+            (this.inputElement._focusableElement || this.inputElement).focus();
+          });
+        }
+      }
+
+      get focused() {
+        return this.getRootNode().activeElement === this.inputElement;
       }
 
       connectedCallback() {
@@ -158,6 +167,7 @@ This program is available under Apache License Version 2.0, available at https:/
       /**
        * Focusable element used by vaadin-control-state-mixin
        */
+      /*
       get focusElement() {
         // Needed for focusing a paper-input properly
         if (this.inputElement && this.inputElement._focusableElement) {
@@ -166,6 +176,7 @@ This program is available under Apache License Version 2.0, available at https:/
         // inputElement might not be defined on property changes before ready.
         return this.inputElement || this;
       }
+      */
     }
 
     customElements.define(ComboBoxLightElement.is, ComboBoxLightElement);
