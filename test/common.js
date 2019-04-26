@@ -2,6 +2,7 @@ const ua = navigator.userAgent;
 const ios = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
 const edge = /Edge/i.test(ua);
 const linux = /Linux/i.test(ua);
+const ie11 = /Trident\//i.test(ua);
 
 const touchDevice = (() => {
   try {
@@ -43,6 +44,15 @@ const describeSkipIf = (bool, title, callback) => {
 const describeIf = (bool, title, callback) => {
   bool = typeof bool == 'function' ? bool() : bool;
   describeSkipIf(!bool, title, callback);
+};
+
+const itSkipIf = (bool, title, callback) => {
+  bool = typeof bool == 'function' ? bool() : bool;
+  if (bool) {
+    it.skip(title, callback);
+  } else {
+    it(title, callback);
+  }
 };
 
 const getItemArray = length => {
