@@ -3,6 +3,7 @@ const ios = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
 const edge = /Edge/i.test(ua);
 const linux = /Linux/i.test(ua);
 const ie11 = /Trident\//i.test(ua);
+const isChrome = !!window.chrome && /Google Inc/.test(navigator.vendor);
 
 const touchDevice = (() => {
   try {

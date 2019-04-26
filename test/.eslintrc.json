@@ -9,6 +9,7 @@
     "edge": false,
     "linux": false,
     "ie11": false,
+    "isChrome": false,
     "getItemArray": false,
     "before": false,
     "beforeEach": false,

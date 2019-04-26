@@ -95,7 +95,7 @@
       it('should set body `pointer-events: none` on open and restore initial value on close', () => {
         document.body.style.pointerEvents = 'painted';
         combobox.open();
-        if (!(linux && window.chrome)) { // FIXME: randomly fails on Chrome + Travis
+        if (!(linux && isChrome)) { // FIXME: randomly fails on Chrome + Travis
           expect(getComputedStyle(document.body).pointerEvents).to.be.equal('none');
           expect(getComputedStyle(combobox).pointerEvents).to.be.equal('auto');
 
