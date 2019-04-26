@@ -148,11 +148,11 @@
         }
       });
 
-      // Skip this test in IE11 and Edge because it breaks and causes problems.
-      // This is not a problem anymore in v4.2.1+ since commit 8192d242 but
-      // that fix hasn't been backported to this vaadin-10 branch so we'll skip
-      // it for now.
-      itSkipIf(ie11 || edge, 'should extract the iron-list border mixin into custom CSS properties', () => {
+      // Skip this test in IE11, Edge and iOS (9.3) because it breaks and
+      // causes problems. This is not a problem anymore in v4.2.1+ since commit
+      // 8192d242 but that fix hasn't been backported to this vaadin-10 branch
+      // so we'll skip it for now.
+      itSkipIf(ie11 || edge || ios, 'should extract the iron-list border mixin into custom CSS properties', () => {
         const elem = fixture('combobox-if');
 
         // render dom-if template
