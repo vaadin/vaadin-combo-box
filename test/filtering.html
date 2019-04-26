@@ -289,6 +289,7 @@
         comboBox.close();
 
         setInputValue('bar');
+        comboBox.__repositionOverlayDebouncer.flush();
 
         expect(comboBox.opened).to.be.true;
         expect(comboBox._focusedIndex).to.equal(1);
@@ -300,6 +301,7 @@
         comboBox.close();
 
         setInputValue('');
+        comboBox.__repositionOverlayDebouncer.flush();
 
         expect(comboBox.opened).to.be.true;
         expect(comboBox._focusedIndex).to.equal(-1);
