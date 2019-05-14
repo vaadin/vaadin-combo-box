@@ -197,7 +197,7 @@
         const keydownSpy = sinon.spy();
         document.addEventListener('keydown', keydownSpy);
         enter();
-        expect(keydownSpy.called).to.be.false;
+        expect(keydownSpy).not.to.be.called;
       });
 
       it('should not close the overlay with enter when custom values are not allowed', () => {
