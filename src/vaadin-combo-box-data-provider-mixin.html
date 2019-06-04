@@ -156,6 +156,9 @@ This program is available under Apache License Version 2.0, available at https:/
             if (Object.keys(this._pendingRequests).length === 0) {
               this.loading = false;
             }
+            if (page === 0 && this.__repositionOverlayDebouncer) {
+              setTimeout(() => this.__repositionOverlayDebouncer.flush());
+            }
           }
         };
         this._pendingRequests[page] = callback;
