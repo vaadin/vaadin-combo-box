@@ -113,6 +113,18 @@
             expect(comboBox.items).to.be.undefined;
           });
 
+          it('should clear value on clear button press before opened', () => {
+            comboBox.dataProvider = dataProvider;
+            comboBox.selectedItem = 'item 0';
+            comboBox.clearButtonVisible = true;
+            const clearIcon = comboBox.inputElement.$.clearButton;
+            clearIcon.click();
+            comboBox.opened = true;
+            Polymer.flush();
+            expect(comboBox.value).to.be.empty;
+            expect(comboBox.selectedItem).to.be.null;
+          });
+
           describe('when open', function() {
             this.timeout(15000);
             beforeEach(() => comboBox.opened = true);
