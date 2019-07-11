@@ -843,10 +843,14 @@ This program is available under Apache License Version 2.0, available at https:/
         // which is very slow in Edge
         Polymer.Async.timeOut.after(500),
         () => {
+          const selector = this.$.overlay._selector;
+          if (!selector._isClientFull()) {
+            selector._resetScrollPosition(selector._physicalTop);
+          }
           this._resizeDropdown();
           this.$.overlay.updateViewportBoundaries();
           this.$.overlay.ensureItemsRendered();
-          this.$.overlay._selector.notifyResize();
+          selector.notifyResize();
           Polymer.flush();
         }
       );
