@@ -843,11 +843,30 @@ This program is available under Apache License Version 2.0, available at https:/
         // which is very slow in Edge
         Polymer.Async.timeOut.after(500),
         () => {
+          // Variants to solve: 
+          
+          // ;
+
+          // this.$.overlay._selector._virtualStart = 0;
+          // this.$.overlay._selector._adjustScrollPosition();
+
+          // console.log('%c Problem could occur! ', 'background: #222; color: #bada55; font-size: 14px;');
+        
+          // Problematic place
+          console.log(`%c Log state before change: ${this.$.overlay._selector._physicalTop}, ${this.$.overlay._selector._scrollPosition}`, `font-style: italic`);
+          
+          // this.$.overlay._selector._resetScrollPosition(this.$.overlay._selector._physicalTop);
+          // this.$.overlay._selector._updateScrollerSize(true);
+          
+          this.$.overlay._selector._resetScrollPosition(this.$.overlay._selector._physicalTop)
+          console.log(`%c Log state after change: ${this.$.overlay._selector._physicalTop}, ${this.$.overlay._selector._scrollPosition}`, `font-style: italic`);
+
           this._resizeDropdown();
           this.$.overlay.updateViewportBoundaries();
           this.$.overlay.ensureItemsRendered();
           this.$.overlay._selector.notifyResize();
           Polymer.flush();
+          // End
         }
       );
     }

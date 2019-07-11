@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <title>vaadin-combo-box Examples</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../vaadin-demo-helpers/vaadin-component-demo.html">
+  <link rel="import" href="../../vaadin-demo-helpers/vaadin-demo-snippet.html">
+  <script src="../../vaadin-demo-helpers/vaadin-demo-ready-event-emitter.js"></script>
+
+  <script src="combo-box-demo.js"></script>
+
+  <link rel="import" href="../vaadin-combo-box-light.html">
+  <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../../iron-ajax/iron-ajax.html">
+  <link rel="import" href="../../iron-icon/iron-icon.html">
+  <link rel="import" href="../../iron-icons/iron-icons.html">
+  <link rel="import" href="../../iron-input/iron-input.html">
+  <link rel="import" href="../../paper-input/paper-input.html">
+  <link rel="import" href="../../vaadin-button/vaadin-button.html">
+  <link rel="import" href="../vaadin-combo-box.html">
+  <link rel="import" href="../../iron-form/iron-form.html">
+
+  <custom-style>
+    <style include="vaadin-component-demo-shared-styles">
+      body, html {
+        height: 100%;
+      }
+    </style>
+  </custom-style>
+</head>
+
+<body>
+  <!-- <vaadin-combo-box label="Ordinary"></vaadin-combo-box> -->
+  <vaadin-combo-box label="Data provider"></vaadin-combo-box>
+  <vaadin-button>Break combo box</vaadin-button>
+  <span></span>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(event) {
+      // const items = Array.from({length: 10000}, (v, i) => Math.random().toString(36).substring(2, 6) +
+      //   Math.random().toString(36).substring(2, 6) + ' ' + i);
+      // document.querySelector('vaadin-combo-box').items = items;
+
+      const items = Array.from({length: 10000}, (v, i) => ` ${i}`);
+
+      const combo = document.querySelector('vaadin-combo-box');
+      combo.dataProvider = function(params, callback) {
+        var index = params.page * params.pageSize;
+        setTimeout(() => {
+          callback(items.slice(index, params.pageSize + index), 10000);
+        }, 2000);
+      };
+
+      document.querySelector('vaadin-button').addEventListener('click', () => {
+        combo.open();
+        const scroller = combo.$.overlay.$.dropdown.$.overlay.$.content.shadowRoot.querySelector('#scroller');
+
+        // setTimeout(() => {
+        //   const breakPoints = [2324, 3486, 6972, 60972, 95757, 104451, 104722, 150937];
+        //   const breakPoint = breakPoints[Math.floor(Math.random() * 8)];
+        //   scroller.scroll(0, breakPoint);
+        // }, 4000);
+
+        const breakInt = setInterval(() => {
+          // physicalTop is on 60984
+          const breakPoints = [2324, 3486, 6972, 60972, 95757, 104451, 104722, 150937];
+          const breakPoint = breakPoints[Math.floor(Math.random() * 8)];
+
+          const length = Array.from(scroller.querySelector('iron-list').children)
+            .filter(child => child.localName === 'vaadin-combo-box-item').length;
+          document.querySelector('span').textContent = `iron-list items: ${length}`;
+
+          if (length > 100) {
+            clearInterval(breakInt);
+          } else {
+            scroller.scroll(0, breakPoint);
+          }
+        }, 1000);
+      });
+
+      console.clear();
+    });
+  </script>
+</body>
+</html>
