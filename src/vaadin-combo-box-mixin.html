@@ -36,6 +36,11 @@ This program is available under Apache License Version 2.0, available at https:/
         },
 
         /**
+         * Set true to prevent the overlay from opening automatically.
+         */
+        autoOpenDisabled: Boolean,
+
+        /**
          * Set to true to disable this element.
          */
         disabled: {
@@ -366,7 +371,7 @@ This program is available under Apache License Version 2.0, available at https:/
       } else if (path.indexOf(this.inputElement) !== -1) {
         if (path.indexOf(this._toggleElement) > -1 && this.opened) {
           this.close();
-        } else {
+        } else if (path.indexOf(this._toggleElement) > -1 || !this.autoOpenDisabled) {
           this.open();
         }
       }
@@ -638,7 +643,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _filterFromInput(e) {
-      if (!this.opened && !e.__fromClearButton) {
+      if (!this.opened && !e.__fromClearButton && !this.autoOpenDisabled) {
         this.open();
       }
 
@@ -820,11 +825,13 @@ This program is available under Apache License Version 2.0, available at https:/
         return arr;
       }
 
-      return arr.filter(item => {
+      const filteredItems = arr.filter(item => {
         filter = filter ? filter.toString().toLowerCase() : '';
         // Check if item contains input value.
         return this._getItemLabel(item).toString().toLowerCase().indexOf(filter) > -1;
       });
+
+      return !filteredItems.length && this.autoOpenDisabled ? arr : filteredItems;
     }
 
     _selectItemForValue(value) {
