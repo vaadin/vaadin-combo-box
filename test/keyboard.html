@@ -91,6 +91,18 @@
         expect(getFocusedIndex()).to.equal(-1);
       });
 
+      it('should open the overlay with arrow down when autoOpenDisabled is true', () => {
+        comboBox.autoOpenDisabled = true;
+        arrowDown();
+        expect(comboBox.opened).to.equal(true);
+      });
+
+      it('should open the overlay with arrow up when autoOpenDisabled is true', () => {
+        comboBox.autoOpenDisabled = true;
+        arrowUp();
+        expect(comboBox.opened).to.equal(true);
+      });
+
       it('should have focus on the selected item after opened', () => {
         comboBox.value = 'foo';
 
