@@ -42,12 +42,18 @@ gemini.suite('vaadin-combo-box', function(rootSuite) {
         .setCaptureElements('#dropdown-tests')
         .capture('default', function(actions) {
           actions.executeJS(function(window) {
-            window.document.querySelector('#plain').open();
+            window.document.querySelector('vaadin-combo-box').open();
           });
-        })
-        .capture('template', function(actions) {
+        });
+    });
+
+    gemini.suite(`dropdown-template-${theme}`, function(suite) {
+      suite
+        .setUrl(`dropdown-template.html?theme=${theme}`)
+        .setCaptureElements('#template-tests')
+        .capture('default', function(actions) {
           actions.executeJS(function(window) {
-            window.document.querySelector('#template').open();
+            window.document.querySelector('vaadin-combo-box').open();
           });
         });
     });

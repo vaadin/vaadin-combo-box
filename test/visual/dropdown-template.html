@@ -22,9 +22,14 @@
 
 <body>
 
-  <div id="dropdown-tests" style="padding: 10px; min-height: 300px;">
-    Dropdown
-    <vaadin-combo-box item-label-path="name" item-value-path="symbol"></vaadin-combo-box>
+  <div id="template-tests" style="padding: 10px; min-height: 300px;">
+    Item template
+    <vaadin-combo-box item-label-path="name" item-value-path="symbol">
+      <template>
+        <b>[[item.name]], <sub>[[item.number]]</sub>[[item.symbol]]</b><br>
+        array index: [[index]]
+      </template>
+    </vaadin-combo-box>
   </div>
 
   <script>
