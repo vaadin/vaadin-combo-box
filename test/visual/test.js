@@ -44,7 +44,7 @@ gemini.suite('vaadin-combo-box', function(rootSuite) {
     });
 
     ['ltr', 'rtl'].forEach(dir => {
-      gemini.suite(`dropdown-${theme}-${dir}`, function(suite) {
+      gemini.suite(`dropdown-${theme}-${dir}-plain`, function(suite) {
         suite
           .setUrl(`dropdown.html?theme=${theme}&dir=${dir}`)
           .setCaptureElements('#dropdown-tests')
@@ -52,7 +52,13 @@ gemini.suite('vaadin-combo-box', function(rootSuite) {
             actions.executeJS(function(window) {
               window.document.querySelector('#plain').open();
             });
-          })
+          });
+      });
+
+      gemini.suite(`dropdown-${theme}-${dir}-template`, function(suite) {
+        suite
+          .setUrl(`dropdown.html?theme=${theme}&dir=${dir}`)
+          .setCaptureElements('#dropdown-tests')
           .capture('template', function(actions) {
             actions.executeJS(function(window) {
               window.document.querySelector('#template').open();
