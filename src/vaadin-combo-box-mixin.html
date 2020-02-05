@@ -329,7 +329,11 @@ This program is available under Apache License Version 2.0, available at https:/
      * Closes the dropdown list.
      */
     close() {
-      this.opened = false;
+      if (this.autoOpenDisabled && !this.opened) {
+        this._onClosed();
+      } else {
+        this.opened = false;
+      }
     }
 
     _openedChanged(value, old) {
@@ -495,7 +499,7 @@ This program is available under Apache License Version 2.0, available at https:/
     _onEnter(e) {
       // should close on enter when custom values are allowed, input field is cleared, or when an existing
       // item is focused with keyboard.
-      if (this.opened && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
+      if ((this.opened || this.autoOpenDisabled) && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
         this.close();
 
         // Do not submit the surrounding form.
@@ -507,7 +511,10 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onEscape(e) {
-      if (this.opened) {
+      if (this.autoOpenDisabled) {
+        this._focusedIndex = -1;
+        this.cancel();
+      } else if (this.opened) {
         this._stopPropagation(e);
 
         if (this._focusedIndex > -1) {
@@ -810,7 +817,7 @@ This program is available under Apache License Version 2.0, available at https:/
       if (e.path === 'filteredItems' || e.path === 'filteredItems.splices') {
         this._setOverlayItems(this.filteredItems);
 
-        this._focusedIndex = this.opened ?
+        this._focusedIndex = this.opened || this.autoOpenDisabled ?
           this.$.overlay.indexOfLabel(this.filter) :
           this._indexOfValue(this.value, this.filteredItems);
 
