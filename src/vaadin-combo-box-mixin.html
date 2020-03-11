@@ -264,11 +264,14 @@ This program is available under Apache License Version 2.0, available at https:/
       });
 
       const bringToFrontListener = (e) => {
-        requestAnimationFrame(() => {
-          if (this.$.overlay.$.dropdown.$.overlay.bringToFront) {
-            this.$.overlay.$.dropdown.$.overlay.bringToFront();
-          }
-        });
+        const overlay = this.$.overlay;
+        const dropdown = overlay && overlay.$.dropdown;
+        // Check dropdown.$ because overlay is lazily instantiated
+        if (dropdown && dropdown.$ && this.$.overlay.$.dropdown.$.overlay.bringToFront) {
+          requestAnimationFrame(() => {
+            dropdown.$.overlay.bringToFront();
+          });
+        }
       };
   
       this.addEventListener('mousedown', bringToFrontListener);
