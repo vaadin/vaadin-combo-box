@@ -264,11 +264,11 @@ This program is available under Apache License Version 2.0, available at https:/
       });
 
       const bringToFrontListener = (e) => {
-        if (this.opened && this.$.overlay.$.dropdown.$.overlay.bringToFront) {
-          requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (this.$.overlay.$.dropdown.$.overlay.bringToFront) {
             this.$.overlay.$.dropdown.$.overlay.bringToFront();
-          });
-        }
+          }
+        });
       };
   
       this.addEventListener('mousedown', bringToFrontListener);

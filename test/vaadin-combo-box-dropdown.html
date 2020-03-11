@@ -24,7 +24,7 @@
     <template>
       <vaadin-dialog modeless>
         <template>
-          <vaadin-combo-box><template></template></vaadin-combo-box>
+          <vaadin-combo-box items="[1,2,3]"></vaadin-combo-box>
         </template>
       </vaadin-dialog>
     </template>
@@ -89,7 +89,6 @@
       it('should not end up behind the dialog overlay on mousedown', (done) => {
         const dialogOverlay = dialog.$.overlay;
         const cbBox = dialog.$.overlay.querySelector('vaadin-combo-box');
-        cbBox.items = ['1', '2'];
 
         cbBox.open();
         const cbBoxDropdownWrapper = cbBox.$.overlay;
@@ -103,7 +102,6 @@
       it('should not end up behind the dialog overlay on touchstart', (done) => {
         const dialogOverlay = dialog.$.overlay;
         const cbBox = dialog.$.overlay.querySelector('vaadin-combo-box');
-        cbBox.items = ['1', '2'];
 
         cbBox.open();
         const cbBoxDropdownWrapper = cbBox.$.overlay;
