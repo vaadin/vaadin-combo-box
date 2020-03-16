@@ -44,13 +44,13 @@ gemini.suite('vaadin-combo-box', function(rootSuite) {
     });
 
     ['ltr', 'rtl'].forEach(dir => {
-      gemini.suite(`dropdown-${theme}-${dir}-plain`, function(suite) {
+      gemini.suite(`dropdown-${theme}-${dir}-selected`, function(suite) {
         suite
           .setUrl(`dropdown.html?theme=${theme}&dir=${dir}`)
           .setCaptureElements('#dropdown-tests')
           .capture('default', function(actions) {
             actions.executeJS(function(window) {
-              window.document.querySelector('#plain').open();
+              window.document.querySelector('#selected').open();
             });
           });
       });
