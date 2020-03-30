@@ -43,22 +43,17 @@
     <h3>Object list</h3>
     <vaadin-demo-snippet id="object-list" when-defined="vaadin-combo-box">
       <template preserve-content>
-        <vaadin-combo-box label="Department"></vaadin-combo-box>
+        <vaadin-combo-box label="Department" item-label-path="name" item-value-path="id"></vaadin-combo-box>
         <script>
           window.addDemoReadyListener('#object-list', function(document) {
-            const departments = [
+            const comboBox = document.querySelector('vaadin-combo-box');
+            comboBox.items = [
               {id: '1', name: 'Product'},
               {id: '2', name: 'Service'},
               {id: '3', name: 'HR'},
               {id: '4', name: 'Accounting'}
             ];
-            const comboBox = document.querySelectorAll('vaadin-combo-box');
-            comboBox.forEach(function(combo) {
-              combo.items = departments;
-              combo.itemValuePath = 'id';
-              combo.itemLabelPath = 'name';
-              combo.value = '1';
-            });
+            comboBox.value = '1';
           });
         </script>
       </template>
@@ -82,14 +77,14 @@
     <vaadin-demo-snippet id="value-change-event" when-defined="vaadin-combo-box">
       <template preserve-content>
         <vaadin-combo-box label="Label"></vaadin-combo-box>
-        <div id="output">Selected value:</div>
+        <p>Selected value: <span></span></p>
         <script>
           window.addDemoReadyListener('#value-change-event', function(document) {
             const comboBox = document.querySelector('vaadin-combo-box');
-            const output = document.querySelector('#output');
+            const span = document.querySelector('span');
             comboBox.items = ['Option one', 'Option two'];
             comboBox.addEventListener('change', function(event) {
-              output.textContent = event.target.value;
+              span.textContent = event.target.value;
             });
           });
         </script>
