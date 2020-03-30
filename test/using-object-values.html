@@ -272,6 +272,14 @@
 
           expect(combobox.inputElement.value).to.eql('not found');
         });
+
+        it('should use the provided label property', () => {
+          combobox.itemLabelPath = 'custom';
+
+          combobox.value = 'bar';
+
+          expect(combobox.inputElement.value).to.eql('bazs');
+        });
       });
 
       describe('when item label and value paths are undefined', () => {
