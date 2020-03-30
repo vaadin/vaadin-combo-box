@@ -278,7 +278,7 @@ This program is available under Apache License Version 2.0, available at https:/
           });
         }
       };
-  
+
       this.addEventListener('mousedown', bringToFrontListener);
       this.addEventListener('touchstart', bringToFrontListener);
     }
@@ -329,11 +329,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * Closes the dropdown list.
      */
     close() {
-      if (this.autoOpenDisabled && !this.opened) {
-        this._onClosed();
-      } else {
-        this.opened = false;
-      }
+      this.opened = false;
     }
 
     _openedChanged(value, old) {
@@ -496,11 +492,19 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    _closeOrCommit() {
+      if (this.autoOpenDisabled && !this.opened) {
+        this._commitValue();
+      } else {
+        this.close();
+      }
+    }
+
     _onEnter(e) {
       // should close on enter when custom values are allowed, input field is cleared, or when an existing
-      // item is focused with keyboard.
+      // item is focused with keyboard. If auto open is disabled, under the same conditions, commit value.
       if ((this.opened || this.autoOpenDisabled) && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
-        this.close();
+        this._closeOrCommit();
 
         // Do not submit the surrounding form.
         e.preventDefault();
@@ -559,7 +563,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._revertInputValueToValue();
       // In the next _detectAndDispatchChange() call, the change detection should not pass
       this._lastCommittedValue = this.value;
-      this.close();
+      this._closeOrCommit();
     }
 
     _onOpened() {
@@ -589,12 +593,15 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onClosed() {
-
       // Happens when the overlay is closed by clicking outside
       if (this.opened) {
         this.close();
       }
 
+      this._commitValue();
+    }
+
+    _commitValue() {
       if (this.$.overlay._items && this._focusedIndex > -1) {
         const focusedItem = this.$.overlay._items[this._focusedIndex];
         if (this.selectedItem !== focusedItem) {
@@ -936,7 +943,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return;
       }
       if (!this._closeOnBlurIsPrevented) {
-        this.close();
+        this._closeOrCommit();
       }
     }
 
