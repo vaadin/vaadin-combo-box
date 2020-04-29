@@ -249,8 +249,25 @@ This program is available under Apache License Version 2.0, available at https:/
         this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
         this.$.overlay.style.transform = `translate3d(${this._translateX}px, ${this._translateY}px, 0)`;
 
-        this.$.overlay.style.width = this.positionTarget.clientWidth + 'px';
         this.$.overlay.style.justifyContent = this.alignedAbove ? 'flex-end' : 'flex-start';
+
+        const customOverlayWidth = window.ShadyCSS ?
+          window.ShadyCSS.getComputedStyleValue(this, '--vaadin-combo-box-overlay-width') :
+          getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-width');
+
+        if (customOverlayWidth === '') {
+          this.$.overlay.style.removeProperty('--vaadin-combo-box-overlay-width');
+        } else {
+          this.$.overlay.style.setProperty('--vaadin-combo-box-overlay-width', customOverlayWidth);
+        }
+        const defaultOverlayWidth = this.positionTarget.clientWidth + 'px';
+        this.$.overlay.style.setProperty('--_vaadin-combo-box-overlay-default-width', defaultOverlayWidth);
+        if (window.ShadyCSS) {
+          window.ShadyCSS.styleSubtree(this.$.overlay, {
+            '--vaadin-combo-box-overlay-width': customOverlayWidth,
+            '--_vaadin-combo-box-overlay-default-width': defaultOverlayWidth
+          });
+        }
 
         // TODO: fire only when position actually changes changes
         this.dispatchEvent(new CustomEvent('position-changed'));
