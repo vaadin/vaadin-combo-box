@@ -234,6 +234,32 @@ This program is available under Apache License Version 2.0, available at https:/
         return spaceBelow < 0.30;
       }
 
+      _getCustomWidth() {
+        return window.ShadyCSS ?
+          window.ShadyCSS.getComputedStyleValue(this, '--vaadin-combo-box-overlay-width') :
+          getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-width');
+      }
+
+      _setOverlayWidth() {
+        const inputWidth = this.positionTarget.clientWidth + 'px';
+        const customWidth = this._getCustomWidth();
+
+        if (window.ShadyCSS && !window.ShadyCSS.nativeCss) {
+          window.ShadyCSS.styleSubtree(this.$.overlay, {
+            '--vaadin-combo-box-overlay-width': customWidth,
+            '--_vaadin-combo-box-overlay-default-width': inputWidth
+          });
+        } else {
+          this.$.overlay.style.setProperty('--_vaadin-combo-box-overlay-default-width', inputWidth);
+
+          if (customWidth === '') {
+            this.$.overlay.style.removeProperty('--vaadin-combo-box-overlay-width');
+          } else {
+            this.$.overlay.style.setProperty('--vaadin-combo-box-overlay-width', customWidth);
+          }
+        }
+      }
+
       _setPosition(e) {
         if (this.hidden) {
           return;
@@ -261,23 +287,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         this.$.overlay.style.justifyContent = this.alignedAbove ? 'flex-end' : 'flex-start';
 
-        const customOverlayWidth = window.ShadyCSS ?
-          window.ShadyCSS.getComputedStyleValue(this, '--vaadin-combo-box-overlay-width') :
-          getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-width');
-
-        if (customOverlayWidth === '') {
-          this.$.overlay.style.removeProperty('--vaadin-combo-box-overlay-width');
-        } else {
-          this.$.overlay.style.setProperty('--vaadin-combo-box-overlay-width', customOverlayWidth);
-        }
-        const defaultOverlayWidth = this.positionTarget.clientWidth + 'px';
-        this.$.overlay.style.setProperty('--_vaadin-combo-box-overlay-default-width', defaultOverlayWidth);
-        if (window.ShadyCSS) {
-          window.ShadyCSS.styleSubtree(this.$.overlay, {
-            '--vaadin-combo-box-overlay-width': customOverlayWidth,
-            '--_vaadin-combo-box-overlay-default-width': defaultOverlayWidth
-          });
-        }
+        this._setOverlayWidth();
 
         // TODO: fire only when position actually changes changes
         this.dispatchEvent(new CustomEvent('position-changed'));
