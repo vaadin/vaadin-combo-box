@@ -32,6 +32,16 @@ This program is available under Apache License Version 2.0, available at https:/
   </template>
 </dom-module>
 
+<dom-module id="vaadin-combo-box-overlay-styles" theme-for="vaadin-combo-box-overlay">
+  <template>
+    <style>
+      :host {
+        width: var(--vaadin-combo-box-overlay-width, var(--_vaadin-combo-box-overlay-default-width, auto));
+      }
+    </style>
+  </template>
+</dom-module>
+
 <script>
   (function() {
     /**
