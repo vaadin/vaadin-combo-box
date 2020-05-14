@@ -65,6 +65,15 @@
         });
       });
 
+      describe('Direction', () => {
+        it('should preserve and propagate dir to the dropdown overlay', () => {
+          comboBox.setAttribute('dir', 'ltr');
+          comboBox.items = ['foo', 'bar'];
+          comboBox.open();
+          expect(comboBox.$.overlay.$.dropdown.$.overlay.getAttribute('dir')).to.eql('ltr');
+        });
+      });
+
       describe('items property', () => {
         it('should have undefined by default', () => {
           expect(comboBox.items).to.be.undefined;
