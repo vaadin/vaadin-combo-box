@@ -2,7 +2,7 @@ import { ComboBoxElement } from '../src/vaadin-combo-box.js';
 
 export type ComboBoxItem = string | { [key: string]: unknown };
 
-export interface ComboBoxRendererContext {
+export interface ComboBoxRendererModel {
   index: number;
   item: ComboBoxItem;
 }
@@ -10,7 +10,7 @@ export interface ComboBoxRendererContext {
 export type ComboBoxRenderer = (
   root: HTMLElement,
   comboBox: ComboBoxElement,
-  model: ComboBoxRendererContext
+  model: ComboBoxRendererModel
 ) => void;
 
 export type ComboBoxDataProviderCallback = (
