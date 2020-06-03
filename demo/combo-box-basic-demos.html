@@ -27,8 +27,8 @@
     <p>Use the <code>helper-text</code> attribute or add content to the <code>helper</code> slot to set helper content.</p>
     <vaadin-demo-snippet id="helper-text">
       <template preserve-content>
-        <vaadin-combo-box label="Label" value="Value" helper-text="Helper text"></vaadin-combo-box>
-        <vaadin-combo-box label="Label" value="Value">
+        <vaadin-combo-box label="Label" helper-text="Helper text"></vaadin-combo-box>
+        <vaadin-combo-box label="Label">
           <span slot="helper">Helper text</span>
         </vaadin-combo-box>
         <script>
@@ -36,7 +36,6 @@
             const combos = document.querySelectorAll('vaadin-combo-box');
             combos.forEach(function(comboBox) {
               comboBox.items = ['Value', 'Option one', 'Option two'];
-              comboBox.value = 'Value';
             });
           });
         </script>
