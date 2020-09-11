@@ -188,8 +188,10 @@ This program is available under Apache License Version 2.0, available at https:/
 
           this._selector.items = items;
 
-          // new items size might be less than old scrolling position
-          this._selector.scrollToIndex(Math.min(items.length - 1, scrollerPosition));
+          if (items) {
+            // new items size might be less than old scrolling position
+            this._selector.scrollToIndex(Math.min(items.length - 1, scrollerPosition));
+          }
         }
       }
 
