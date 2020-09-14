@@ -35,7 +35,7 @@ This program is available under Apache License Version 2.0, available at https:/
           }
         </style>
         <div id="scroller" on-click="_stopPropagation">
-          <iron-list id="selector" role="listbox" scroll-target="[[_scroller]]">
+          <iron-list id="selector" role="listbox" items="[[_getItems(opened, _items)]]" scroll-target="[[_scroller]]">
             <template>
               <vaadin-combo-box-item
                 on-click="_onItemClick"
@@ -153,14 +153,23 @@ This program is available under Apache License Version 2.0, available at https:/
 
           _selector: Object,
 
-          _itemIdPath: String
+          _itemIdPath: String,
+
+          /**
+           * Stores the scroller position before updating the 'items', in
+           * order to restore it immediately after 'items' have been updated
+           */
+          _oldScrollerPosition: {
+            type: Number,
+            value: 0
+          }
         };
       }
 
       static get observers() {
         return ['_selectorChanged(_selector)', '_loadingChanged(loading)',
           '_openedChanged(opened, _items, loading)',
-          '_updateItems(opened, _items)'];
+          '_restoreScrollerPosition(_items, _oldScrollerPosition)'];
       }
 
       _fireTouchAction(sourceEvent) {
@@ -169,29 +178,25 @@ This program is available under Apache License Version 2.0, available at https:/
         }));
       }
 
-      _updateItems(opened, items) {
-        if (this._selector === undefined) {
-          // iron-list might be not initialised yet, because no dropdown opened,
-          // so skip the items update in this case
-          return;
-        }
-
-        if (this._selector.items === undefined) {
-          // dropdown is opened for the first time
-          this._selector.items = opened ? items : [];
-        } else {
-          // Since the iron-list resets the scroller to 0 position if a new
-          // array is assigned, and we want to keep the scrolling for better DX,
-          // we workaround it by storing the current scroller position and
-          // restore it after items update
-          const scrollerPosition = this._selector.firstVisibleIndex;
-
-          this._selector.items = items;
-
-          if (items) {
-            // new items size might be less than old scrolling position
-            this._selector.scrollToIndex(Math.min(items.length - 1, scrollerPosition));
+      _getItems(opened, items) {
+        if (opened) {
+          if (this._selector !== undefined) {
+            // iron-list triggers the scroller reset after items update, and
+            // this is no appropriate for undefined size lazy loading.
+            // see https://github.com/vaadin/vaadin-combo-box-flow/issues/386
+            // We store iron-list scrolling position in order to restore
+            // it later on after the items have been updated.
+            this._oldScrollerPosition = this._selector.firstVisibleIndex;
           }
+          return items;
+        }
+        return [];
+      }
+
+      _restoreScrollerPosition(items, oldScrollerPosition) {
+        if (this._selector !== undefined && items) {
+          // new items size might be less than old scrolling position
+          this._selector.scrollToIndex(Math.min(items.length - 1, oldScrollerPosition));
         }
       }
 
