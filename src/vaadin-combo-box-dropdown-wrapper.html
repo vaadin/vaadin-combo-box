@@ -169,7 +169,7 @@ This program is available under Apache License Version 2.0, available at https:/
       static get observers() {
         return ['_selectorChanged(_selector)', '_loadingChanged(loading)',
           '_openedChanged(opened, _items, loading)',
-          '_restoreScrollerPosition(_items, _oldScrollerPosition)'];
+          '_restoreScrollerPosition(_items)'];
       }
 
       _fireTouchAction(sourceEvent) {
@@ -193,10 +193,10 @@ This program is available under Apache License Version 2.0, available at https:/
         return [];
       }
 
-      _restoreScrollerPosition(items, oldScrollerPosition) {
+      _restoreScrollerPosition(items) {
         if (this._selector !== undefined && items) {
           // new items size might be less than old scrolling position
-          this._selector.scrollToIndex(Math.min(items.length - 1, oldScrollerPosition));
+          this._selector.scrollToIndex(Math.min(items.length - 1, this._oldScrollerPosition));
         }
       }
 
