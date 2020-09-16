@@ -189,7 +189,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _getItems(opened, items) {
         if (opened) {
-          if (this._selector !== undefined) {
+          if (this._notEmpty(items)) {
             // iron-list triggers the scroller reset after items update, and
             // this is no appropriate for undefined size lazy loading.
             // see https://github.com/vaadin/vaadin-combo-box-flow/issues/386
@@ -204,11 +204,16 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _restoreScrollerPosition(items) {
-        if (this._selector !== undefined && items) {
+        if (this._notEmpty(items)) {
           // new items size might be less than old scrolling position
           this._selector.scrollToIndex(Math.min(items.length - 1, this._oldScrollerPosition));
           this.resetScrolling = false;
         }
+      }
+
+      _notEmpty(items) {
+        return this._selector !== undefined && items !== undefined &&
+                items.length > 0;
       }
 
       _openedChanged(opened, items, loading) {
