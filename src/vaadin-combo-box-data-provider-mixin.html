@@ -128,6 +128,14 @@ This program is available under Apache License Version 2.0, available at https:/
         return true;
       }
 
+      // We skip the page loading when the scrolling has been reset to 0
+      // position after assigning a new items to iron-list, because otherwise
+      // the connector's 'clearPageCallbacks' would be broken and the gaps in
+      // items list occur.
+      if (this.$.overlay.resetScrolling) {
+        return false;
+      }
+
       const loadedItem = this.filteredItems[page * this.pageSize];
       if (loadedItem !== undefined) {
         return loadedItem instanceof Vaadin.ComboBoxPlaceholder;

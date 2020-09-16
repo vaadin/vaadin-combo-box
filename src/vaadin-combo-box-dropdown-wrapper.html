@@ -122,6 +122,15 @@ This program is available under Apache License Version 2.0, available at https:/
            */
           theme: String,
 
+          /**
+           * Used to recognize scroller reset after new items have been set
+           * to iron-list and to ignore unwanted pages load
+           */
+          resetScrolling: {
+            type: Boolean,
+            value: false
+          },
+
           _selectedItem: {
             type: Object
           },
@@ -187,6 +196,7 @@ This program is available under Apache License Version 2.0, available at https:/
             // We store iron-list scrolling position in order to restore
             // it later on after the items have been updated.
             this._oldScrollerPosition = this._selector.firstVisibleIndex;
+            this.resetScrolling = true;
           }
           return items;
         }
@@ -197,6 +207,7 @@ This program is available under Apache License Version 2.0, available at https:/
         if (this._selector !== undefined && items) {
           // new items size might be less than old scrolling position
           this._selector.scrollToIndex(Math.min(items.length - 1, this._oldScrollerPosition));
+          this.resetScrolling = false;
         }
       }
 
