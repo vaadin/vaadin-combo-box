@@ -64,16 +64,6 @@ This program is available under Apache License Version 2.0, available at https:/
         /** @private */
         __placeHolder: {
           value: new Vaadin.ComboBoxPlaceholder()
-        },
-
-        /** @private
-         * Max item count in active range (items cache).
-         * This internal property reflects the 'MAX_RANGE_COUNT' in combo box
-         * connector.
-         */
-        __maxRangeCount: {
-          type: Number,
-          value: Math.max(this.pageSize * 2, 500)
         }
 
       };
@@ -138,13 +128,18 @@ This program is available under Apache License Version 2.0, available at https:/
         return true;
       }
 
+      // Max item count in active range (items cache).
+      // This local var reflects the 'MAX_RANGE_COUNT' in combo box
+      // connector.
+      const MAX_RANGE_COUNT = Math.max(this.pageSize * 2, 500);
+
       // We skip the page loading when the scrolling has been reset to 0
       // position after assigning a new items to iron-list, because otherwise
       // the connector's 'clearPageCallbacks' would be broken and the gaps in
       // items list occur. Checking items cache size here, since the gaps only
       // appear when the cache is fully populated and it should be possible for
       // sure to load the page at the very beginning
-      if (this.$.overlay.resetScrolling && this.filteredItems.length > this.__maxRangeCount) {
+      if (this.$.overlay.resetScrolling && this.filteredItems.length > MAX_RANGE_COUNT) {
         return false;
       }
 
