@@ -190,13 +190,16 @@ This program is available under Apache License Version 2.0, available at https:/
       _getItems(opened, items) {
         if (opened) {
           if (this._notEmpty(items)) {
-            // iron-list triggers the scroller reset after items update, and
-            // this is no appropriate for undefined size lazy loading.
+            // iron-list triggers the scroller's reset after items update, and
+            // this is not appropriate for undefined size lazy loading.
             // see https://github.com/vaadin/vaadin-combo-box-flow/issues/386
             // We store iron-list scrolling position in order to restore
             // it later on after the items have been updated.
-            this._oldScrollerPosition = this._selector.firstVisibleIndex;
-            this.resetScrolling = true;
+            const currentScrollerPosition = this._selector.firstVisibleIndex;
+            if (currentScrollerPosition !== 0) {
+              this._oldScrollerPosition = currentScrollerPosition;
+              this.resetScrolling = true;
+            }
           }
           return items;
         }
@@ -204,7 +207,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _restoreScrollerPosition(items) {
-        if (this._notEmpty(items)) {
+        if (this._notEmpty(items) && this._oldScrollerPosition !== 0) {
           // new items size might be less than old scrolling position
           this._selector.scrollToIndex(Math.min(items.length - 1, this._oldScrollerPosition));
           this.resetScrolling = false;
