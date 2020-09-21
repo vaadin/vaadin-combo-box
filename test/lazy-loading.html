@@ -826,10 +826,8 @@
           const ESTIMATED_SIZE = 1234;
           const allItems = Array(...new Array(ESTIMATED_SIZE)).map((_, i) => `item ${i}`);
 
-          beforeEach(() => comboBox.dataProvider = getDataProvider(allItems));
-
           it('should restore the scroll position after size update', () => {
-            comboBox.clearCache();
+            comboBox.dataProvider = getDataProvider(allItems);
             comboBox.opened = true;
             comboBox.$.overlay._scrollIntoView(75);
             comboBox.size = 300;
@@ -839,7 +837,7 @@
           });
 
           it('should reset to 0 when filter applied and filtered items size more than page size', () => {
-            comboBox.clearCache();
+            comboBox.items = allItems;
             comboBox.opened = true;
             comboBox.$.overlay._scrollIntoView(500);
             comboBox.filter = '1';
