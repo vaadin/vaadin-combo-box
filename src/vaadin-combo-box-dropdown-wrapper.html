@@ -124,9 +124,20 @@ This program is available under Apache License Version 2.0, available at https:/
 
           /**
            * Used to recognize scroller reset after new items have been set
-           * to iron-list and to ignore unwanted pages load
+           * to iron-list and to ignore unwanted pages load. If true, then skip
+           * loading of the first page
            */
           resetScrolling: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Used to recognize if the filter changed, so to skip the
+           * scrolling restore. If true, then scroll to 0 position. Restore
+           * the previous position otherwise.
+           */
+          filterChanged: {
             type: Boolean,
             value: false
           },
@@ -189,7 +200,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _getItems(opened, items) {
         if (opened) {
-          if (this._notEmpty(items)) {
+          if (this._notEmpty(items) && !this.filterChanged) {
             // iron-list triggers the scroller's reset after items update, and
             // this is not appropriate for undefined size lazy loading.
             // see https://github.com/vaadin/vaadin-combo-box-flow/issues/386
@@ -201,6 +212,9 @@ This program is available under Apache License Version 2.0, available at https:/
               this.resetScrolling = true;
             }
           }
+          // Let the position to be restored in the future calls unless it's not
+          // caused by filtering
+          this.filterChanged = false;
           return items;
         }
         return [];
