@@ -124,8 +124,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
           /**
            * Used to recognize scroller reset after new items have been set
-           * to iron-list and to ignore unwanted pages load. If true, then skip
-           * loading of the first page
+           * to iron-list and to ignore unwanted pages load. If 'true', then
+           * skip loading of the pages until it becomes 'false'.
            */
           resetScrolling: {
             type: Boolean,
@@ -200,7 +200,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _getItems(opened, items) {
         if (opened) {
-          if (this._notEmpty(items) && !this.filterChanged) {
+          if (this._isNotEmpty(items) && this._selector && !this.filterChanged) {
             // iron-list triggers the scroller's reset after items update, and
             // this is not appropriate for undefined size lazy loading.
             // see https://github.com/vaadin/vaadin-combo-box-flow/issues/386
@@ -221,7 +221,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _restoreScrollerPosition(items) {
-        if (this._notEmpty(items) && this._oldScrollerPosition !== 0) {
+        if (this._isNotEmpty(items) && this._selector && this._oldScrollerPosition !== 0) {
           // new items size might be less than old scrolling position
           this._selector.scrollToIndex(Math.min(items.length - 1, this._oldScrollerPosition));
           this.resetScrolling = false;
@@ -231,9 +231,12 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
-      _notEmpty(items) {
-        return this._selector !== undefined && items !== undefined &&
-                items.length > 0;
+      _isNotEmpty(items) {
+        return !this._isEmpty(items);
+      }
+
+      _isEmpty(items) {
+        return !items || !items.length;
       }
 
       _openedChanged(opened, items, loading) {
@@ -246,7 +249,8 @@ This program is available under Apache License Version 2.0, available at https:/
         }
         // Do not attach if no items
         // Do not dettach if opened but user types an invalid search
-        this.$.dropdown.opened = !!(opened && (loading || this.$.dropdown.opened || items && items.length));
+        this.$.dropdown.opened = !!(opened && (loading ||
+                this.$.dropdown.opened || this._isNotEmpty(items)));
       }
 
       _initDropdown() {
@@ -374,7 +378,8 @@ This program is available under Apache License Version 2.0, available at https:/
        * @return {number}
        */
       __requestItemByIndex(item, index) {
-        if ((item instanceof Vaadin.ComboBoxPlaceholder) && index !== undefined) {
+        if ((item instanceof Vaadin.ComboBoxPlaceholder) && index !==
+                undefined && !this.resetScrolling) {
           this.dispatchEvent(new CustomEvent('index-requested', {detail: {index}}));
         }
 
@@ -534,7 +539,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _hidden(itemsChange) {
-        return !this.loading && (!this._items || !this._items.length);
+        return !this.loading && (this._isEmpty(this._items));
       }
     }
 
