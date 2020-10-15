@@ -459,6 +459,32 @@
             comboBox.size = 1;
             expect(comboBox.filteredItems).to.eql(['foo']);
           });
+
+          it('should not show the loading on size change while pending the data provider', () => {
+            const allItems = Array(...new Array(200)).map((_, i) => `item ${i}`);
+
+            comboBox.size = 200;
+            comboBox.dataProvider = (params, callback) => {
+              if (params.page > 1) {
+                // Pending the page = 2...
+                return;
+              }
+              const offset = params.page * params.pageSize;
+              const slice = allItems.slice(offset, offset + params.pageSize);
+              callback(slice, allItems.length);
+            };
+            comboBox.open();
+            expect(comboBox.loading).to.be.false;
+            comboBox.$.overlay._scrollIntoView(45);
+            expect(comboBox.loading).to.be.false;
+            comboBox.$.overlay._scrollIntoView(75);
+            // Fetching the page = 2 and stucking
+            expect(comboBox.loading).to.be.true;
+            // Updating the size means we don't need pending requests anymore,
+            // and combo box should show no loading
+            comboBox.size = 100;
+            expect(comboBox.loading).to.be.false;
+          });
         });
 
         /* eslint-disable no-console */
