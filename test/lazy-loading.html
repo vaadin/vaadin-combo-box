@@ -929,7 +929,7 @@
             // the last page has been fetched and rendered
             comboBox.$.overlay._scrollIntoView(274);
             expect(comboBox.loading).to.be.false;
-            expect(comboBox.filteredItems.includes('item 293')).to.be.true;
+            expect(comboBox.filteredItems).to.contain('item 293');
           });
 
         });
