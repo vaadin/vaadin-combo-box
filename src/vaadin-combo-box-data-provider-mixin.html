@@ -275,10 +275,14 @@ This program is available under Apache License Version 2.0, available at https:/
      * @private
      */
     _flushPendingRequests(size) {
-      const lastPage = Math.ceil(size / this.pageSize);
-      for (const page of Object.keys(this._pendingRequests)) {
-        if (parseInt(page) >= lastPage) {
-          this._pendingRequests[page]([], size);
+      if (this._pendingRequests) {
+        const lastPage = Math.ceil(size / this.pageSize);
+        const pendingRequestsKeys = Object.keys(this._pendingRequests);
+        for (let reqIdx = 0; reqIdx < pendingRequestsKeys.length; reqIdx++) {
+          const page = parseInt(pendingRequestsKeys[reqIdx]);
+          if (page >= lastPage) {
+            this._pendingRequests[page]([], size);
+          }
         }
       }
     }
