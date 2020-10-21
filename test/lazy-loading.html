@@ -477,7 +477,7 @@
             expect(comboBox.loading).to.be.false;
             comboBox.$.overlay._scrollIntoView(45);
             expect(comboBox.loading).to.be.false;
-            comboBox.$.overlay._scrollIntoView(75);
+            comboBox.$.overlay._scrollIntoView(150);
             // Fetching the page = 2 and stucking
             expect(comboBox.loading).to.be.true;
             // Updating the size means we don't need pending requests anymore,
