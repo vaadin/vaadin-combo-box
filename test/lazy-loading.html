@@ -801,6 +801,20 @@
               const pages = spyDataProvider.getCalls().map(call => call.args[0].page);
               expect(pages).to.contain(1);
             });
+
+            it('should set value if not opened nor focused', () => {
+              const dataProvider = (params, callback) => {
+                comboBox.blur();
+                callback(['item 1'], 1);
+              };
+
+              comboBox.dataProvider = dataProvider;
+              comboBox._inputElementValue = 'item 1';
+              comboBox.filter = 'item 1';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('item 1');
+            });
           });
 
           describe('after empty data set loaded', () => {
