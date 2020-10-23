@@ -852,20 +852,87 @@
               const pages = spyDataProvider.getCalls().map(call => call.args[0].page);
               expect(pages).to.contain(1);
             });
+          });
+
+          describe('after closed without focus', () => {
+            let returnedItems;
+            const bluringDataProvider = (params, callback) => {
+              comboBox.blur();
+              callback(returnedItems, returnedItems.length);
+            };
+
+            beforeEach(() => {
+              returnedItems  = ['item 12'];
+              comboBox.focus();
+              comboBox.opened = true;
+              comboBox.dataProvider = bluringDataProvider;
+              comboBox.opened = false;
+              comboBox.focus();
+            });
 
             it('should set value if not opened nor focused', () => {
-              const dataProvider = (params, callback) => {
-                comboBox.blur();
-                callback(['item 1'], 1);
-              };
+              comboBox.autoOpenDisabled = false;
+              expect(comboBox.autoOpenDisabled).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.true;
 
-              comboBox.dataProvider = dataProvider;
+              comboBox._inputElementValue = 'item 12';
+              comboBox.filter = 'item 12';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('item 12');
+            });
+
+            it('should set value if not opened nor focused with auto-open-disabled', () => {
+              comboBox.autoOpenDisabled = true;
+              expect(comboBox.autoOpenDisabled).to.be.true;
+              expect(comboBox.hasAttribute('focused')).to.be.true;
+
+              comboBox._inputElementValue = 'item 12';
+              comboBox.filter = 'item 12';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('item 12');
+            });
+
+            it('should keep empty value if it is not an exact match', () => {
+              expect(comboBox.hasAttribute('focused')).to.be.true;
+              comboBox._inputElementValue = 'item';
+              comboBox.filter = 'item';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('');
+            });
+
+            it('should keep previous value if it is not an exact match', () => {
+              comboBox.filteredItems = ['other value','item 12'];
+              comboBox.value = 'other value';
+              expect(comboBox.value).to.equal('other value');
+
+              returnedItems  = ['item 12'];
               comboBox._inputElementValue = 'item 1';
+              expect(comboBox.hasAttribute('focused')).to.be.true;
               comboBox.filter = 'item 1';
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
-              expect(comboBox.value).to.equal('item 1');
+              expect(comboBox.value).to.equal('other value');
             });
+
+            it('should keep previous value after if allow-custom-value is set', () => {
+              comboBox.allowCustomValue = true;
+              
+              comboBox.open();
+              comboBox.inputElement.value = 'other value';
+              comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
+              comboBox.close();
+
+              comboBox.focus()
+              comboBox.inputElement.value = 'item 12';
+              comboBox.filter = 'item 12';
+
+              expect(comboBox.value).to.eql('other value');
+              expect(comboBox.inputElement.value).to.eql('other value');
+            });
+
           });
 
           describe('after empty data set loaded', () => {
