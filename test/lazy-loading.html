@@ -884,7 +884,7 @@
             comboBox.size = 300;
             // verify whether the scroller not jumped to 0 pos and restored
             // approx between 1 and 2 page (exact value may vary depending of window size)
-            expect(comboBox.$.overlay._selector.firstVisibleIndex).to.be.greaterThan(comboBox.pageSize).and.lessThan(comboBox.pageSize * 2);
+            expect(comboBox.$.overlay._selector.firstVisibleIndex).to.be.greaterThan(comboBox.pageSize - 1).and.lessThan(comboBox.pageSize * 2);
           });
 
           it('should reset to 0 when filter applied and filtered items size more than page size', () => {
