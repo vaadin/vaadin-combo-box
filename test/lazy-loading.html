@@ -862,7 +862,7 @@
             };
 
             beforeEach(() => {
-              returnedItems  = ['item 12'];
+              returnedItems = ['item 12'];
               comboBox.focus();
               comboBox.opened = true;
               comboBox.dataProvider = bluringDataProvider;
@@ -904,11 +904,11 @@
             });
 
             it('should keep previous value if it is not an exact match', () => {
-              comboBox.filteredItems = ['other value','item 12'];
+              comboBox.filteredItems = ['other value', 'item 12'];
               comboBox.value = 'other value';
               expect(comboBox.value).to.equal('other value');
 
-              returnedItems  = ['item 12'];
+              returnedItems = ['item 12'];
               comboBox._inputElementValue = 'item 1';
               expect(comboBox.hasAttribute('focused')).to.be.true;
               comboBox.filter = 'item 1';
@@ -919,13 +919,13 @@
 
             it('should keep previous value after if allow-custom-value is set', () => {
               comboBox.allowCustomValue = true;
-              
+
               comboBox.open();
               comboBox.inputElement.value = 'other value';
               comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
               comboBox.close();
 
-              comboBox.focus()
+              comboBox.focus();
               comboBox.inputElement.value = 'item 12';
               comboBox.filter = 'item 12';
 
