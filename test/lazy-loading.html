@@ -878,13 +878,20 @@
           const allItems = Array(...new Array(ESTIMATED_SIZE)).map((_, i) => `item ${i}`);
 
           it('should restore the scroll position after size update', () => {
+            const targetItemIndex = 75;
             comboBox.dataProvider = getDataProvider(allItems);
             comboBox.opened = true;
-            comboBox.$.overlay._scrollIntoView(75);
+            comboBox.$.overlay._scrollIntoView(targetItemIndex);
             comboBox.size = 300;
-            // verify whether the scroller not jumped to 0 pos and restored
-            // approx between 1 and 2 page (exact value may vary depending of window size)
-            expect(comboBox.$.overlay._selector.firstVisibleIndex).to.be.greaterThan(comboBox.pageSize - 1).and.lessThan(comboBox.pageSize * 2);
+            // verify whether the scroller not jumped to 0 pos and restored properly,
+            // having the item with 'targetItemIndex' in the bottom
+            // (exact visible items may vary depending of window size),
+            // and sometimes the 'ironList.scrollToIndex' does not point
+            // precisely to the given index, so use some margin
+            const scrollMargin = 5;
+            const expectedFirstVisibleIndex = targetItemIndex - comboBox.$.overlay._visibleItemsCount() - scrollMargin;
+            expect(comboBox.$.overlay._selector.firstVisibleIndex).to.be.greaterThan(expectedFirstVisibleIndex);
+            expect(comboBox.$.overlay._selector.lastVisibleIndex).to.be.lessThan(targetItemIndex + 1);
           });
 
           it('should reset to 0 when filter applied and filtered items size more than page size', () => {
