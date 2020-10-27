@@ -902,6 +902,51 @@
             expect(comboBox.$.overlay._selector.firstVisibleIndex).to.be.equal(0);
           });
 
+          // Verifies https://github.com/vaadin/vaadin-combo-box/issues/957
+          it('should fetch the items after scrolling to the bottom with scrollbar', done => {
+            const REAL_SIZE = 1234;
+            let ESTIMATED_SIZE = 200;
+            const allItems = Array(...new Array(REAL_SIZE)).map((_, i) => `item ${i}`);
+
+            // DataProvider for unknown size lazy loading
+            const getDataProvider = (allItems) => (params, callback) => {
+              const filteredItems = allItems.filter(item => item.indexOf(params.filter) > -1);
+              const offset = params.page * params.pageSize;
+              const end = offset + params.pageSize;
+
+              dataProviderItems = filteredItems.slice(offset, end);
+
+              if (dataProviderItems.size === 0) {
+                ESTIMATED_SIZE = offset;
+              } else if (dataProviderItems.size < params.pageSize) {
+                ESTIMATED_SIZE = offset + dataProviderItems.size;
+              } else if (end > ESTIMATED_SIZE - params.pageSize) {
+                ESTIMATED_SIZE += 200;
+              }
+              callback(dataProviderItems, ESTIMATED_SIZE);
+            };
+
+            comboBox.dataProvider = getDataProvider(allItems);
+            comboBox.opened = true;
+            Polymer.flush();
+
+            // Scroll to the end, as though if we drag the scrollbar and move it
+            // to the bottom
+            const scrollHeight = comboBox.$.overlay._selector._scrollHeight;
+            comboBox.$.overlay._scroller.scrollTop += scrollHeight;
+
+            // Flush the pending changes after the scrolling
+            flush(() => {
+              const lastVisibleIndex = comboBox.$.overlay._selector.lastVisibleIndex;
+              // Check if the next few items after the last visible item are not empty
+              for (let nextIndexIncrement = 0; nextIndexIncrement < 5; nextIndexIncrement++) {
+                const lastItem = comboBox.filteredItems[lastVisibleIndex + nextIndexIncrement];
+                expect(lastItem instanceof Vaadin.ComboBoxPlaceholder).is.false;
+              }
+              done();
+            });
+          });
+
           it('should not show the loading when exact size is suddenly reached in the middle of requested range', () => {
             const REAL_SIZE = 294;
             const ESTIMATED_SIZE = 400;
