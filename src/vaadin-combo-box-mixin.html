@@ -552,7 +552,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
     /** @private */
     _closeOrCommit() {
-      if (this.autoOpenDisabled && !this.opened && !this.loading) {
+      if (!this.opened && !this.loading) {
         this._commitValue();
       } else {
         this.close();
@@ -666,7 +666,9 @@ This program is available under Apache License Version 2.0, available at https:/
         this.close();
       }
 
-      this._commitValue();
+      if (!this.loading) {
+        this._commitValue();
+      }
     }
 
     /** @private */
