@@ -190,6 +190,10 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           }
         };
+        if (this._pendingRequests[page]) {
+          // Resolve any pending requests for the same page
+          this._pendingRequests[page]([]);
+        }
         this._pendingRequests[page] = callback;
         this.dataProvider(params, callback);
       }
