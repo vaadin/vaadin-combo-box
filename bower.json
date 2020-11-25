@@ -48,9 +48,7 @@
     "iron-component-page": "^3.0.0",
     "iron-test-helpers": "^2.0.0",
     "paper-input": "^2.0.0",
-    "vaadin-button": "vaadin/vaadin-button#^2.4.0",
     "web-component-tester": "^6.1.5",
-    "vaadin-demo-helpers": "vaadin/vaadin-demo-helpers#^3.1.0",
     "vaadin-dialog": "^2.5.0"
   }
 }
