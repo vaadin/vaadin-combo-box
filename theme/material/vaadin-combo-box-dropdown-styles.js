@@ -1,7 +1,8 @@
-<link rel="import" href="../../../vaadin-material-styles/color.html">
-<link rel="import" href="../../../vaadin-material-styles/mixins/menu-overlay.html">
+import '@vaadin/vaadin-material-styles/color.js';
+import '@vaadin/vaadin-material-styles/mixins/menu-overlay.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
-<dom-module id="material-combo-box-overlay" theme-for="vaadin-combo-box-overlay">
+const $_documentContainer = html`<dom-module id="material-combo-box-overlay" theme-for="vaadin-combo-box-overlay">
   <template>
     <style include="material-menu-overlay">
       :host {
@@ -122,4 +123,6 @@
       }
     </style>
   </template>
-</dom-module>
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);

@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8">
 
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
-  <script src='../../iron-test-helpers/mock-interactions.js'></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="common-imports.html">
-  <script src="common.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
+  <script type="module" src="./common-imports.js"></script>
+  <script src="./common.js"></script>
 </head>
 
 <body>
@@ -29,20 +29,21 @@
         </template>
       </vaadin-combo-box>
     </template>
-    <script>
-      document.addEventListener('WebComponentsReady', () => {
-        Polymer({
-          is: 'x-scope',
-          properties: {
-            items: Array
-          },
-          parentMethod: () => {
-            return 'quux';
-          },
-          parentEventHandler: () => { }
-        });
-      });
-    </script>
+    <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './common-imports.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'x-scope',
+  properties: {
+    items: Array
+  },
+  parentMethod: () => {
+    return 'quux';
+  },
+  parentEventHandler: () => { }
+});
+</script>
   </dom-module>
 
   <test-fixture id="scope">
@@ -51,85 +52,88 @@
     </template>
   </test-fixture>
 
-  <script>
-    describe('item template', () => {
-      let scope, combobox, firstItem;
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './common-imports.js';
+import { flush } from '@polymer/polymer/lib/utils/flush.js';
+describe('item template', () => {
+  let scope, combobox, firstItem;
 
-      beforeEach(() => {
-        scope = fixture('scope');
-        combobox = scope.$.combobox;
-        combobox.items = ['foo', 'bar'];
-        combobox.open();
+  beforeEach(() => {
+    scope = fixture('scope');
+    combobox = scope.$.combobox;
+    combobox.items = ['foo', 'bar'];
+    combobox.open();
 
-        Polymer.flush();
-        firstItem = combobox.$.overlay._selector.querySelector('vaadin-combo-box-item');
-      });
+    flush();
+    firstItem = combobox.$.overlay._selector.querySelector('vaadin-combo-box-item');
+  });
 
-      it('should render items using template', () => {
-        expect(firstItem.shadowRoot.innerHTML).to.contain('item: foo');
-      });
+  it('should render items using template', () => {
+    expect(firstItem.shadowRoot.innerHTML).to.contain('item: foo');
+  });
 
-      it('should have index property', () => {
-        expect(firstItem.shadowRoot.innerHTML).to.contain('index: 0');
-      });
+  it('should have index property', () => {
+    expect(firstItem.shadowRoot.innerHTML).to.contain('index: 0');
+  });
 
-      it('should have selected property', () => {
-        expect(firstItem.shadowRoot.innerHTML).to.contain('selected: false');
-      });
+  it('should have selected property', () => {
+    expect(firstItem.shadowRoot.innerHTML).to.contain('selected: false');
+  });
 
-      it('should update selected property', () => {
-        combobox.value = 'foo';
-        expect(firstItem.shadowRoot.innerHTML).to.contain('selected: true');
-      });
+  it('should update selected property', () => {
+    combobox.value = 'foo';
+    expect(firstItem.shadowRoot.innerHTML).to.contain('selected: true');
+  });
 
-      it('should have focused property', () => {
-        expect(firstItem.shadowRoot.innerHTML).to.contain('focused: false');
-      });
+  it('should have focused property', () => {
+    expect(firstItem.shadowRoot.innerHTML).to.contain('focused: false');
+  });
 
-      it('should update focused property', () => {
-        MockInteractions.keyDownOn(combobox.inputElement, 40); // Press arrow down key
-        expect(firstItem.shadowRoot.innerHTML).to.contain('focused: true');
-      });
+  it('should update focused property', () => {
+    MockInteractions.keyDownOn(combobox.inputElement, 40); // Press arrow down key
+    expect(firstItem.shadowRoot.innerHTML).to.contain('focused: true');
+  });
 
-      it('should forward parent properties', () => {
-        scope.parentProperty = 'qux';
-        expect(firstItem.shadowRoot.innerHTML).to.contain('parentProperty: qux');
-      });
+  it('should forward parent properties', () => {
+    scope.parentProperty = 'qux';
+    expect(firstItem.shadowRoot.innerHTML).to.contain('parentProperty: qux');
+  });
 
-      it('should forward parent paths', () => {
-        scope.parentProperty = {foo: ''};
-        scope.set('parentProperty.foo', 'bar');
-        expect(firstItem.shadowRoot.innerHTML).to.contain('parentProperty.foo: bar');
-      });
+  it('should forward parent paths', () => {
+    scope.parentProperty = {foo: ''};
+    scope.set('parentProperty.foo', 'bar');
+    expect(firstItem.shadowRoot.innerHTML).to.contain('parentProperty.foo: bar');
+  });
 
-      it('should support computed bindings in parent scope', () => {
-        expect(firstItem.shadowRoot.innerHTML).to.contain('parentMethod: quux');
-      });
+  it('should support computed bindings in parent scope', () => {
+    expect(firstItem.shadowRoot.innerHTML).to.contain('parentMethod: quux');
+  });
 
-      it('should support event handlers in parent scope', () => {
-        const spy = sinon.spy(scope, 'parentEventHandler');
-        MockInteractions.tap(firstItem.shadowRoot.querySelector('button'));
-        expect(spy.calledOnce).to.be.true;
-      });
+  it('should support event handlers in parent scope', () => {
+    const spy = sinon.spy(scope, 'parentEventHandler');
+    MockInteractions.tap(firstItem.shadowRoot.querySelector('button'));
+    expect(spy.calledOnce).to.be.true;
+  });
 
-      it('should have content part wrapping template', () => {
-        const content = firstItem.shadowRoot.querySelector('[part="content"]');
-        expect(content.querySelector('button').parentElement).to.equal(content);
-      });
+  it('should have content part wrapping template', () => {
+    const content = firstItem.shadowRoot.querySelector('[part="content"]');
+    expect(content.querySelector('button').parentElement).to.equal(content);
+  });
 
-      it('should have block style for the content part', () => {
-        const content = firstItem.shadowRoot.querySelector('[part="content"]');
-        expect(getComputedStyle(content).getPropertyValue('display')).to.equal('block');
-      });
+  it('should have block style for the content part', () => {
+    const content = firstItem.shadowRoot.querySelector('[part="content"]');
+    expect(getComputedStyle(content).getPropertyValue('display')).to.equal('block');
+  });
 
-      it('should preserve and propagate dir to the items', () => {
-        combobox.close();
-        combobox.setAttribute('dir', 'ltr');
-        combobox.open();
-        expect(firstItem.getAttribute('dir')).to.eql('ltr');
-      });
-    });
-  </script>
+  it('should preserve and propagate dir to the items', () => {
+    combobox.close();
+    combobox.setAttribute('dir', 'ltr');
+    combobox.open();
+    expect(firstItem.getAttribute('dir')).to.eql('ltr');
+  });
+});
+</script>
 
 </body>
 

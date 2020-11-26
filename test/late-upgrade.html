@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
 
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../../polymer/polymer.html">
-  <script src="common.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
+  <script type="module" src="../../../@polymer/polymer/polymer-legacy.js"></script>
+  <script src="./common.js"></script>
 </head>
 
 <body>
@@ -19,30 +19,33 @@
     </template>
   </test-fixture>
 
-  <script>
-    describe('Late upgrade', () => {
-      let combobox;
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import '@polymer/polymer/polymer-legacy.js';
+import { importHref as importHref$0 } from '@polymer/polymer/lib/utils/import-href.js';
+describe('Late upgrade', () => {
+  let combobox;
 
-      if (!(window['Polymer'] && window['Polymer'].importHref)) {
-        return; // TODO: With Polymer 3 we don’t have the HTML to import
-      }
+  if (!(window['Polymer'] && window['Polymer'].importHref)) {
+    return; // TODO: With Polymer 3 we don’t have the HTML to import
+  }
 
-      beforeEach(() => combobox = fixture('combobox'));
+  beforeEach(() => combobox = fixture('combobox'));
 
-      it('should have preset value from property', done => {
-        // Set the value before the element is upgraded.
-        combobox.items = ['foo', 'bar'];
-        combobox.value = 'bar';
+  it('should have preset value from property', done => {
+    // Set the value before the element is upgraded.
+    combobox.items = ['foo', 'bar'];
+    combobox.value = 'bar';
 
-        expect(combobox.is).to.be.undefined;
+    expect(combobox.is).to.be.undefined;
 
-        Polymer.importHref('../vaadin-combo-box.html', () => {
-          expect(combobox.value).to.equal('bar');
-          done();
-        });
-      });
+    importHref$0('../vaadin-combo-box.html', () => {
+      expect(combobox.value).to.equal('bar');
+      done();
     });
-  </script>
+  });
+});
+</script>
 
 </body>
 

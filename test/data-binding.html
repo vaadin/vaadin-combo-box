@@ -5,30 +5,31 @@
   <meta charset="UTF-8">
   <title>vaadin-combo data-binding tests</title>
 
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="common-imports.html">
-  <script src="common.js"></script>
-  <link rel="import" href="../../iron-input/iron-input.html">
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
+  <script type="module" src="./common-imports.js"></script>
+  <script src="./common.js"></script>
+  <script type="module" src="../../../@polymer/iron-input/iron-input.js"></script>
 </head>
 
 <body>
 
   <dom-module id="value-null">
-    <script>
-      // IE11 needs to wait for Polymer being loaded.
-      window.addEventListener('WebComponentsReady', () => {
-        Polymer({
-          is: 'value-null',
-          properties: {
-            value: {
-              notify: true
-            }
-          },
-        });
-      });
-    </script>
+    <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './common-imports.js';
+import '@polymer/iron-input/iron-input.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'value-null',
+  properties: {
+    value: {
+      notify: true
+    }
+  },
+});
+</script>
   </dom-module>
 
   <test-fixture id="fixturenull">
@@ -45,41 +46,44 @@
     </template>
   </test-fixture>
 
-  <script>
-  describe('data binding', () => {
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './common-imports.js';
+import '@polymer/iron-input/iron-input.js';
+describe('data binding', () => {
 
-    // Chrome demonstrates a loop when setting value to null/undefined and value is
-    // bound in other components firing change events like in iron-input#bindValue.
-    // In other browsers these tests do not work, and the browser could freeze.
-    describeIf(window.chrome, 'Chrome loops', () => {
-      let valueNull, comboBox;
+  // Chrome demonstrates a loop when setting value to null/undefined and value is
+  // bound in other components firing change events like in iron-input#bindValue.
+  // In other browsers these tests do not work, and the browser could freeze.
+  describeIf(window.chrome, 'Chrome loops', () => {
+    let valueNull, comboBox;
 
-      beforeEach(() => {
-        const root = fixture('fixturenull');
-        valueNull = root.$.valuenull;
-        comboBox = root.$.combobox;
-      });
+    beforeEach(() => {
+      const root = fixture('fixturenull');
+      valueNull = root.$.valuenull;
+      comboBox = root.$.combobox;
+    });
 
-      // Setting value to null/undefined makes the component enter in a loop,
-      // for instance iron-localstorage sets it to null when the key does not exist.
-      [null, undefined].forEach(value => {
-        it('should not enter in a loop when setting value to ' + value, done => {
+    // Setting value to null/undefined makes the component enter in a loop,
+    // for instance iron-localstorage sets it to null when the key does not exist.
+    [null, undefined].forEach(value => {
+      it('should not enter in a loop when setting value to ' + value, done => {
 
-          // Not using sinon.spy, so we can break the loop before overflowing the stack.
-          let i = 0;
-          comboBox.addEventListener('value-changed', expect(i++).to.be.below(30));
+        // Not using sinon.spy, so we can break the loop before overflowing the stack.
+        let i = 0;
+        comboBox.addEventListener('value-changed', expect(i++).to.be.below(30));
 
-          setTimeout(() => {
-            expect(i).to.be.at.most(2);
-            done();
-          }, 1);
+        setTimeout(() => {
+          expect(i).to.be.at.most(2);
+          done();
+        }, 1);
 
-          valueNull.value = value;
-        });
+        valueNull.value = value;
       });
     });
   });
-  </script>
+});
+</script>
 
 </body>
 
