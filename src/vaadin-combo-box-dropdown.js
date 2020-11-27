@@ -238,29 +238,16 @@ class ComboBoxDropdownElement extends DisableUpgradeMixin(
     return spaceBelow < 0.30;
   }
 
-  _getCustomWidth() {
-    return window.ShadyCSS ?
-      window.ShadyCSS.getComputedStyleValue(this, '--vaadin-combo-box-overlay-width') :
-      getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-width');
-  }
-
   _setOverlayWidth() {
     const inputWidth = this.positionTarget.clientWidth + 'px';
-    const customWidth = this._getCustomWidth();
+    const customWidth = getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-width');
 
-    if (window.ShadyCSS && !window.ShadyCSS.nativeCss) {
-      window.ShadyCSS.styleSubtree(this.$.overlay, {
-        '--vaadin-combo-box-overlay-width': customWidth,
-        '--_vaadin-combo-box-overlay-default-width': inputWidth
-      });
+    this.$.overlay.style.setProperty('--_vaadin-combo-box-overlay-default-width', inputWidth);
+
+    if (customWidth === '') {
+      this.$.overlay.style.removeProperty('--vaadin-combo-box-overlay-width');
     } else {
-      this.$.overlay.style.setProperty('--_vaadin-combo-box-overlay-default-width', inputWidth);
-
-      if (customWidth === '') {
-        this.$.overlay.style.removeProperty('--vaadin-combo-box-overlay-width');
-      } else {
-        this.$.overlay.style.setProperty('--vaadin-combo-box-overlay-width', customWidth);
-      }
+      this.$.overlay.style.setProperty('--vaadin-combo-box-overlay-width', customWidth);
     }
   }
 

@@ -283,9 +283,7 @@ class ComboBoxDropdownWrapperElement extends PolymerElement {
 
     const targetRect = this.positionTarget.getBoundingClientRect();
 
-    this._scroller.style.maxHeight = (window.ShadyCSS ?
-      window.ShadyCSS.getComputedStyleValue(this, '--vaadin-combo-box-overlay-max-height') :
-      getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-max-height')) || '65vh';
+    this._scroller.style.maxHeight = getComputedStyle(this).getPropertyValue('--vaadin-combo-box-overlay-max-height') || '65vh';
 
     const maxHeight = this._maxOverlayHeight(targetRect);
 
