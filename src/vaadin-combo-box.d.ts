@@ -1,5 +1,3 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
 import {ControlStateMixin} from '@vaadin/vaadin-control-state-mixin/vaadin-control-state-mixin.js';
 
 import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
@@ -9,8 +7,6 @@ import {ComboBoxMixin} from './vaadin-combo-box-mixin.js';
 import {ComboBoxDataProviderMixin} from './vaadin-combo-box-data-provider-mixin.js';
 
 import {ElementMixin} from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
 /**
  * `<vaadin-combo-box>` is a combo box element combining a dropdown list with an
@@ -173,7 +169,7 @@ declare class ComboBoxElement extends
   ComboBoxDataProviderMixin(
   ComboBoxMixin(
   ThemableMixin(
-  PolymerElement))))) {
+  HTMLElement))))) {
 
   /**
    * Focusable element used by vaadin-control-state-mixin
@@ -231,10 +227,6 @@ declare class ComboBoxElement extends
    * @attr {boolean} clear-button-visible
    */
   clearButtonVisible: boolean;
-  ready(): void;
-  attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void;
-  connectedCallback(): void;
-  disconnectedCallback(): void;
 }
 
 declare global {

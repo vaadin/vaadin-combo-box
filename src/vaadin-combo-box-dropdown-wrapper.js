@@ -23,10 +23,9 @@ const TOUCH_DEVICE = (() => {
 /**
  * Element for internal use only.
  *
- * @extends PolymerElement
  * @private
  */
-class ComboBoxDropdownWrapperElement extends (class extends PolymerElement {}) {
+class ComboBoxDropdownWrapperElement extends PolymerElement {
   static get template() {
     return html`
     <vaadin-combo-box-dropdown id="dropdown" hidden="[[_hidden(_items.*, loading)]]" position-target="[[positionTarget]]" on-template-changed="_templateChanged" on-position-changed="_setOverlayHeight" disable-upgrade="" theme="[[theme]]">

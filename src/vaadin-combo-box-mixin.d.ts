@@ -1,17 +1,3 @@
-import {timeOut} from '@polymer/polymer/lib/utils/async.js';
-
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce.js';
-
-import {flush} from '@polymer/polymer/lib/utils/flush.js';
-
-import {templatize} from '@polymer/polymer/lib/utils/templatize.js';
-
-import {IronA11yAnnouncer} from '@polymer/iron-a11y-announcer/iron-a11y-announcer.js';
-
-import {IronA11yKeysBehavior} from '@polymer/iron-a11y-keys-behavior/iron-a11y-keys-behavior.js';
-
-import {FlattenedNodesObserver} from '@polymer/polymer/lib/utils/flattened-nodes-observer.js';
-
 export {ComboBoxMixin};
 
 declare function ComboBoxMixin<T extends new (...args: any[]) => {}>(base: T): T & ComboBoxMixinConstructor;

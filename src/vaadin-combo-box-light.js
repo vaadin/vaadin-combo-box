@@ -53,7 +53,7 @@ import { dashToCamelCase } from '@polymer/polymer/lib/utils/case-map.js';
  *   </paper-input>
  * </vaadin-combo-box-light>
  * ```
- * @extends PolymerElement
+ * @extends HTMLElement
  * @mixes ComboBoxDataProviderMixin
  * @mixes ComboBoxMixin
  * @mixes ThemableMixin

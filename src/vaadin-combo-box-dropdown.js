@@ -33,7 +33,6 @@ document.head.appendChild($_documentContainer.content);
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  *
- * @extends PolymerElement
  * @private
  */
 class ComboBoxOverlayElement extends OverlayElement {
@@ -67,7 +66,6 @@ customElements.define(ComboBoxOverlayElement.is, ComboBoxOverlayElement);
 /**
  * Element for internal use only.
  *
- * @extends PolymerElement
  * @private
  */
 class ComboBoxDropdownElement extends DisableUpgradeMixin(

@@ -1,14 +1,8 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
 import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
 import {ComboBoxMixin} from './vaadin-combo-box-mixin.js';
 
 import {ComboBoxDataProviderMixin} from './vaadin-combo-box-data-provider-mixin.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
-
-import {dashToCamelCase} from '@polymer/polymer/lib/utils/case-map.js';
 
 /**
  * `<vaadin-combo-box-light>` is a customizable version of the `<vaadin-combo-box>` providing
@@ -57,7 +51,7 @@ declare class ComboBoxLightElement extends
   ComboBoxDataProviderMixin(
   ComboBoxMixin(
   ThemableMixin(
-  PolymerElement))) {
+  HTMLElement))) {
   readonly _propertyForValue: string;
   _inputElementValue: string;
   readonly focused: boolean;
@@ -69,9 +63,6 @@ declare class ComboBoxLightElement extends
    */
   attrForValue: string;
   readonly inputElement: Element|undefined;
-  ready(): void;
-  connectedCallback(): void;
-  disconnectedCallback(): void;
 }
 
 declare global {
