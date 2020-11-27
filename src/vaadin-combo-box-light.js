@@ -3,14 +3,13 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { dashToCamelCase } from '@polymer/polymer/lib/utils/case-map.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { ComboBoxMixin } from './vaadin-combo-box-mixin.js';
 import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixin.js';
 import './vaadin-combo-box-dropdown-wrapper.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { dashToCamelCase } from '@polymer/polymer/lib/utils/case-map.js';
+
 /**
  * `<vaadin-combo-box-light>` is a customizable version of the `<vaadin-combo-box>` providing
  * only the dropdown functionality and leaving the input field definition to the user.

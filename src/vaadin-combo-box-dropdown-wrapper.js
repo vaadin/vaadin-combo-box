@@ -3,13 +3,11 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-list/iron-list.js';
 import './vaadin-combo-box-item.js';
 import './vaadin-combo-box-dropdown.js';
 import { ComboBoxPlaceholder } from './vaadin-combo-box-placeholder.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
 const TOUCH_DEVICE = (() => {
   try {

@@ -4,7 +4,6 @@ Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
 import { timeOut } from '@polymer/polymer/lib/utils/async.js';
-
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
 import { templatize } from '@polymer/polymer/lib/utils/templatize.js';

@@ -3,16 +3,15 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-
-import '@vaadin/vaadin-text-field/src/vaadin-text-field.js';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import { ControlStateMixin } from '@vaadin/vaadin-control-state-mixin/vaadin-control-state-mixin.js';
+import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { ComboBoxMixin } from './vaadin-combo-box-mixin.js';
+import '@vaadin/vaadin-text-field/src/vaadin-text-field.js';
 import './vaadin-combo-box-dropdown-wrapper.js';
 import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixin.js';
-import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+
 /**
  * `<vaadin-combo-box>` is a combo box element combining a dropdown list with an
  * input field for filtering the list of items. If you want to replace the default
