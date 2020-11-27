@@ -1,35 +1,11 @@
-<!doctype html>
-<html>
+import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
+import { flush } from '@polymer/polymer/lib/utils/flush.js';
+import { fixtureSync } from '@open-wc/testing-helpers';
+import { onceOpened } from './helpers.js';
+import './not-animated-styles.js';
+import '../vaadin-combo-box.js';
 
-<head>
-  <meta charset='UTF-8'>
-  <title>vaadin-combo basic tests</title>
-
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script type="module" src="./common-imports.js"></script>
-  <script src="./common.js"></script>
-</head>
-
-<body>
-
-<test-fixture id='combobox'>
-  <template>
-    <vaadin-combo-box></vaadin-combo-box>
-  </template>
-</test-fixture>
-
-<test-fixture id='configured'>
-  <template>
-    <vaadin-combo-box filtered-items='["a", "b", "c"]' value='b'></vaadin-combo-box>
-  </template>
-</test-fixture>
-
-<script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import './common-imports.js';
-import { flush as flush$0 } from '@polymer/polymer/lib/utils/flush.js';
 describe('filtering items', () => {
   let comboBox;
 
@@ -47,7 +23,7 @@ describe('filtering items', () => {
   }
 
   beforeEach(() => {
-    comboBox = fixture('combobox');
+    comboBox = fixtureSync('<vaadin-combo-box></vaadin-combo-box>');
     comboBox.items = ['foo', 'bar', 'baz'];
   });
 
@@ -151,19 +127,18 @@ describe('filtering items', () => {
       expect(comboBox._focusedIndex).to.eql(0);
     });
 
-    it('should not scroll to selected value when filtering', done => {
+    it('should not scroll to selected value when filtering', (done) => {
       comboBox.value = 'baz';
 
-      onceOpened(comboBox)
-        .then(() => {
-          const spy = sinon.spy(comboBox.$.overlay, '_scrollIntoView');
-          setInputValue('b');
+      onceOpened(comboBox).then(() => {
+        const spy = sinon.spy(comboBox.$.overlay, '_scrollIntoView');
+        setInputValue('b');
 
-          window.requestAnimationFrame(() => {
-            expect(spy.callCount).to.eql(0);
-            done();
-          });
+        requestAnimationFrame(() => {
+          expect(spy.callCount).to.eql(0);
+          done();
         });
+      });
 
       setInputValue('ba');
     });
@@ -382,11 +357,6 @@ describe('filtering items', () => {
       expect(comboBox.$.overlay.$.dropdown.$.overlay.hasAttribute('loading')).to.be.false;
     });
 
-    it('should not throw when passing filteredItems and value as attributes', () => {
-      comboBox = fixture('configured');
-      expect(comboBox._focusedIndex).to.eql(1);
-    });
-
     it('should not notify resize the dropdown if not opened', () => {
       comboBox.open();
       comboBox.close();
@@ -394,39 +364,46 @@ describe('filtering items', () => {
       const resizeSpy = sinon.spy(comboBox.$.overlay.$.dropdown, 'notifyResize');
       comboBox.filteredItems = ['foo', 'bar', 'baz'];
 
-      expect(resizeSpy).to.not.have.been.called;
+      expect(resizeSpy.called).to.be.false;
     });
 
     it('should not re-position the overlay if not opened', () => {
       const repositionSpy = sinon.spy(comboBox, '_repositionOverlay');
       comboBox.filteredItems = ['foo', 'bar', 'baz'];
 
-      expect(repositionSpy).to.not.have.been.called;
+      expect(repositionSpy.called).to.be.false;
     });
 
     it('should not perform measurements when loading changes if not opened', () => {
       const measureSpy = sinon.spy(comboBox.inputElement, 'getBoundingClientRect');
       comboBox.loading = true;
 
-      expect(measureSpy).to.not.have.been.called;
+      expect(measureSpy.called).to.be.false;
     });
   });
 
   describe('setting items when opened', () => {
     beforeEach(() => {
-      comboBox = fixture('combobox');
+      comboBox.items = [];
     });
 
     it('should properly display all items in the selector', () => {
       comboBox.open();
       comboBox.filteredItems = Array.apply(null, Array(20)).map((_, i) => `item${i}`);
-      flush$0();
+      flush();
       expect(comboBox.$.overlay._selector.querySelectorAll('vaadin-combo-box-item').length).to.equal(20);
     });
   });
 });
-</script>
 
-</body>
+describe('filtered items attribute', () => {
+  let comboBox;
 
-</html>
+  beforeEach(() => {
+    comboBox = fixtureSync(`<vaadin-combo-box filtered-items='["a", "b", "c"]' value='b'></vaadin-combo-box>`);
+  });
+
+  it('should not throw when passing filteredItems and value as attributes', () => {
+    expect(comboBox._focusedIndex).to.eql(1);
+  });
+});

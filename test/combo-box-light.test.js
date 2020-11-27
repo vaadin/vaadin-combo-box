@@ -1,101 +1,53 @@
-<!doctype html>
+import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
+import { fixtureSync } from '@open-wc/testing-helpers';
+import { resetMouseCanceller } from '@polymer/polymer/lib/utils/gestures.js';
+import { downAndUp, pressAndReleaseKeyOn } from '@polymer/iron-test-helpers/mock-interactions.js';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import '@polymer/iron-input/iron-input.js';
+import '@polymer/paper-input/paper-input.js';
+import '@vaadin/vaadin-text-field/vaadin-text-field.js';
+import { createEventSpy, fire, TOUCH_DEVICE } from './helpers.js';
+import './not-animated-styles.js';
+import '../vaadin-combo-box-light.js';
 
-<head>
-  <meta charset="UTF-8">
+class MyInput extends PolymerElement {
+  static get template() {
+    return html`
+      <style>
+        :host {
+          display: inline-block;
+        }
+      </style>
+      <iron-input id="input" bind-value="{{customValue}}">
+        <input />
+      </iron-input>
+    `;
+  }
 
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script type="module" src="../../../@polymer/iron-test-helpers/mock-interactions.js"></script>
-  <script type="module" src="./common-imports.js"></script>
-  <script type="module" src="./my-input.js"></script>
-  <script src="./common.js"></script>
-  <script type="module" src="../vaadin-combo-box-light.js"></script>
-  <script type="module" src="../../../@polymer/iron-input/iron-input.js"></script>
-  <script type="module" src="../../../@polymer/paper-input/paper-input.js"></script>
-  <link rel="import" href="../../paper-button/paper-button.html">
-  <script type="module" src="../../../@polymer/polymer/lib/utils/gestures.js"></script>
-</head>
+  static get properties() {
+    return {
+      customValue: {
+        type: String,
+        notify: true
+      }
+    };
+  }
+}
 
-<body>
+customElements.define('my-input', MyInput);
 
-  <test-fixture id="combobox-light">
-    <template>
+describe('vaadin-combo-box-light', () => {
+  let comboBox, ironInput;
+
+  beforeEach(() => {
+    comboBox = fixtureSync(`
       <vaadin-combo-box-light attr-for-value="bind-value">
         <iron-input>
           <input>
         </iron-input>
       </vaadin-combo-box-light>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="combobox-light-paper-input">
-    <template>
-      <vaadin-combo-box-light>
-        <paper-input>
-          <paper-button slot="suffix" class="clear-button">Clear</paper-button>
-          <paper-button slot="suffix" class="toggle-button">Toggle</paper-button>
-        </paper-input>
-      </vaadin-combo-box-light>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="combobox-light-theme">
-    <template>
-      <vaadin-combo-box-light attr-for-value="bind-value" theme="foo">
-        <iron-input>
-          <input>
-        </iron-input>
-      </vaadin-combo-box-light>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="combobox-nested-template">
-    <template>
-      <vaadin-combo-box-light>
-        <vaadin-text-field>
-          <div slot="prefix">
-            <dom-repeat items="[1, 2]">
-              <template>
-                [[item]] foo
-              </template>
-            </dom-repeat>
-          </div>
-        </vaadin-text-field>
-      </vaadin-combo-box-light>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="combobox-light-attr-for-value">
-    <template>
-      <vaadin-combo-box-light attr-for-value="custom-value">
-        <my-input class="input"></my-input>
-      </vaadin-combo-box-light>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="combobox-light-vaadin-text-field">
-    <template>
-      <vaadin-combo-box-light>
-        <vaadin-text-field></vaadin-text-field>
-      </vaadin-combo-box-light>
-    </template>
-  </test-fixture>
-
-  <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import '@polymer/iron-test-helpers/mock-interactions.js';
-import './common-imports.js';
-import './my-input.js';
-import '../vaadin-combo-box-light.js';
-import '@polymer/iron-input/iron-input.js';
-import '@polymer/paper-input/paper-input.js';
-import { resetMouseCanceller } from '@polymer/polymer/lib/utils/gestures.js';
-describe('vaadin-combo-box-light', () => {
-  let comboBox, ironInput;
-
-  beforeEach(() => {
-    comboBox = fixture('combobox-light');
+    `);
     comboBox.items = ['foo', 'bar', 'baz'];
     ironInput = comboBox.querySelector('iron-input');
   });
@@ -120,14 +72,14 @@ describe('vaadin-combo-box-light', () => {
     comboBox.open();
     comboBox.close();
 
-    const e = new CustomEvent('mousedown', {bubbles: true});
+    const e = new CustomEvent('mousedown', { bubbles: true });
     const spy = sinon.spy(e, 'preventDefault');
     comboBox.$.overlay.$.dropdown.$.overlay.dispatchEvent(e);
     expect(spy.called).to.be.true;
   });
 
   it('should not prevent default on input down', () => {
-    const e = new CustomEvent('mousedown', {bubbles: true});
+    const e = new CustomEvent('mousedown', { bubbles: true });
     const spy = sinon.spy(e, 'preventDefault');
     ironInput.dispatchEvent(e);
     expect(spy.called).to.be.false;
@@ -137,41 +89,69 @@ describe('vaadin-combo-box-light', () => {
     // NOTE(platosha): because we use emulate touch events in these
     // tests, we need to reset mouseCanceller in Gestures. Otherwise
     // it might interfere and cancel clicks in totally unrelated tests.
-    afterEach(() => resetMouseCanceller());
+    afterEach(() => {
+      resetMouseCanceller();
+    });
 
     it('should toggle overlay on input click', () => {
-      ironInput.dispatchEvent(new CustomEvent('click', {bubbles: true}));
+      ironInput.dispatchEvent(new CustomEvent('click', { bubbles: true }));
       expect(comboBox.opened).to.be.true;
     });
 
-    it('should toggle on input click on touch devices', done => {
-      MockInteractions.downAndUp(ironInput, () => {
-        expect(comboBox.opened).to.be.true;
-        done();
-      }, {emulateTouch: true});
+    it('should toggle on input click on touch devices', (done) => {
+      downAndUp(
+        ironInput,
+        () => {
+          expect(comboBox.opened).to.be.true;
+          done();
+        },
+        { emulateTouch: true }
+      );
     });
 
     it('should not clear on input click', () => {
       comboBox.value = 'foo';
-      ironInput.dispatchEvent(new CustomEvent('click', {bubbles: true}));
+      ironInput.dispatchEvent(new CustomEvent('click', { bubbles: true }));
       expect(comboBox.value).to.equal('foo');
     });
 
-    it('should not clear on input click on touch devices', done => {
+    it('should not clear on input click on touch devices', (done) => {
       comboBox.value = 'foo';
-      MockInteractions.downAndUp(ironInput, () => {
-        expect(comboBox.value).to.equal('foo');
-        done();
-      }, {emulateTouch: true});
+      downAndUp(
+        ironInput,
+        () => {
+          expect(comboBox.value).to.equal('foo');
+          done();
+        },
+        { emulateTouch: true }
+      );
+    });
+  });
+
+  (TOUCH_DEVICE ? describe.skip : describe)('after opening', () => {
+    beforeEach(() => {
+      comboBox.open();
+    });
+
+    it('should prevent default on overlay mousedown (vaadin-combo-box-light)', () => {
+      const preventDefaultSpy = sinon.spy();
+      comboBox.open();
+      const event = createEventSpy('mousedown', preventDefaultSpy);
+      comboBox.$.overlay.$.dropdown.$.overlay.dispatchEvent(event);
+      expect(preventDefaultSpy.called).to.be.true;
     });
   });
 });
 
-describe('vaadin-combobox-light-attr-for-value', () => {
+describe('attr-for-value', () => {
   let comboBox, customInput, ironInput, nativeInput;
 
   beforeEach(() => {
-    comboBox = fixture('combobox-light-attr-for-value');
+    comboBox = fixtureSync(`
+      <vaadin-combo-box-light attr-for-value="custom-value">
+        <my-input class="input"></my-input>
+      </vaadin-combo-box-light>
+    `);
     comboBox.items = ['foo', 'bar', 'baz'];
     customInput = comboBox.querySelector('.input');
     ironInput = customInput.$.input;
@@ -209,7 +189,7 @@ describe('vaadin-combobox-light-attr-for-value', () => {
       // Simulate typing an option with a keyboard and confirming it via Enter
       nativeInput.value = 'foo';
       fire('input', nativeInput);
-      MockInteractions.pressAndReleaseKeyOn(nativeInput, 13, null, 'Enter');
+      pressAndReleaseKeyOn(nativeInput, 13, null, 'Enter');
 
       expect(comboBox.value).to.eql('foo');
       expect(comboBox._inputElementValue).to.eql('foo');
@@ -218,24 +198,31 @@ describe('vaadin-combobox-light-attr-for-value', () => {
   });
 });
 
-describe('vaadin-combo-box-light-paper-input', () => {
+describe('paper-input', () => {
   let comboBox;
 
   beforeEach(() => {
-    comboBox = fixture('combobox-light-paper-input');
+    comboBox = fixtureSync(`
+      <vaadin-combo-box-light>
+        <paper-input>
+          <button slot="suffix" class="clear-button">Clear</button>
+          <button slot="suffix" class="toggle-button">Toggle</button>
+        </paper-input>
+      </vaadin-combo-box-light>
+    `);
     comboBox.items = ['foo', 'bar', 'baz'];
   });
 
   it('should toggle overlay by clicking toggle element', () => {
-    comboBox._toggleElement.dispatchEvent(new CustomEvent('click', {bubbles: true}));
+    comboBox._toggleElement.dispatchEvent(new CustomEvent('click', { bubbles: true }));
     expect(comboBox.opened).to.be.true;
 
-    comboBox._toggleElement.dispatchEvent(new CustomEvent('click', {bubbles: true}));
+    comboBox._toggleElement.dispatchEvent(new CustomEvent('click', { bubbles: true }));
     expect(comboBox.opened).to.be.false;
   });
 
   it('should prevent default on toggle element down', () => {
-    const e = new CustomEvent('click', {bubbles: true});
+    const e = new CustomEvent('click', { bubbles: true });
     const spy = sinon.spy(e, 'preventDefault');
     comboBox._toggleElement.dispatchEvent(e);
     expect(spy.called).to.be.true;
@@ -268,10 +255,7 @@ describe('vaadin-combo-box-light-paper-input', () => {
       if (result === root.host) {
         return result;
       }
-      // At least Safari on iOS 9 doesn't have "elementFromPoint" on a
-      // shady root and in case of ShadyDOM we should already get the target
-      // we're looking for from the first "root.elementFromPoint"
-      if (result.shadowRoot && !(window.ShadyDOM && ShadyDOM.isShadyRoot(result.shadowRoot))) {
+      if (result.shadowRoot) {
         return elementFromPointDeep(x, y, result.shadowRoot);
       }
       return result;
@@ -304,7 +288,7 @@ describe('vaadin-combo-box-light-paper-input', () => {
 
       // Check if the found element contains a slot (needed for other browsers than Chrome)
       const slot = target.querySelector('slot');
-      if (slot && slot.assignedNodes({flatten: true}).indexOf(elem) !== -1) {
+      if (slot && slot.assignedNodes({ flatten: true }).indexOf(elem) !== -1) {
         target = elem;
       }
 
@@ -366,14 +350,21 @@ describe('vaadin-combo-box-light-paper-input', () => {
 
       expect(event.defaultPrevented).to.eql(true);
     });
-
   });
 });
 
 describe('theme attribute', () => {
   let comboBox;
 
-  beforeEach(() => comboBox = fixture('combobox-light-theme'));
+  beforeEach(() => {
+    comboBox = fixtureSync(`
+      <vaadin-combo-box-light attr-for-value="bind-value" theme="foo">
+        <iron-input>
+          <input>
+        </iron-input>
+      </vaadin-combo-box-light>
+    `);
+  });
 
   it('should propagate theme attribute to overlay', () => {
     comboBox.open();
@@ -385,10 +376,8 @@ describe('theme attribute', () => {
   it('should propagate theme attribute to item', () => {
     comboBox.items = ['bar', 'baz'];
     comboBox.open();
-    expect(
-      comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item')
-        .getAttribute('theme')
-    ).to.equal('foo');
+    const item = comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item');
+    expect(item.getAttribute('theme')).to.equal('foo');
   });
 });
 
@@ -396,29 +385,43 @@ describe('nested template', () => {
   let comboBox;
 
   beforeEach(() => {
-    comboBox = fixture('combobox-nested-template');
+    comboBox = fixtureSync(`
+      <vaadin-combo-box-light>
+        <vaadin-text-field>
+          <div slot="prefix">
+            <dom-repeat items="[1, 2]">
+              <template>
+                [[item]] foo
+              </template>
+            </dom-repeat>
+          </div>
+        </vaadin-text-field>
+      </vaadin-combo-box-light>
+    `);
     comboBox.items = ['bar', 'baz', 'qux'];
-  });
-
-  it('should not use nested template as the item template', () => {
-    comboBox.open();
-
-    const firstItem = comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item');
-
-    expect(comboBox.querySelector('[slot="prefix"]').innerHTML).to.contain('1 foo');
-    expect(firstItem.shadowRoot.querySelector('#content').innerHTML).to.equal('bar');
   });
 
   it('should not throw error on open', () => {
     expect(() => comboBox.open()).not.to.throw(Error);
   });
+
+  it('should not use nested template as the item template', () => {
+    comboBox.open();
+    const firstItem = comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item');
+    expect(comboBox.querySelector('[slot="prefix"]').innerHTML).to.contain('1 foo');
+    expect(firstItem.shadowRoot.querySelector('#content').innerHTML).to.equal('bar');
+  });
 });
 
-describe('vaadin-combo-box-light with vaadin-text-field', () => {
+describe('vaadin-text-field', () => {
   let comboBox, textField;
 
   beforeEach(() => {
-    comboBox = fixture('combobox-light-vaadin-text-field');
+    comboBox = fixtureSync(`
+      <vaadin-combo-box-light>
+        <vaadin-text-field></vaadin-text-field>
+      </vaadin-combo-box-light>
+    `);
     comboBox.items = ['bar', 'baz', 'qux'];
     textField = comboBox.inputElement;
   });
@@ -452,6 +455,3 @@ describe('vaadin-combo-box-light with vaadin-text-field', () => {
     });
   });
 });
-</script>
-
-</body>

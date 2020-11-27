@@ -1,44 +1,12 @@
-<!doctype html>
-<html>
+import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
+import { aTimeout, fixtureSync } from '@open-wc/testing-helpers';
+import { keyDownOn } from '@polymer/iron-test-helpers/mock-interactions.js';
+import { onceScrolled } from './helpers.js';
+import './not-animated-styles.js';
+import '../vaadin-combo-box.js';
 
-<head>
-  <meta charset='UTF-8'>
-  <title>vaadin-combo basic tests</title>
-
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
-  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script type="module" src="./common-imports.js"></script>
-  <script src="./common.js"></script>
-
-  <style>
-    body {
-      /* Prevent unequal item font sizes in iOS Safari */
-      -webkit-text-size-adjust: 100%;
-    }
-  </style>
-</head>
-
-<body>
-
-<test-fixture id='combobox'>
-  <template>
-    <vaadin-combo-box></vaadin-combo-box>
-  </template>
-</test-fixture>
-
-<script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import './common-imports.js';
-
-describe('keyboard navigation', () => {
-
-  // Not need to test in iOS, just speed up build.
-  if (ios || android) {
-    return;
-  }
-
+describe('keyboard', () => {
   let comboBox;
 
   function filter(value) {
@@ -50,18 +18,11 @@ describe('keyboard navigation', () => {
     return comboBox._focusedIndex;
   }
 
-  function pushKey(key, cb) {
-    MockInteractions.pressAndReleaseKeyOn(comboBox.inputElement, key);
-    if (cb) {
-      setTimeout(cb, 1);
-    }
-  }
-
   function inputChar(char) {
     const target = comboBox.inputElement;
     target.value += char;
-    MockInteractions.keyDownOn(target, char.charCodeAt(0));
-    target.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
+    keyDownOn(target, char.charCodeAt(0));
+    target.dispatchEvent(new CustomEvent('input', { bubbles: true, composed: true }));
   }
 
   function inputText(text) {
@@ -70,24 +31,24 @@ describe('keyboard navigation', () => {
     }
   }
 
-  function arrowDown(cb) {
-    pushKey(40, cb);
+  function arrowDown() {
+    keyDownOn(comboBox.inputElement, 40);
   }
 
-  function arrowUp(cb) {
-    pushKey(38, cb);
+  function arrowUp() {
+    keyDownOn(comboBox.inputElement, 38);
   }
 
-  function enter(cb) {
-    pushKey(13, cb);
+  function enter() {
+    keyDownOn(comboBox.inputElement, 13);
   }
 
-  function esc(cb) {
-    pushKey(27, cb);
+  function esc() {
+    keyDownOn(comboBox.inputElement, 27);
   }
 
   beforeEach(() => {
-    comboBox = fixture('combobox');
+    comboBox = fixtureSync('<vaadin-combo-box></vaadin-combo-box>');
     comboBox.items = ['foo', 'bar', 'baz'];
   });
 
@@ -116,10 +77,12 @@ describe('keyboard navigation', () => {
   });
 
   describe('navigating the items after overlay opened', () => {
-    beforeEach(done => setTimeout(() => {
-      arrowDown();
-      done();
-    }));
+    beforeEach((done) =>
+      setTimeout(() => {
+        arrowDown();
+        done();
+      })
+    );
 
     it('should focus on the first item with arrow down', () => {
       arrowDown();
@@ -175,20 +138,19 @@ describe('keyboard navigation', () => {
   });
 
   describe('selecting items', () => {
-    beforeEach(done => {
+    beforeEach(async () => {
       comboBox.value = 'bar';
 
       comboBox.open();
-      setTimeout(done, 1);
+      await aTimeout(1);
     });
 
-    it('should select focused item with enter', done => {
-      arrowDown(() => {
-        enter(() => {
-          expect(comboBox.value).to.equal('baz');
-          done();
-        });
-      });
+    it('should select focused item with enter', async () => {
+      arrowDown();
+      await aTimeout(1);
+      enter();
+      await aTimeout(1);
+      expect(comboBox.value).to.equal('baz');
     });
 
     it('should clear the selection with enter when input is cleared', () => {
@@ -212,7 +174,7 @@ describe('keyboard navigation', () => {
       const keydownSpy = sinon.spy();
       document.addEventListener('keydown', keydownSpy);
       enter();
-      expect(keydownSpy).not.to.be.called;
+      expect(keydownSpy.called).to.be.false;
     });
 
     it('should not close the overlay with enter when custom values are not allowed', () => {
@@ -276,7 +238,7 @@ describe('keyboard navigation', () => {
     });
 
     it('escape key event should not be propagated', () => {
-      const listener = document.body.addEventListener('keydown', e => {
+      const listener = document.body.addEventListener('keydown', (e) => {
         if (e.keyCode == 27) {
           throw new Error('Escape key was propagated to body');
         }
@@ -292,8 +254,9 @@ describe('keyboard navigation', () => {
         throw new Error('Click event was propagated to body');
       });
 
-      comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item')
-        .dispatchEvent(new CustomEvent('click', {composed: true, bubbles: true}));
+      comboBox.$.overlay._selector
+        .querySelector('vaadin-combo-box-item')
+        .dispatchEvent(new CustomEvent('click', { composed: true, bubbles: true }));
 
       document.body.removeEventListener('click', listener);
     });
@@ -303,8 +266,9 @@ describe('keyboard navigation', () => {
         throw new Error('Click event was propagated to body');
       });
 
-      comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item')
-        .dispatchEvent(new CustomEvent('click', {composed: true, bubbles: true}));
+      comboBox.$.overlay._selector
+        .querySelector('vaadin-combo-box-item')
+        .dispatchEvent(new CustomEvent('click', { composed: true, bubbles: true }));
 
       document.body.removeEventListener('click', listener);
     });
@@ -330,66 +294,48 @@ describe('keyboard navigation', () => {
       expect(comboBox.inputElement.value).to.eql('');
     });
 
-    it('should prefill the input field when navigating down', done => {
-      arrowDown(() => {
-        expect(comboBox.inputElement.value).to.eql('baz');
-        done();
-      });
-    });
-
-    it('should select the input field text when navigating down', done => {
+    it('should prefill the input field when navigating down', async () => {
       arrowDown();
-
-      setTimeout(() => {
-        expect(comboBox._nativeInput.selectionStart).to.eql(0);
-        expect(comboBox._nativeInput.selectionEnd).to.eql(3);
-        done();
-      }, 1);
+      await aTimeout(1);
+      expect(comboBox.inputElement.value).to.eql('baz');
     });
 
-    it('should prefill the input field when navigating up', done => {
+    it('should select the input field text when navigating down', async () => {
+      arrowDown();
+      await aTimeout(1);
+      expect(comboBox._nativeInput.selectionStart).to.eql(0);
+      expect(comboBox._nativeInput.selectionEnd).to.eql(3);
+    });
+
+    it('should prefill the input field when navigating up', async () => {
       arrowUp();
-
-      setTimeout(() => {
-        expect(comboBox.inputElement.value).to.eql('foo');
-        done();
-      }, 1);
+      await aTimeout(1);
+      expect(comboBox.inputElement.value).to.eql('foo');
     });
 
-    it('should not prefill the input when there are no items to navigate', done => {
+    it('should not prefill the input when there are no items to navigate', async () => {
       filter('invalid filter');
 
       arrowDown();
-
-      setTimeout(() => {
-        expect(comboBox.inputElement.value).to.eql('invalid filter');
-        done();
-      }, 1);
+      await aTimeout(1);
+      expect(comboBox.inputElement.value).to.eql('invalid filter');
     });
 
-    it('should select the input field text when navigating up', done => {
+    it('should select the input field text when navigating up', async () => {
       arrowUp();
-
-      setTimeout(() => {
-        expect(comboBox._nativeInput.selectionStart).to.eql(0);
-        expect(comboBox._nativeInput.selectionEnd).to.eql(3);
-        done();
-      }, 1);
+      await aTimeout(1);
+      expect(comboBox._nativeInput.selectionStart).to.eql(0);
+      expect(comboBox._nativeInput.selectionEnd).to.eql(3);
     });
 
-    it('should revert back to filter with escape', done => {
+    it('should revert back to filter with escape', async () => {
       filter('b');
 
       arrowDown();
-
-      setTimeout(() => {
-        expect(comboBox.inputElement.value).to.eql('bar');
-
-        esc();
-
-        expect(comboBox.inputElement.value).to.eql('b');
-        done();
-      }, 1);
+      await aTimeout(1);
+      expect(comboBox.inputElement.value).to.eql('bar');
+      esc();
+      expect(comboBox.inputElement.value).to.eql('b');
     });
 
     it('should remove selection from the input value when reverting', () => {
@@ -415,54 +361,20 @@ describe('keyboard navigation', () => {
       expect(comboBox.selectedItem).to.eql('bar');
     });
 
-    it('should remove selection from the input value selecting value', done => {
+    it('should remove selection from the input value selecting value', async () => {
       arrowDown();
+      await aTimeout(1);
+      enter();
 
-      setTimeout(() => {
-        enter();
-
-        expect(comboBox._nativeInput.selectionStart).to.eql(3);
-        expect(comboBox._nativeInput.selectionEnd).to.eql(3);
-        done();
-      }, 1);
-    });
-  });
-
-  // TODO: these tests are here to prevent possible regressions with using
-  // the internal properties of iron-list. These can be removed after this
-  // logic no longer is implemented in vaadin-combo-box.
-  describe('sanity checks for calculating visible item counts', () => {
-    it('should calculate items correctly when all items are visible', done => {
-      comboBox.items = ['foo', 'bar', 'baz', 'qux'];
-      comboBox.open();
-
-      setTimeout(() => {
-        expect(comboBox.$.overlay._visibleItemsCount()).to.eql(4);
-        expect(comboBox.$.overlay._selector.lastVisibleIndex).to.eql(3);
-        done();
-      });
-    });
-
-    it('should calculate items correctly when some items are hidden', done => {
-      const items = [];
-      for (let i = 0; i < 100; i++) {
-        items.push(i.toString());
-      }
-
-      comboBox.items = items;
-      comboBox.open();
-
-      setTimeout(() => {
-        expect(comboBox.$.overlay._visibleItemsCount()).to.eql(comboBox.$.overlay._selector.lastVisibleIndex + 1);
-        done();
-      });
+      expect(comboBox._nativeInput.selectionStart).to.eql(3);
+      expect(comboBox._nativeInput.selectionEnd).to.eql(3);
     });
   });
 
   describe('scrolling items', () => {
     let selector;
 
-    beforeEach(done => {
+    beforeEach(async () => {
       const items = [];
 
       for (let i = 0; i < 100; i++) {
@@ -473,7 +385,7 @@ describe('keyboard navigation', () => {
       selector = comboBox.$.overlay._selector;
       comboBox.items = items;
 
-      setTimeout(done, 1);
+      await aTimeout(1);
     });
 
     it('should scroll down after reaching the last visible item', () => {
@@ -534,34 +446,28 @@ describe('keyboard navigation', () => {
       expect(selector.firstVisibleIndex).to.eql(51 - comboBox.$.overlay._visibleItemsCount() + 1);
     });
 
-    it('should scroll to start if no items focused when opening overlay', done => {
+    it('should scroll to start if no items focused when opening overlay', async () => {
       selector.scrollToIndex(50);
       comboBox.close();
 
       comboBox.open();
-
-      setTimeout(() => {
-        expect(selector.firstVisibleIndex).to.eql(0);
-        done();
-      });
+      await aTimeout(0);
+      expect(selector.firstVisibleIndex).to.eql(0);
     });
 
-    it('should scroll to focused item when opening overlay', done => {
+    it('should scroll to focused item when opening overlay', async () => {
       selector.scrollToIndex(0);
       comboBox.close();
       comboBox.value = '50';
 
       comboBox.open();
 
-      onceScrolled(comboBox.$.overlay._scroller).then(() => {
-        expect(selector.firstVisibleIndex).to.be.within(50 - comboBox.$.overlay._visibleItemsCount(), 50);
-        done();
-      });
+      await onceScrolled(comboBox.$.overlay._scroller);
+      expect(selector.firstVisibleIndex).to.be.within(50 - comboBox.$.overlay._visibleItemsCount(), 50);
     });
   });
 
   describe('auto open disabled', () => {
-
     beforeEach(() => {
       comboBox.autoOpenDisabled = true;
     });
@@ -617,11 +523,5 @@ describe('keyboard navigation', () => {
       expect(comboBox._inputElementValue).to.equal('');
       expect(comboBox.value).to.equal('');
     });
-
   });
 });
-</script>
-
-</body>
-
-</html>

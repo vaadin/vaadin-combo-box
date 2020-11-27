@@ -1,66 +1,47 @@
-<!doctype html>
-<html>
+import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
+import { fixtureSync } from '@open-wc/testing-helpers';
+import { keyDownOn } from '@polymer/iron-test-helpers/mock-interactions.js';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { flush } from '@polymer/polymer/lib/utils/flush.js';
+import './not-animated-styles.js';
+import '../vaadin-combo-box.js';
 
-<head>
-  <meta charset="utf-8">
-
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
-  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script type="module" src="./common-imports.js"></script>
-  <script src="./common.js"></script>
-</head>
-
-<body>
-
-  <dom-module id="x-scope">
-    <template>
+class ComboBoxWrapper extends PolymerElement {
+  static get template() {
+    return html`
       <vaadin-combo-box id="combobox" items="[[items]]">
         <template>
-          index: [[index]]
-          item: [[item]]
-          selected: [[selected]]
-          focused: [[focused]]
-          parentProperty: [[parentProperty]]
-          parentProperty.foo: [[parentProperty.foo]]
-          parentMethod: [[parentMethod()]]
-          <button on-tap="parentEventHandler"></button>
+          index: [[index]] item: [[item]] selected: [[selected]] focused: [[focused]] parentProperty: [[parentProperty]]
+          parentProperty.foo: [[parentProperty.foo]] parentMethod: [[parentMethod()]]
+          <button on-click="parentEventHandler"></button>
         </template>
       </vaadin-combo-box>
-    </template>
-    <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import './common-imports.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
-Polymer({
-  is: 'x-scope',
-  properties: {
-    items: Array
-  },
-  parentMethod: () => {
+    `;
+  }
+
+  static get properties() {
+    return {
+      items: Array
+    };
+  }
+
+  parentMethod() {
     return 'quux';
-  },
-  parentEventHandler: () => { }
-});
-</script>
-  </dom-module>
+  }
 
-  <test-fixture id="scope">
-    <template>
-      <x-scope></x-scope>
-    </template>
-  </test-fixture>
+  parentEventHandler() {
+    // do nothing
+  }
+}
 
-  <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import './common-imports.js';
-import { flush } from '@polymer/polymer/lib/utils/flush.js';
+customElements.define('combo-box-wrapper', ComboBoxWrapper);
+
 describe('item template', () => {
   let scope, combobox, firstItem;
 
   beforeEach(() => {
-    scope = fixture('scope');
+    scope = fixtureSync('<combo-box-wrapper></combo-box-wrapper>');
     combobox = scope.$.combobox;
     combobox.items = ['foo', 'bar'];
     combobox.open();
@@ -91,7 +72,7 @@ describe('item template', () => {
   });
 
   it('should update focused property', () => {
-    MockInteractions.keyDownOn(combobox.inputElement, 40); // Press arrow down key
+    keyDownOn(combobox.inputElement, 40); // Press arrow down key
     expect(firstItem.shadowRoot.innerHTML).to.contain('focused: true');
   });
 
@@ -101,7 +82,7 @@ describe('item template', () => {
   });
 
   it('should forward parent paths', () => {
-    scope.parentProperty = {foo: ''};
+    scope.parentProperty = { foo: '' };
     scope.set('parentProperty.foo', 'bar');
     expect(firstItem.shadowRoot.innerHTML).to.contain('parentProperty.foo: bar');
   });
@@ -112,7 +93,7 @@ describe('item template', () => {
 
   it('should support event handlers in parent scope', () => {
     const spy = sinon.spy(scope, 'parentEventHandler');
-    MockInteractions.tap(firstItem.shadowRoot.querySelector('button'));
+    firstItem.shadowRoot.querySelector('button').click();
     expect(spy.calledOnce).to.be.true;
   });
 
@@ -123,7 +104,7 @@ describe('item template', () => {
 
   it('should have block style for the content part', () => {
     const content = firstItem.shadowRoot.querySelector('[part="content"]');
-    expect(getComputedStyle(content).getPropertyValue('display')).to.equal('block');
+    expect(getComputedStyle(content).display).to.equal('block');
   });
 
   it('should preserve and propagate dir to the items', () => {
@@ -133,8 +114,3 @@ describe('item template', () => {
     expect(firstItem.getAttribute('dir')).to.eql('ltr');
   });
 });
-</script>
-
-</body>
-
-</html>
