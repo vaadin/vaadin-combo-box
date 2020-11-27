@@ -8,20 +8,18 @@ import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 import { DisableUpgradeMixin } from '@polymer/polymer/lib/mixins/disable-upgrade-mixin.js';
 import { OverlayElement } from '@vaadin/vaadin-overlay/src/vaadin-overlay.js';
 import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
+import { registerStyles, css } from '@vaadin/vaadin-themable-mixin/register-styles.js';
 
-const $_documentContainer = document.createElement('template');
+registerStyles(
+  'vaadin-combo-box-overlay',
+  css`
+    :host {
+      width: var(--vaadin-combo-box-overlay-width, var(--_vaadin-combo-box-overlay-default-width, auto));
+    }
+  `,
+  { moduleId: 'vaadin-combo-box-overlay-styles' }
+);
 
-$_documentContainer.innerHTML = `<dom-module id="vaadin-combo-box-overlay-styles" theme-for="vaadin-combo-box-overlay">
-  <template>
-    <style>
-      :host {
-        width: var(--vaadin-combo-box-overlay-width, var(--_vaadin-combo-box-overlay-default-width, auto));
-      }
-    </style>
-  </template>
-</dom-module>`;
-
-document.head.appendChild($_documentContainer.content);
 /**
  * The overlay element.
  *
