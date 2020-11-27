@@ -21,13 +21,6 @@ registerStyles(
       }
     }
 
-    /* TODO: workaround ShadyCSS issue when using inside of the dom-if */
-    :host([opened]) {
-      --iron-list-items-container_-_border-width: var(--lumo-space-xs);
-      --iron-list-items-container_-_border-style: solid;
-      --iron-list-items-container_-_border-color: transparent;
-    }
-
     /* Loading state */
 
     /* When items are empty, the spinner needs some room */

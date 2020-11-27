@@ -242,13 +242,6 @@ class ComboBoxDropdownWrapperElement extends PolymerElement {
 
     // Prevent blurring the input when clicking inside the overlay.
     this.$.dropdown.$.overlay.addEventListener('mousedown', e => e.preventDefault());
-
-    // IE11: when scrolling with mouse, the focus goes to the scroller.
-    // This causes the overlay closing due to defocusing the input field.
-    // Prevent focusing the scroller by setting `unselectable="on"`.
-    if (/Trident/.test(navigator.userAgent)) {
-      this._scroller.setAttribute('unselectable', 'on');
-    }
   }
 
   _templateChanged(e) {

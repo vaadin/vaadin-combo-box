@@ -326,25 +326,6 @@ class ComboBoxElement extends
     return ['_updateAriaExpanded(opened)'];
   }
 
-  /**
-   * @param {string} name
-   * @param {?string} oldValue
-   * @param {?string} newValue
-   * @protected
-   */
-  attributeChangedCallback(name, oldValue, newValue) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    // Safari has an issue with repainting shadow root element styles when a host attribute changes.
-    // Need this workaround (toggle any inline css property on and off) until the issue gets fixed.
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isSafari && this.root) {
-      Array.prototype.forEach.call(this.root.querySelectorAll('*'), el => {
-        el.style['-webkit-backface-visibility'] = 'visible';
-        el.style['-webkit-backface-visibility'] = '';
-      });
-    }
-  }
-
   /** @protected */
   ready() {
     super.ready();
