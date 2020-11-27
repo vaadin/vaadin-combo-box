@@ -156,7 +156,7 @@ interface ComboBoxMixin {
    * Closes the dropdown list.
    */
   close(): void;
-  _isEventKey(event: KeyboardEvent, key: string): boolean;
+
   _onEscape(e: KeyboardEvent): void;
 
   /**

@@ -8,7 +8,6 @@ import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
 import { templatize } from '@polymer/polymer/lib/utils/templatize.js';
 import { IronA11yAnnouncer } from '@polymer/iron-a11y-announcer/iron-a11y-announcer.js';
-import { IronA11yKeysBehavior } from '@polymer/iron-a11y-keys-behavior/iron-a11y-keys-behavior.js';
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer.js';
 import { ComboBoxPlaceholder } from './vaadin-combo-box-placeholder.js';
 
@@ -423,35 +422,25 @@ export const ComboBoxMixin = subclass => class VaadinComboBoxMixinElement extend
    * @private
    */
   _onKeyDown(e) {
-    if (this._isEventKey(e, 'down')) {
+    if (e.keyCode === 40) {
       this._closeOnBlurIsPrevented = true;
       this._onArrowDown();
       this._closeOnBlurIsPrevented = false;
 
       // prevent caret from moving
       e.preventDefault();
-    } else if (this._isEventKey(e, 'up')) {
+    } else if (e.keyCode === 38) {
       this._closeOnBlurIsPrevented = true;
       this._onArrowUp();
       this._closeOnBlurIsPrevented = false;
 
       // prevent caret from moving
       e.preventDefault();
-    } else if (this._isEventKey(e, 'enter')) {
+    } else if (e.keyCode === 13) {
       this._onEnter(e);
-    } else if (this._isEventKey(e, 'esc')) {
+    } else if (e.keyCode === 27) {
       this._onEscape(e);
     }
-  }
-
-  /**
-   * @param {!KeyboardEvent} event
-   * @param {string} key
-   * @return {boolean}
-   * @protected
-   */
-  _isEventKey(event, key) {
-    return IronA11yKeysBehavior.keyboardEventMatchesKeys(event, key);
   }
 
   /** @private */

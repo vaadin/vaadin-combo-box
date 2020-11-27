@@ -25,7 +25,6 @@
     "theme"
   ],
   "dependencies": {
-    "@polymer/iron-a11y-keys-behavior": "^3.0.0",
     "@polymer/iron-a11y-announcer": "^3.0.0",
     "@polymer/iron-list": "^3.0.0",
     "@polymer/iron-resizable-behavior": "^3.0.0",

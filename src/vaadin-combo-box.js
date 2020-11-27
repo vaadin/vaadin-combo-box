@@ -360,7 +360,7 @@ class ComboBoxElement extends
     // instead of just "this", otherwise keyboard navigation behaviour
     // breaks a bit on Safari and some related tests fail.
     this.inputElement.addEventListener('keydown', e => {
-      if (this._isEventKey(e, 'esc')) {
+      if (e.keyCode === 27) {
         this._stopPropagation(e);
         // Trigger _onEscape method of vaadin-combo-box-mixin because
         // bubbling phase is not reached.
