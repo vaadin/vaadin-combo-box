@@ -511,11 +511,7 @@ export const ComboBoxMixin = (subclass) =>
       // the next focusable element instead of the combo-box itself.
       // Checking the focused property here is enough instead of checking the activeElement.
       if (this.hasAttribute('focused') && input && input.setSelectionRange) {
-        try {
-          input.setSelectionRange(start, end);
-        } catch (ignore) {
-          // IE11 randomly fails when running tests in Sauce.
-        }
+        input.setSelectionRange(start, end);
       }
     }
 
