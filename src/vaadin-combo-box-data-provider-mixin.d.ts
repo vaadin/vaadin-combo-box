@@ -1,4 +1,4 @@
-export { ComboBoxDataProviderMixin };
+import { ComboBoxDataProvider } from './interfaces';
 
 declare function ComboBoxDataProviderMixin<T extends new (...args: any[]) => {}>(
   base: T
@@ -7,8 +7,6 @@ declare function ComboBoxDataProviderMixin<T extends new (...args: any[]) => {}>
 interface ComboBoxDataProviderMixinConstructor {
   new (...args: any[]): ComboBoxDataProviderMixin;
 }
-
-export { ComboBoxDataProviderMixinConstructor };
 
 interface ComboBoxDataProviderMixin {
   /**
@@ -36,7 +34,6 @@ interface ComboBoxDataProviderMixin {
    *   - `size` Total number of items.
    */
   dataProvider: ComboBoxDataProvider | null | undefined;
-  ready(): void;
 
   /**
    * Clears the cached pages and reloads data from dataprovider when needed.
@@ -44,4 +41,4 @@ interface ComboBoxDataProviderMixin {
   clearCache(): void;
 }
 
-import { ComboBoxDataProvider } from '../@types/interfaces';
+export { ComboBoxDataProviderMixin, ComboBoxDataProviderMixinConstructor };

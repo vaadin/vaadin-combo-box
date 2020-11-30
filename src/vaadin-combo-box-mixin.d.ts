@@ -1,12 +1,10 @@
-export { ComboBoxMixin };
+import { ComboBoxItem, ComboBoxRenderer } from '../@types/interfaces';
 
 declare function ComboBoxMixin<T extends new (...args: any[]) => {}>(base: T): T & ComboBoxMixinConstructor;
 
 interface ComboBoxMixinConstructor {
   new (...args: any[]): ComboBoxMixin;
 }
-
-export { ComboBoxMixinConstructor };
 
 interface ComboBoxMixin {
   readonly _propertyForValue: string;
@@ -82,6 +80,7 @@ interface ComboBoxMixin {
    * When set to `true`, "loading" attribute is added to host and the overlay element.
    */
   loading: boolean;
+
   _focusedIndex: number;
 
   /**
@@ -137,10 +136,12 @@ interface ComboBoxMixin {
    * Set to true if the value is invalid.
    */
   invalid: boolean;
+
   _toggleElement: HTMLElement | undefined;
+
   _clearElement: HTMLElement | undefined;
+
   _inputElementValue: string | null | undefined;
-  ready(): void;
 
   /**
    * Manually invoke existing renderer.
@@ -173,6 +174,7 @@ interface ComboBoxMixin {
    * Filtering and items handling
    */
   _inputValueChanged(e: Event): void;
+
   _revertInputValue(): void;
 
   /**
@@ -188,12 +190,14 @@ interface ComboBoxMixin {
    * You can override the `checkValidity` method for custom validations.
    */
   checkValidity(): boolean | undefined;
+
   _ensureTemplatized(): void;
+
   _preventInputBlur(): void;
+
   _restoreInputBlur(): void;
+
   _stopPropagation(e: Event): void;
 }
 
-import { ComboBoxRenderer } from '../@types/interfaces';
-
-import { ComboBoxItem } from '../@types/interfaces';
+export { ComboBoxMixin, ComboBoxMixinConstructor };

@@ -49,7 +49,9 @@ import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixi
  */
 declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))) {
   readonly _propertyForValue: string;
+
   _inputElementValue: string;
+
   readonly focused: boolean;
 
   /**
@@ -58,6 +60,7 @@ declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMix
    * @attr {string} attr-for-value
    */
   attrForValue: string;
+
   readonly inputElement: Element | undefined;
 }
 
