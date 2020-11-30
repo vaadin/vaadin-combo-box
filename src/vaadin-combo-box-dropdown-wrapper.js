@@ -66,8 +66,7 @@ class ComboBoxDropdownWrapperElement extends PolymerElement {
                   focused="[[_isItemFocused(_focusedIndex,index)]]"
                   tabindex="-1"
                   theme$="[[theme]]"
-                >
-                </vaadin-combo-box-item>
+                ></vaadin-combo-box-item>
               </template>
             </iron-list>
           </div>

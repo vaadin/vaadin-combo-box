@@ -241,8 +241,7 @@ class ComboBoxElement extends ElementMixin(
         _item-label-path="[[itemLabelPath]]"
         loading="[[loading]]"
         theme="[[theme]]"
-      >
-      </vaadin-combo-box-dropdown-wrapper>
+      ></vaadin-combo-box-dropdown-wrapper>
     `;
   }
 
