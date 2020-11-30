@@ -1,6 +1,11 @@
 name: sauce
 
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
 
 jobs:
   unit-tests:
