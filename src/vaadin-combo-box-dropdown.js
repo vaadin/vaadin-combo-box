@@ -65,23 +65,29 @@ customElements.define(ComboBoxOverlayElement.is, ComboBoxOverlayElement);
  *
  * @private
  */
-class ComboBoxDropdownElement extends DisableUpgradeMixin(
-  mixinBehaviors(IronResizableBehavior, PolymerElement)) {
+class ComboBoxDropdownElement extends DisableUpgradeMixin(mixinBehaviors(IronResizableBehavior, PolymerElement)) {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: block;
-      }
+      <style>
+        :host {
+          display: block;
+        }
 
-      :host > #overlay {
-        display: none;
-      }
-    </style>
-    <vaadin-combo-box-overlay id="overlay" hidden\$="[[hidden]]" opened="[[opened]]" template="{{template}}" style="align-items: stretch; margin: 0;" theme\$="[[theme]]">
-      <slot></slot>
-    </vaadin-combo-box-overlay>
-`;
+        :host > #overlay {
+          display: none;
+        }
+      </style>
+      <vaadin-combo-box-overlay
+        id="overlay"
+        hidden$="[[hidden]]"
+        opened="[[opened]]"
+        template="{{template}}"
+        style="align-items: stretch; margin: 0;"
+        theme$="[[theme]]"
+      >
+        <slot></slot>
+      </vaadin-combo-box-overlay>
+    `;
   }
 
   static get is() {
@@ -137,7 +143,7 @@ class ComboBoxDropdownElement extends DisableUpgradeMixin(
     super.ready();
 
     // Preventing the default modal behaviour of the overlay on input clicking
-    this.$.overlay.addEventListener('vaadin-overlay-outside-click', e => {
+    this.$.overlay.addEventListener('vaadin-overlay-outside-click', (e) => {
       e.preventDefault();
     });
   }
@@ -182,14 +188,13 @@ class ComboBoxDropdownElement extends DisableUpgradeMixin(
 
       window.addEventListener('scroll', this._boundSetPosition, true);
       document.addEventListener('click', this._boundOutsideClickListener, true);
-      this.dispatchEvent(new CustomEvent('vaadin-combo-box-dropdown-opened', {bubbles: true, composed: true}));
+      this.dispatchEvent(new CustomEvent('vaadin-combo-box-dropdown-opened', { bubbles: true, composed: true }));
     } else if (!this.__emptyItems) {
       window.removeEventListener('scroll', this._boundSetPosition, true);
       document.removeEventListener('click', this._boundOutsideClickListener, true);
-      this.dispatchEvent(new CustomEvent('vaadin-combo-box-dropdown-closed', {bubbles: true, composed: true}));
+      this.dispatchEvent(new CustomEvent('vaadin-combo-box-dropdown-closed', { bubbles: true, composed: true }));
     }
   }
-
 
   // We need to listen on 'click' event and capture it and close the overlay before
   // propagating the event to the listener in the button. Otherwise, if the clicked button would call
@@ -204,8 +209,9 @@ class ComboBoxDropdownElement extends DisableUpgradeMixin(
   _isPositionFixed(element) {
     const offsetParent = this._getOffsetParent(element);
 
-    return window.getComputedStyle(element).position === 'fixed' ||
-      (offsetParent && this._isPositionFixed(offsetParent));
+    return (
+      window.getComputedStyle(element).position === 'fixed' || (offsetParent && this._isPositionFixed(offsetParent))
+    );
   }
 
   _getOffsetParent(element) {
@@ -227,13 +233,10 @@ class ComboBoxDropdownElement extends DisableUpgradeMixin(
   }
 
   _shouldAlignAbove(targetRect) {
-    const spaceBelow = (
-      window.innerHeight -
-      targetRect.bottom -
-      Math.min(document.body.scrollTop, 0)
-    ) / window.innerHeight;
+    const spaceBelow =
+      (window.innerHeight - targetRect.bottom - Math.min(document.body.scrollTop, 0)) / window.innerHeight;
 
-    return spaceBelow < 0.30;
+    return spaceBelow < 0.3;
   }
 
   _setOverlayWidth() {
@@ -266,8 +269,8 @@ class ComboBoxDropdownElement extends DisableUpgradeMixin(
 
     const overlayRect = this.$.overlay.getBoundingClientRect();
     this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
-    this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
-      this._verticalOffset(overlayRect, targetRect);
+    this._translateY =
+      targetRect.top - overlayRect.top + (this._translateY || 0) + this._verticalOffset(overlayRect, targetRect);
 
     const _devicePixelRatio = window.devicePixelRatio || 1;
     this._translateX = Math.round(this._translateX * _devicePixelRatio) / _devicePixelRatio;

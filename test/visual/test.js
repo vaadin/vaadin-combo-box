@@ -23,7 +23,7 @@ describe('vaadin-combo-box', () => {
         .assertView(`${theme}-clear-button`, locator);
     });
 
-    ['ltr', 'rtl'].forEach(dir => {
+    ['ltr', 'rtl'].forEach((dir) => {
       it(`${theme}-dropdown-${dir}`, function () {
         return this.browser
           .url(`dropdown.html?theme=${theme}&dir=${dir}`)

@@ -57,23 +57,30 @@ import './vaadin-combo-box-dropdown-wrapper.js';
  * @mixes ComboBoxMixin
  * @mixes ThemableMixin
  */
-class ComboBoxLightElement extends
-  ThemableMixin(
-    ComboBoxDataProviderMixin(
-      ComboBoxMixin(PolymerElement))) {
+class ComboBoxLightElement extends ThemableMixin(ComboBoxDataProviderMixin(ComboBoxMixin(PolymerElement))) {
   static get template() {
     return html`
-    <style>
-      :host([opened]) {
-        pointer-events: auto;
-      }
-    </style>
+      <style>
+        :host([opened]) {
+          pointer-events: auto;
+        }
+      </style>
 
-    <slot></slot>
+      <slot></slot>
 
-    <vaadin-combo-box-dropdown-wrapper id="overlay" opened="[[opened]]" position-target="[[inputElement]]" renderer="[[renderer]]" _focused-index="[[_focusedIndex]]" _item-id-path="[[itemIdPath]]" _item-label-path="[[itemLabelPath]]" loading="[[loading]]" theme="[[theme]]">
-    </vaadin-combo-box-dropdown-wrapper>
-`;
+      <vaadin-combo-box-dropdown-wrapper
+        id="overlay"
+        opened="[[opened]]"
+        position-target="[[inputElement]]"
+        renderer="[[renderer]]"
+        _focused-index="[[_focusedIndex]]"
+        _item-id-path="[[itemIdPath]]"
+        _item-label-path="[[itemLabelPath]]"
+        loading="[[loading]]"
+        theme="[[theme]]"
+      >
+      </vaadin-combo-box-dropdown-wrapper>
+    `;
   }
 
   static get is() {
@@ -116,7 +123,7 @@ class ComboBoxLightElement extends
     this._clearElement = this.querySelector('.clear-button');
 
     if (this._clearElement) {
-      this._clearElement.addEventListener('mousedown', e => {
+      this._clearElement.addEventListener('mousedown', (e) => {
         e.preventDefault(); // Prevent native focus changes
         // _focusableElement is needed for paper-input
         (this.inputElement._focusableElement || this.inputElement).focus();

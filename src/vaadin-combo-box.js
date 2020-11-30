@@ -174,44 +174,72 @@ import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixi
  * @mixes ComboBoxMixin
  * @mixes ThemableMixin
  */
-class ComboBoxElement extends
-  ElementMixin(
-    ControlStateMixin(
-      ThemableMixin(
-        ComboBoxDataProviderMixin(
-          ComboBoxMixin(PolymerElement))))) {
+class ComboBoxElement extends ElementMixin(
+  ControlStateMixin(ThemableMixin(ComboBoxDataProviderMixin(ComboBoxMixin(PolymerElement))))
+) {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: inline-block;
-      }
+      <style>
+        :host {
+          display: inline-block;
+        }
 
-      :host([hidden]) {
-        display: none !important;
-      }
+        :host([hidden]) {
+          display: none !important;
+        }
 
-      :host([opened]) {
-        pointer-events: auto;
-      }
+        :host([opened]) {
+          pointer-events: auto;
+        }
 
-      [part="text-field"] {
-        width: 100%;
-        min-width: 0;
-      }
-    </style>
+        [part='text-field'] {
+          width: 100%;
+          min-width: 0;
+        }
+      </style>
 
-    <vaadin-text-field part="text-field" id="input" pattern="[[pattern]]" prevent-invalid-input="[[preventInvalidInput]]" value="{{_inputElementValue}}" autocomplete="off" invalid="[[invalid]]" label="[[label]]" name="[[name]]" placeholder="[[placeholder]]" required="[[required]]" disabled="[[disabled]]" readonly="[[readonly]]" helper-text="[[helperText]]" error-message="[[errorMessage]]" autocapitalize="none" autofocus="[[autofocus]]" on-change="_stopPropagation" on-input="_inputValueChanged" clear-button-visible="[[clearButtonVisible]]" theme\$="[[theme]]">
-      <slot name="prefix" slot="prefix"></slot>
-      <slot name="helper" slot="helper">[[helperText]]</slot>
+      <vaadin-text-field
+        part="text-field"
+        id="input"
+        pattern="[[pattern]]"
+        prevent-invalid-input="[[preventInvalidInput]]"
+        value="{{_inputElementValue}}"
+        autocomplete="off"
+        invalid="[[invalid]]"
+        label="[[label]]"
+        name="[[name]]"
+        placeholder="[[placeholder]]"
+        required="[[required]]"
+        disabled="[[disabled]]"
+        readonly="[[readonly]]"
+        helper-text="[[helperText]]"
+        error-message="[[errorMessage]]"
+        autocapitalize="none"
+        autofocus="[[autofocus]]"
+        on-change="_stopPropagation"
+        on-input="_inputValueChanged"
+        clear-button-visible="[[clearButtonVisible]]"
+        theme$="[[theme]]"
+      >
+        <slot name="prefix" slot="prefix"></slot>
+        <slot name="helper" slot="helper">[[helperText]]</slot>
 
-      <div part="toggle-button" id="toggleButton" slot="suffix" role="button" aria-label="Toggle"></div>
+        <div part="toggle-button" id="toggleButton" slot="suffix" role="button" aria-label="Toggle"></div>
+      </vaadin-text-field>
 
-    </vaadin-text-field>
-
-    <vaadin-combo-box-dropdown-wrapper id="overlay" opened="[[opened]]" renderer="[[renderer]]" position-target="[[_getPositionTarget()]]" _focused-index="[[_focusedIndex]]" _item-id-path="[[itemIdPath]]" _item-label-path="[[itemLabelPath]]" loading="[[loading]]" theme="[[theme]]">
-    </vaadin-combo-box-dropdown-wrapper>
-`;
+      <vaadin-combo-box-dropdown-wrapper
+        id="overlay"
+        opened="[[opened]]"
+        renderer="[[renderer]]"
+        position-target="[[_getPositionTarget()]]"
+        _focused-index="[[_focusedIndex]]"
+        _item-id-path="[[itemIdPath]]"
+        _item-label-path="[[itemLabelPath]]"
+        loading="[[loading]]"
+        theme="[[theme]]"
+      >
+      </vaadin-combo-box-dropdown-wrapper>
+    `;
   }
 
   constructor() {
@@ -340,14 +368,18 @@ class ComboBoxElement extends
     // We need to set this listener for "this.inputElement"
     // instead of just "this", otherwise keyboard navigation behaviour
     // breaks a bit on Safari and some related tests fail.
-    this.inputElement.addEventListener('keydown', e => {
-      if (e.keyCode === 27) {
-        this._stopPropagation(e);
-        // Trigger _onEscape method of vaadin-combo-box-mixin because
-        // bubbling phase is not reached.
-        this._onEscape(e);
-      }
-    }, true);
+    this.inputElement.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.keyCode === 27) {
+          this._stopPropagation(e);
+          // Trigger _onEscape method of vaadin-combo-box-mixin because
+          // bubbling phase is not reached.
+          this._onEscape(e);
+        }
+      },
+      true
+    );
 
     this._nativeInput.setAttribute('role', 'combobox');
     this._nativeInput.setAttribute('aria-autocomplete', 'list');

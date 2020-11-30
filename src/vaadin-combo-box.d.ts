@@ -1,12 +1,14 @@
-import {ControlStateMixin} from '@vaadin/vaadin-control-state-mixin/vaadin-control-state-mixin.js';
+import { TextFieldElement } from '@vaadin/vaadin-text-field/vaadin-text-field';
 
-import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
+import { ControlStateMixin } from '@vaadin/vaadin-control-state-mixin/vaadin-control-state-mixin.js';
 
-import {ComboBoxMixin} from './vaadin-combo-box-mixin.js';
+import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import {ComboBoxDataProviderMixin} from './vaadin-combo-box-data-provider-mixin.js';
+import { ComboBoxMixin } from './vaadin-combo-box-mixin.js';
 
-import {ElementMixin} from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
+import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixin.js';
+
+import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 
 /**
  * `<vaadin-combo-box>` is a combo box element combining a dropdown list with an
@@ -163,31 +165,29 @@ import {ElementMixin} from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  */
-declare class ComboBoxElement extends
-  ElementMixin(
-  ControlStateMixin(
-  ComboBoxDataProviderMixin(
-  ComboBoxMixin(
-  ThemableMixin(
-  HTMLElement))))) {
-
+declare class ComboBoxElement extends ElementMixin(
+  ControlStateMixin(ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))))
+) {
   /**
    * Focusable element used by vaadin-control-state-mixin
    */
   readonly focusElement: HTMLElement;
+
   autofocus: boolean;
 
   /**
    * Set to true to disable this input.
    */
   disabled: boolean;
+
   readonly: boolean;
-  readonly inputElement: TextFieldElement|undefined;
+
+  readonly inputElement: TextFieldElement | undefined;
 
   /**
    * The label for this element.
    */
-  label: string|null|undefined;
+  label: string | null | undefined;
 
   /**
    * Set to true to mark the input as required.
@@ -198,18 +198,18 @@ declare class ComboBoxElement extends
    * Set to true to prevent the user from entering invalid input.
    * @attr {boolean} prevent-invalid-input
    */
-  preventInvalidInput: boolean|null|undefined;
+  preventInvalidInput: boolean | null | undefined;
 
   /**
    * A pattern to validate the `input` with.
    */
-  pattern: string|null|undefined;
+  pattern: string | null | undefined;
 
   /**
    * The error message to display when the input is invalid.
    * @attr {string} error-message
    */
-  errorMessage: string|null|undefined;
+  errorMessage: string | null | undefined;
 
   /**
    * A placeholder string in addition to the label.
@@ -220,7 +220,7 @@ declare class ComboBoxElement extends
    * String used for the helper text.
    * @attr {string} helper-text
    */
-  helperText: string|null|undefined;
+  helperText: string | null | undefined;
 
   /**
    * Set to true to display the clear icon which clears the input.
@@ -230,12 +230,10 @@ declare class ComboBoxElement extends
 }
 
 declare global {
-
   interface HTMLElementTagNameMap {
-    "vaadin-combo-box": ComboBoxElement;
+    'vaadin-combo-box': ComboBoxElement;
   }
 }
 
-export {ComboBoxElement};
+export { ComboBoxElement };
 
-import {TextFieldElement} from '@vaadin/vaadin-text-field/vaadin-text-field';

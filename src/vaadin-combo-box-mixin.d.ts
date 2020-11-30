@@ -1,12 +1,12 @@
-export {ComboBoxMixin};
+export { ComboBoxMixin };
 
 declare function ComboBoxMixin<T extends new (...args: any[]) => {}>(base: T): T & ComboBoxMixinConstructor;
 
 interface ComboBoxMixinConstructor {
-  new(...args: any[]): ComboBoxMixin;
+  new (...args: any[]): ComboBoxMixin;
 }
 
-export {ComboBoxMixinConstructor};
+export { ComboBoxMixinConstructor };
 
 interface ComboBoxMixin {
   readonly _propertyForValue: string;
@@ -20,7 +20,7 @@ interface ComboBoxMixin {
    * Set true to prevent the overlay from opening automatically.
    * @attr {boolean} auto-open-disabled
    */
-  autoOpenDisabled: boolean|null|undefined;
+  autoOpenDisabled: boolean | null | undefined;
 
   /**
    * Set to true to disable this element.
@@ -43,13 +43,13 @@ interface ComboBoxMixin {
    *   - `model.index` The index of the rendered item.
    *   - `model.item` The item.
    */
-  renderer: ComboBoxRenderer|null|undefined;
+  renderer: ComboBoxRenderer | null | undefined;
 
   /**
    * A full set of items to filter the visible options from.
    * The items can be of either `String` or `Object` type.
    */
-  items: Array<ComboBoxItem|string>|undefined;
+  items: Array<ComboBoxItem | string> | undefined;
 
   /**
    * If `true`, the user can input a value that is not present in the items list.
@@ -65,7 +65,7 @@ interface ComboBoxMixin {
    * can be assigned directly to omit the internal filtering functionality.
    * The items can be of either `String` or `Object` type.
    */
-  filteredItems: Array<ComboBoxItem|string>|undefined;
+  filteredItems: Array<ComboBoxItem | string> | undefined;
 
   /**
    * The `String` value for the selected item of the combo box. Provides
@@ -92,7 +92,7 @@ interface ComboBoxMixin {
   /**
    * The selected item from the `items` array.
    */
-  selectedItem: ComboBoxItem|string|null|undefined;
+  selectedItem: ComboBoxItem | string | null | undefined;
 
   /**
    * Path for label of the item. If `items` is an array of objects, the
@@ -126,20 +126,20 @@ interface ComboBoxMixin {
    * `dataProvider` callback).
    * @attr {string} item-id-path
    */
-  itemIdPath: string|null|undefined;
+  itemIdPath: string | null | undefined;
 
   /**
    * The name of this element.
    */
-  name: string|null|undefined;
+  name: string | null | undefined;
 
   /**
    * Set to true if the value is invalid.
    */
   invalid: boolean;
-  _toggleElement: HTMLElement|undefined;
-  _clearElement: HTMLElement|undefined;
-  _inputElementValue: string|null|undefined;
+  _toggleElement: HTMLElement | undefined;
+  _clearElement: HTMLElement | undefined;
+  _inputElementValue: string | null | undefined;
   ready(): void;
 
   /**
@@ -187,13 +187,13 @@ interface ComboBoxMixin {
    *
    * You can override the `checkValidity` method for custom validations.
    */
-  checkValidity(): boolean|undefined;
+  checkValidity(): boolean | undefined;
   _ensureTemplatized(): void;
   _preventInputBlur(): void;
   _restoreInputBlur(): void;
   _stopPropagation(e: Event): void;
 }
 
-import {ComboBoxRenderer} from '../@types/interfaces';
+import { ComboBoxRenderer } from '../@types/interfaces';
 
-import {ComboBoxItem} from '../@types/interfaces';
+import { ComboBoxItem } from '../@types/interfaces';

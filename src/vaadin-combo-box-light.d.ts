@@ -1,8 +1,8 @@
-import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
+import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import {ComboBoxMixin} from './vaadin-combo-box-mixin.js';
+import { ComboBoxMixin } from './vaadin-combo-box-mixin.js';
 
-import {ComboBoxDataProviderMixin} from './vaadin-combo-box-data-provider-mixin.js';
+import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixin.js';
 
 /**
  * `<vaadin-combo-box-light>` is a customizable version of the `<vaadin-combo-box>` providing
@@ -47,11 +47,7 @@ import {ComboBoxDataProviderMixin} from './vaadin-combo-box-data-provider-mixin.
  * </vaadin-combo-box-light>
  * ```
  */
-declare class ComboBoxLightElement extends
-  ComboBoxDataProviderMixin(
-  ComboBoxMixin(
-  ThemableMixin(
-  HTMLElement))) {
+declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))) {
   readonly _propertyForValue: string;
   _inputElementValue: string;
   readonly focused: boolean;
@@ -62,14 +58,13 @@ declare class ComboBoxLightElement extends
    * @attr {string} attr-for-value
    */
   attrForValue: string;
-  readonly inputElement: Element|undefined;
+  readonly inputElement: Element | undefined;
 }
 
 declare global {
-
   interface HTMLElementTagNameMap {
-    "vaadin-combo-box-light": ComboBoxLightElement;
+    'vaadin-combo-box-light': ComboBoxLightElement;
   }
 }
 
-export {ComboBoxLightElement};
+export { ComboBoxLightElement };

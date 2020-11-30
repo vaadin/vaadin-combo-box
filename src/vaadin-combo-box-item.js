@@ -33,17 +33,17 @@ import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
 class ComboBoxItemElement extends ThemableMixin(DirMixin(PolymerElement)) {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: block;
-      }
+      <style>
+        :host {
+          display: block;
+        }
 
-      :host([hidden]) {
-         display: none;
-      }
-    </style>
-    <div part="content" id="content"></div>
-`;
+        :host([hidden]) {
+          display: none;
+        }
+      </style>
+      <div part="content" id="content"></div>
+    `;
   }
 
   static get is() {
