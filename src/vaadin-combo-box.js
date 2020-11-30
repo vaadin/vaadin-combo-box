@@ -332,10 +332,14 @@ class ComboBoxElement extends ElementMixin(
         value: ''
       },
 
-      /** @type {boolean} */
+      /**
+       * Set to true to prevent the user from picking a value or typing in the input.
+       * @type {boolean}
+       */
       readonly: {
         type: Boolean,
-        value: false
+        value: false,
+        reflectToAttribute: true
       },
 
       /**

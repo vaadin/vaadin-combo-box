@@ -180,6 +180,9 @@ declare class ComboBoxElement extends ElementMixin(
    */
   disabled: boolean;
 
+  /**
+   * Set to true to prevent the user from picking a value or typing in the input.
+   */
   readonly: boolean;
 
   readonly inputElement: TextFieldElement | undefined;
