@@ -1,4 +1,4 @@
-import { ComboBoxItem, ComboBoxRenderer } from '../@types/interfaces';
+import { ComboBoxItem, ComboBoxRenderer } from './interfaces';
 
 declare function ComboBoxMixin<T extends new (...args: any[]) => {}>(base: T): T & ComboBoxMixinConstructor;
 

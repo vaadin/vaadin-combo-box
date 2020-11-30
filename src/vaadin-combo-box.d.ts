@@ -10,6 +10,8 @@ import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixi
 
 import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 
+import { ComboBoxEventMap } from './interfaces';
+
 /**
  * `<vaadin-combo-box>` is a combo box element combining a dropdown list with an
  * input field for filtering the list of items. If you want to replace the default
@@ -164,6 +166,12 @@ import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.
  * propagated to the internal themable components listed above.
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
+ *
+ * @fires {CustomEvent<string>} filter-changed
+ * @fires {CustomEvent<boolean>} invalid-changed
+ * @fires {CustomEvent<boolean>} opened-change
+ * @fires {CustomEvent<unknown>} selected-item-changed
+ * @fires {CustomEvent<string>} value-changed
  */
 declare class ComboBoxElement extends ElementMixin(
   ControlStateMixin(ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))))
@@ -230,6 +238,18 @@ declare class ComboBoxElement extends ElementMixin(
    * @attr {boolean} clear-button-visible
    */
   clearButtonVisible: boolean;
+
+  addEventListener<K extends keyof ComboBoxEventMap>(
+    type: K,
+    listener: (this: ComboBoxElement, ev: ComboBoxEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof ComboBoxEventMap>(
+    type: K,
+    listener: (this: ComboBoxElement, ev: ComboBoxEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

@@ -52,6 +52,13 @@ import './vaadin-combo-box-dropdown-wrapper.js';
  *   </paper-input>
  * </vaadin-combo-box-light>
  * ```
+ *
+ * @fires {CustomEvent<string>} filter-changed
+ * @fires {CustomEvent<boolean>} invalid-changed
+ * @fires {CustomEvent<boolean>} opened-change
+ * @fires {CustomEvent<unknown>} selected-item-changed
+ * @fires {CustomEvent<string>} value-changed
+ *
  * @extends HTMLElement
  * @mixes ComboBoxDataProviderMixin
  * @mixes ComboBoxMixin

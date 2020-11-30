@@ -26,7 +26,7 @@
   "scripts": {
     "debug": "web-test-runner test/*.test.js --watch",
     "check-version": "magi check-version",
-    "lint": "npm run lint:js && npm run lint:css",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:types",
     "lint:js": "eslint src theme test",
     "lint:css": "stylelint src/*.js theme/**/*-styles.js",
     "lint:types": "tsc",
@@ -76,6 +76,7 @@
     "sinon": "^9.2.0",
     "stylelint": "^13.7.2",
     "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-vaadin": "^0.2.6"
+    "stylelint-config-vaadin": "^0.2.6",
+    "typescript": "^4.1.2"
   }
 }

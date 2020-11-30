@@ -4,6 +4,8 @@ import { ComboBoxMixin } from './vaadin-combo-box-mixin.js';
 
 import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixin.js';
 
+import { ComboBoxEventMap } from './interfaces';
+
 /**
  * `<vaadin-combo-box-light>` is a customizable version of the `<vaadin-combo-box>` providing
  * only the dropdown functionality and leaving the input field definition to the user.
@@ -46,6 +48,12 @@ import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixi
  *   </paper-input>
  * </vaadin-combo-box-light>
  * ```
+ *
+ * @fires {CustomEvent<string>} filter-changed
+ * @fires {CustomEvent<boolean>} invalid-changed
+ * @fires {CustomEvent<boolean>} opened-change
+ * @fires {CustomEvent<unknown>} selected-item-changed
+ * @fires {CustomEvent<string>} value-changed
  */
 declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))) {
   readonly _propertyForValue: string;
@@ -62,6 +70,18 @@ declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMix
   attrForValue: string;
 
   readonly inputElement: Element | undefined;
+
+  addEventListener<K extends keyof ComboBoxEventMap>(
+    type: K,
+    listener: (this: ComboBoxLightElement, ev: ComboBoxEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof ComboBoxEventMap>(
+    type: K,
+    listener: (this: ComboBoxLightElement, ev: ComboBoxEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

@@ -167,6 +167,12 @@ import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixi
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  *
+ * @fires {CustomEvent<string>} filter-changed
+ * @fires {CustomEvent<boolean>} invalid-changed
+ * @fires {CustomEvent<boolean>} opened-change
+ * @fires {CustomEvent<unknown>} selected-item-changed
+ * @fires {CustomEvent<string>} value-changed
+ *
  * @extends HTMLElement
  * @mixes ElementMixin
  * @mixes ControlStateMixin
