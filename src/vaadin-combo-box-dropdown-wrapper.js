@@ -21,6 +21,7 @@ const TOUCH_DEVICE = (() => {
 /**
  * Element for internal use only.
  *
+ * @extends HTMLElement
  * @private
  */
 class ComboBoxDropdownWrapperElement extends PolymerElement {

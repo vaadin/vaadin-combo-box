@@ -63,6 +63,7 @@ customElements.define(ComboBoxOverlayElement.is, ComboBoxOverlayElement);
 /**
  * Element for internal use only.
  *
+ * @extends HTMLElement
  * @private
  */
 class ComboBoxDropdownElement extends DisableUpgradeMixin(mixinBehaviors(IronResizableBehavior, PolymerElement)) {
