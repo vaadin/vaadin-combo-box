@@ -26,8 +26,10 @@
   ],
   "scripts": {
     "debug": "web-test-runner test/*.test.js --watch",
+    "screenshots": "hermione test/visual/test.js --update-refs",
     "test": "web-test-runner test/*.test.js",
-    "test:sauce": "TEST_ENV=sauce npm test"
+    "test:sauce": "TEST_ENV=sauce npm test",
+    "test:visual": "hermione test/visual/test.js"
   },
   "dependencies": {
     "@polymer/iron-a11y-announcer": "^3.0.0",
@@ -53,6 +55,9 @@
     "@vaadin/vaadin-dialog": "^2.5.0",
     "@web/test-runner": "^0.9.13",
     "@web/test-runner-saucelabs": "0.1.1",
+    "hermione": "^3.9.0",
+    "hermione-esm": "^0.4.0",
+    "hermione-sauce": "^0.1.0",
     "sinon": "^9.2.0"
   }
 }
