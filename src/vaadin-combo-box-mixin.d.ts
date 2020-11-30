@@ -66,8 +66,7 @@ interface ComboBoxMixin {
   filteredItems: Array<ComboBoxItem | string> | undefined;
 
   /**
-   * The `String` value for the selected item of the combo box. Provides
-   * the value for `iron-form`.
+   * The `String` value for the selected item of the combo box.
    *
    * When there’s no item selected, the value is an empty string.
    *

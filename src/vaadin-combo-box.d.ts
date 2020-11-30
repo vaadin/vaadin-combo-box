@@ -35,8 +35,6 @@ import { ComboBoxEventMap } from './interfaces';
  *
  * When the selected `value` is changed, a `value-changed` event is triggered.
  *
- * This element can be used within an `iron-form`.
- *
  * ### Item rendering
  *
  * `<vaadin-combo-box>` supports using custom renderer callback function for defining the
