@@ -516,19 +516,6 @@ class ComboBoxDropdownWrapperElement extends PolymerElement {
     return this._selector.lastVisibleIndex - this._selector.firstVisibleIndex + 1;
   }
 
-  _selectItem(item) {
-    item = typeof item === 'number' ? this._items[item] : item;
-    if (this._selector.selectedItem !== item) {
-      this._selector.selectItem(item);
-    }
-  }
-
-  _preventDefault(e) {
-    if (e.cancelable) {
-      e.preventDefault();
-    }
-  }
-
   _stopPropagation(e) {
     e.stopPropagation();
   }
