@@ -635,10 +635,11 @@ export const ComboBoxMixin = (subclass) =>
       // Ensure metrics are up-to-date
       this.$.overlay.updateViewportBoundaries();
       // Force iron-list to create reusable nodes. Otherwise it will only start
-      // doing that in scroll listener, which is especially slow in Edge.
+      // doing that in scroll listener, which might affect performance.
+      // See https://github.com/vaadin/vaadin-combo-box/pull/776
       this.$.overlay._selector._increasePoolIfNeeded();
       setTimeout(() => this._resizeDropdown(), 1);
-      // Defer scroll position adjustment to prevent freeze in Edge
+      // Defer scroll position adjustment to improve performance.
       window.requestAnimationFrame(() => this.$.overlay.adjustScrollPosition());
 
       // _detectAndDispatchChange() should not consider value changes done before opening
