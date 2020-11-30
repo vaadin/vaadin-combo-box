@@ -304,7 +304,7 @@ export const ComboBoxMixin = (subclass) =>
         const overlay = this.$.overlay;
         const dropdown = overlay && overlay.$.dropdown;
         // Check dropdown.$ because overlay is lazily instantiated
-        if (dropdown && dropdown.$ && this.$.overlay.$.dropdown.$.overlay.bringToFront) {
+        if (dropdown && dropdown.$) {
           requestAnimationFrame(() => {
             dropdown.$.overlay.bringToFront();
           });
