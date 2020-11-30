@@ -974,7 +974,8 @@ export const ComboBoxMixin = (subclass) =>
       this.__repositionOverlayDebouncer = Debouncer.debounce(
         this.__repositionOverlayDebouncer,
         // Long debounce: sizing updates invoke multiple styling rounds,
-        // which is very slow in Edge
+        // which might affect performance, especially in old browsers.
+        // See https://github.com/vaadin/vaadin-combo-box/pull/800
         timeOut.after(500),
         () => {
           const selector = this.$.overlay._selector;
