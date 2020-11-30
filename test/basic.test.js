@@ -1,6 +1,6 @@
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
-import { fixtureSync, nextFrame } from '@open-wc/testing-helpers';
+import { aTimeout, fixtureSync, nextFrame } from '@open-wc/testing-helpers';
 import './not-animated-styles.js';
 import '../vaadin-combo-box.js';
 
@@ -62,6 +62,31 @@ describe('Properties', () => {
       comboBox.items = undefined;
       comboBox.opened = true;
       expect(comboBox.$.overlay._selector._virtualCount).to.eql(0);
+    });
+  });
+
+  // TODO: these tests are here to prevent possible regressions with using
+  // the internal properties of iron-list. These can be removed after this
+  // logic no longer is implemented in vaadin-combo-box.
+  describe('visible item count', () => {
+    it('should calculate items correctly when all items are visible', async () => {
+      comboBox.items = ['foo', 'bar', 'baz', 'qux'];
+      comboBox.open();
+      await aTimeout(0);
+      expect(comboBox.$.overlay._visibleItemsCount()).to.eql(4);
+      expect(comboBox.$.overlay._selector.lastVisibleIndex).to.eql(3);
+    });
+
+    it('should calculate items correctly when some items are hidden', async () => {
+      const items = [];
+      for (let i = 0; i < 100; i++) {
+        items.push(i.toString());
+      }
+
+      comboBox.items = items;
+      comboBox.open();
+      await aTimeout(0);
+      expect(comboBox.$.overlay._visibleItemsCount()).to.eql(comboBox.$.overlay._selector.lastVisibleIndex + 1);
     });
   });
 
