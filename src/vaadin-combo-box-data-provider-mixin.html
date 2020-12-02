@@ -99,7 +99,10 @@ This program is available under Apache License Version 2.0, available at https:/
         const currentScrollerPos = e.detail.currentScrollerPos;
         const allowedIndexRange = Math.floor(this.pageSize * 1.5);
 
-        // Avoid double loading of last page we scroll to
+        // Ignores the indexes, which are being re-sent during scrolling reset,
+        // if the corresponding page is around the current scroller position.
+        // Otherwise, there might be a last pages duplicates, which cause the
+        // loading indicator hanging and blank items
         if (this._shouldSkipIndex(index, allowedIndexRange, currentScrollerPos)) {
           return;
         }
