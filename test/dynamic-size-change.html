@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>vaadin-combo dynamic size change tests</title>
+    <title>vaadin-combo-box dynamic size change tests</title>
 
     <script src="../../web-component-tester/browser.js"></script>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
@@ -29,7 +29,12 @@
             comboBox.$.overlay._selector.querySelectorAll(
               'vaadin-combo-box-item'
             )
-          ).filter((item) => !item.hidden);
+          ).filter((item) => !item.hidden)
+          .filter(item => {
+            const itemRect = item.getBoundingClientRect();
+            const overlayRect = comboBox.$.overlay.$.dropdown.$.overlay.$.content.getBoundingClientRect();
+            return itemRect.bottom >= overlayRect.top && itemRect.top <= overlayRect.bottom;
+          });
         }
 
         describe('reduce size once scrolled to end', () => {
