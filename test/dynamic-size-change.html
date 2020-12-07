@@ -21,7 +21,7 @@
     <script>
       describe('dynamic size change', () => {
         function scrollToIndex(comboBox, index) {
-          comboBox.$.overlay._selector.scrollToIndex(index);
+          comboBox.$.overlay._scrollIntoView(index);
         }
 
         function getVisibleItems(comboBox) {
@@ -49,10 +49,14 @@
               };
             });
 
-            const size =
-              params.page > ACTUAL_SIZE / params.pageSize - 1
+            let size = ACTUAL_SIZE;
+            if (!comboBox.size || comboBox.size === INITIAL_SIZE) {
+              // Pages may be requested not sequentially.
+              // Not to change combobox's size, if once changed to actual value
+              size = params.page > ACTUAL_SIZE / params.pageSize - 1
                 ? ACTUAL_SIZE
                 : INITIAL_SIZE;
+            }
 
             callback(items, size);
           }
