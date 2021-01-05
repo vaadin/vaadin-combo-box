@@ -10,7 +10,7 @@ import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixi
 
 import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 
-import { ComboBoxEventMap } from './interfaces';
+import { ComboBoxDataProvider, ComboBoxEventMap, ComboBoxRenderer } from './interfaces';
 
 /**
  * `<vaadin-combo-box>` is a combo box element combining a dropdown list with an
@@ -171,9 +171,55 @@ import { ComboBoxEventMap } from './interfaces';
  * @fires {CustomEvent} selected-item-changed - Fired when the `selectedItem` property changes.
  * @fires {CustomEvent} value-changed - Fired when the `value` property changes.
  */
-declare class ComboBoxElement extends ElementMixin(
+declare class ComboBoxElement<Item> extends ElementMixin(
   ControlStateMixin(ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))))
 ) {
+  /**
+   * Function that provides items lazily. Receives arguments `params`, `callback`
+   *
+   * `params.page` Requested page index
+   *
+   * `params.pageSize` Current page size
+   *
+   * `params.filter` Currently applied filter
+   *
+   * `callback(items, size)` Callback function with arguments:
+   *   - `items` Current page of items
+   *   - `size` Total number of items.
+   */
+  dataProvider: ComboBoxDataProvider<Item> | null | undefined;
+
+  /**
+   * Custom function for rendering the content of every item.
+   * Receives three arguments:
+   *
+   * - `root` The `<vaadin-combo-box-item>` internal container DOM element.
+   * - `comboBox` The reference to the `<vaadin-combo-box>` element.
+   * - `model` The object with the properties related with the rendered
+   *   item, contains:
+   *   - `model.index` The index of the rendered item.
+   *   - `model.item` The item.
+   */
+  renderer: ComboBoxRenderer<Item> | null | undefined;
+
+  /**
+   * A full set of items to filter the visible options from.
+   * The items can be of either `String` or `Object` type.
+   */
+  items: Array<Item> | undefined;
+
+  /**
+   * A subset of items, filtered based on the user input. Filtered items
+   * can be assigned directly to omit the internal filtering functionality.
+   * The items can be of either `String` or `Object` type.
+   */
+  filteredItems: Array<Item> | undefined;
+
+  /**
+   * The selected item from the `items` array.
+   */
+  selectedItem: Item | null | undefined;
+
   /**
    * Focusable element used by vaadin-control-state-mixin
    */
@@ -237,22 +283,22 @@ declare class ComboBoxElement extends ElementMixin(
    */
   clearButtonVisible: boolean;
 
-  addEventListener<K extends keyof ComboBoxEventMap>(
+  addEventListener<K extends keyof ComboBoxEventMap<Item>>(
     type: K,
-    listener: (this: ComboBoxElement, ev: ComboBoxEventMap[K]) => void,
+    listener: (this: ComboBoxElement<Item>, ev: ComboBoxEventMap<Item>[K]) => void,
     options?: boolean | AddEventListenerOptions
   ): void;
 
-  removeEventListener<K extends keyof ComboBoxEventMap>(
+  removeEventListener<K extends keyof ComboBoxEventMap<Item>>(
     type: K,
-    listener: (this: ComboBoxElement, ev: ComboBoxEventMap[K]) => void,
+    listener: (this: ComboBoxElement<Item>, ev: ComboBoxEventMap<Item>[K]) => void,
     options?: boolean | EventListenerOptions
   ): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-combo-box': ComboBoxElement;
+    'vaadin-combo-box': ComboBoxElement<any>;
   }
 }
 

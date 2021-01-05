@@ -33,7 +33,7 @@ interface ComboBoxDataProviderMixin {
    *   - `items` Current page of items
    *   - `size` Total number of items.
    */
-  dataProvider: ComboBoxDataProvider | null | undefined;
+  dataProvider: ComboBoxDataProvider<unknown> | null | undefined;
 
   /**
    * Clears the cached pages and reloads data from dataprovider when needed.

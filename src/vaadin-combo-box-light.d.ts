@@ -4,7 +4,7 @@ import { ComboBoxMixin } from './vaadin-combo-box-mixin.js';
 
 import { ComboBoxDataProviderMixin } from './vaadin-combo-box-data-provider-mixin.js';
 
-import { ComboBoxEventMap } from './interfaces';
+import { ComboBoxDataProvider, ComboBoxEventMap, ComboBoxRenderer } from './interfaces';
 
 /**
  * `<vaadin-combo-box-light>` is a customizable version of the `<vaadin-combo-box>` providing
@@ -55,7 +55,53 @@ import { ComboBoxEventMap } from './interfaces';
  * @fires {CustomEvent<unknown>} selected-item-changed
  * @fires {CustomEvent<string>} value-changed
  */
-declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))) {
+declare class ComboBoxLightElement<Item> extends ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))) {
+  /**
+   * Function that provides items lazily. Receives arguments `params`, `callback`
+   *
+   * `params.page` Requested page index
+   *
+   * `params.pageSize` Current page size
+   *
+   * `params.filter` Currently applied filter
+   *
+   * `callback(items, size)` Callback function with arguments:
+   *   - `items` Current page of items
+   *   - `size` Total number of items.
+   */
+  dataProvider: ComboBoxDataProvider<Item> | null | undefined;
+
+  /**
+   * Custom function for rendering the content of every item.
+   * Receives three arguments:
+   *
+   * - `root` The `<vaadin-combo-box-item>` internal container DOM element.
+   * - `comboBox` The reference to the `<vaadin-combo-box>` element.
+   * - `model` The object with the properties related with the rendered
+   *   item, contains:
+   *   - `model.index` The index of the rendered item.
+   *   - `model.item` The item.
+   */
+  renderer: ComboBoxRenderer<Item> | null | undefined;
+
+  /**
+   * A full set of items to filter the visible options from.
+   * The items can be of either `String` or `Object` type.
+   */
+  items: Array<Item> | undefined;
+
+  /**
+   * A subset of items, filtered based on the user input. Filtered items
+   * can be assigned directly to omit the internal filtering functionality.
+   * The items can be of either `String` or `Object` type.
+   */
+  filteredItems: Array<Item> | undefined;
+
+  /**
+   * The selected item from the `items` array.
+   */
+  selectedItem: Item | null | undefined;
+
   readonly _propertyForValue: string;
 
   _inputElementValue: string;
@@ -71,22 +117,22 @@ declare class ComboBoxLightElement extends ComboBoxDataProviderMixin(ComboBoxMix
 
   readonly inputElement: Element | undefined;
 
-  addEventListener<K extends keyof ComboBoxEventMap>(
+  addEventListener<K extends keyof ComboBoxEventMap<Item>>(
     type: K,
-    listener: (this: ComboBoxLightElement, ev: ComboBoxEventMap[K]) => void,
+    listener: (this: ComboBoxLightElement<Item>, ev: ComboBoxEventMap<Item>[K]) => void,
     options?: boolean | AddEventListenerOptions
   ): void;
 
-  removeEventListener<K extends keyof ComboBoxEventMap>(
+  removeEventListener<K extends keyof ComboBoxEventMap<Item>>(
     type: K,
-    listener: (this: ComboBoxLightElement, ev: ComboBoxEventMap[K]) => void,
+    listener: (this: ComboBoxLightElement<Item>, ev: ComboBoxEventMap<Item>[K]) => void,
     options?: boolean | EventListenerOptions
   ): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-combo-box-light': ComboBoxLightElement;
+    'vaadin-combo-box-light': ComboBoxLightElement<any>;
   }
 }
 
