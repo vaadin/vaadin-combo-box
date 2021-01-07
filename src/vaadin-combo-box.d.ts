@@ -298,7 +298,7 @@ declare class ComboBoxElement<Item> extends ElementMixin(
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-combo-box': ComboBoxElement<any>;
+    'vaadin-combo-box': ComboBoxElement<unknown>;
   }
 }
 

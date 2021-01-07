@@ -1,20 +1,11 @@
-import { ComboBoxElement } from '../src/vaadin-combo-box.js';
-
 export interface ComboBoxItemModel<T> {
   index: number;
   item: T;
 }
 
-export type ComboBoxRenderer<T> = (
-  root: HTMLElement,
-  comboBox: ComboBoxElement<T>,
-  model: ComboBoxItemModel<T>
-) => void;
+export type ComboBoxRenderer<T> = (root: HTMLElement, comboBox: HTMLElement, model: ComboBoxItemModel<T>) => void;
 
-export type ComboBoxDataProviderCallback<T> = (
-  items: Array<T>,
-  size: number
-) => void;
+export type ComboBoxDataProviderCallback<T> = (items: Array<T>, size: number) => void;
 
 export interface ComboBoxDataProviderParams {
   page: number;

@@ -5,7 +5,7 @@ const assert = <T>(value: T) => value;
 
 type Item = { label: string; value: string };
 
-const comboBox: ComboBoxElement<Item> = document.createElement('vaadin-combo-box');
+const comboBox = document.createElement('vaadin-combo-box') as ComboBoxElement<Item>;
 
 comboBox.addEventListener('opened-changed', (event) => {
   assert<boolean>(event.detail.value);
@@ -27,7 +27,7 @@ comboBox.addEventListener('selected-item-changed', (event) => {
   assert<Item>(event.detail.value);
 });
 
-const light: ComboBoxLightElement<Item> = document.createElement('vaadin-combo-box-light');
+const light = document.createElement('vaadin-combo-box-light') as ComboBoxLightElement<Item>;
 
 light.addEventListener('opened-changed', (event) => {
   assert<boolean>(event.detail.value);

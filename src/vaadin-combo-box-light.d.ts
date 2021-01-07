@@ -132,7 +132,7 @@ declare class ComboBoxLightElement<Item> extends ComboBoxDataProviderMixin(Combo
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-combo-box-light': ComboBoxLightElement<any>;
+    'vaadin-combo-box-light': ComboBoxLightElement<unknown>;
   }
 }
 

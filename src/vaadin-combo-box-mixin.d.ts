@@ -3,10 +3,12 @@ import { ComboBoxRenderer } from './interfaces';
 declare function ComboBoxMixin<T extends new (...args: any[]) => {}>(base: T): T & ComboBoxMixinConstructor;
 
 interface ComboBoxMixinConstructor {
-  new (...args: any[]): ComboBoxMixin;
+  // Use `any` instead of `unknown` to avoid TS error:
+  // Type 'unknown' is not assignable to type 'Item'.
+  new (...args: any[]): ComboBoxMixin<any>;
 }
 
-interface ComboBoxMixin {
+interface ComboBoxMixin<T> {
   readonly _propertyForValue: string;
 
   /**
@@ -41,7 +43,7 @@ interface ComboBoxMixin {
    *   - `model.index` The index of the rendered item.
    *   - `model.item` The item.
    */
-  renderer: ComboBoxRenderer<any> | null | undefined;
+  renderer: ComboBoxRenderer<T> | null | undefined;
 
   /**
    * A full set of items to filter the visible options from.
