@@ -7,14 +7,14 @@ export interface ComboBoxItemModel {
   item: ComboBoxItem | string;
 }
 
-export type ComboBoxRenderer = (
+export type ComboBoxRenderer<T> = (
   root: HTMLElement,
-  comboBox: ComboBoxElement,
+  comboBox: ComboBoxElement<T>,
   model: ComboBoxItemModel
 ) => void;
 
-export type ComboBoxDataProviderCallback = (
-  items: Array<ComboBoxItem | string>,
+export type ComboBoxDataProviderCallback<T> = (
+  items: Array<T>,
   size: number
 ) => void;
 
@@ -24,9 +24,9 @@ export interface ComboBoxDataProviderParams {
   filter: string;
 }
 
-export type ComboBoxDataProvider = (
+export type ComboBoxDataProvider<T> = (
   params: ComboBoxDataProviderParams,
-  callback: ComboBoxDataProviderCallback
+  callback: ComboBoxDataProviderCallback<T>
 ) => void;
 
 /**
@@ -59,7 +59,7 @@ export type ComboBoxFilterChanged = CustomEvent<{ value: string }>;
  */
 export type ComboBoxSelectedItemChanged<T> = CustomEvent<{ value: T }>;
 
-export interface ComboBoxElementEventMap {
+export interface ComboBoxElementEventMap<T> {
   'custom-value-set': ComboBoxCustomValueSet;
 
   'opened-changed': ComboBoxOpenedChanged;
@@ -70,7 +70,7 @@ export interface ComboBoxElementEventMap {
 
   'value-changed': ComboBoxValueChanged;
 
-  'selected-item-changed': ComboBoxSelectedItemChanged<any>;
+  'selected-item-changed': ComboBoxSelectedItemChanged<T>;
 }
 
-export interface ComboBoxEventMap extends HTMLElementEventMap, ComboBoxElementEventMap {}
+export type ComboBoxEventMap<T> = HTMLElementEventMap & ComboBoxElementEventMap<T>;

@@ -1,14 +1,15 @@
 import { ComboBoxSelectedItemChanged } from '../../src/interfaces';
-import '../../src/vaadin-combo-box';
-import '../../src/vaadin-combo-box-light';
+import { ComboBoxElement } from '../../src/vaadin-combo-box';
+import { ComboBoxLightElement } from '../../src/vaadin-combo-box-light';
 
 const assert = <T>(value: T) => value;
 
-const comboBox = document.createElement('vaadin-combo-box');
+type User = { id: string; name: string };
 
-comboBox.addEventListener('custom-value-set', (event) => {
-  assert<string>(event.detail);
-});
+const comboBox = document.createElement('vaadin-combo-box') as ComboBoxElement<User>;
+
+// Error: property not inferred from the mixin.
+comboBox.items = [1, 2];
 
 comboBox.addEventListener('opened-changed', (event) => {
   assert<boolean>(event.detail.value);
@@ -26,14 +27,11 @@ comboBox.addEventListener('filter-changed', (event) => {
   assert<string>(event.detail.value);
 });
 
-comboBox.addEventListener(
-  'selected-item-changed',
-  (event: ComboBoxSelectedItemChanged<{ label: string; value: string }>) => {
-    assert<{ label: string; value: string }>(event.detail.value);
-  }
-);
+comboBox.addEventListener('selected-item-changed', (event) => {
+  assert<User>(event.detail.value);
+});
 
-const light = document.createElement('vaadin-combo-box-light');
+const light = document.createElement('vaadin-combo-box-light') as ComboBoxLightElement<User>;
 
 light.addEventListener('custom-value-set', (event) => {
   assert<string>(event.detail);
@@ -55,9 +53,6 @@ light.addEventListener('filter-changed', (event) => {
   assert<string>(event.detail.value);
 });
 
-light.addEventListener(
-  'selected-item-changed',
-  (event: ComboBoxSelectedItemChanged<{ label: string; value: string }>) => {
-    assert<{ label: string; value: string }>(event.detail.value);
-  }
-);
+light.addEventListener('selected-item-changed', (event) => {
+  assert<User>(event.detail.value);
+});

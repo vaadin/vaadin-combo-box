@@ -173,7 +173,7 @@ import { ComboBoxEventMap } from './interfaces';
  * @fires {CustomEvent} selected-item-changed - Fired when the `selectedItem` property changes.
  * @fires {CustomEvent} value-changed - Fired when the `value` property changes.
  */
-declare class ComboBoxElement extends ElementMixin(
+declare class ComboBoxElement<T> extends ElementMixin(
   ControlStateMixin(ComboBoxDataProviderMixin(ComboBoxMixin(ThemableMixin(HTMLElement))))
 ) {
   /**
@@ -239,22 +239,22 @@ declare class ComboBoxElement extends ElementMixin(
    */
   clearButtonVisible: boolean;
 
-  addEventListener<K extends keyof ComboBoxEventMap>(
+  addEventListener<K extends keyof ComboBoxEventMap<T>>(
     type: K,
-    listener: (this: ComboBoxElement, ev: ComboBoxEventMap[K]) => void,
+    listener: (this: ComboBoxElement<T>, ev: ComboBoxEventMap<T>[K]) => void,
     options?: boolean | AddEventListenerOptions
   ): void;
 
-  removeEventListener<K extends keyof ComboBoxEventMap>(
+  removeEventListener<K extends keyof ComboBoxEventMap<T>>(
     type: K,
-    listener: (this: ComboBoxElement, ev: ComboBoxEventMap[K]) => void,
+    listener: (this: ComboBoxElement<T>, ev: ComboBoxEventMap<T>[K]) => void,
     options?: boolean | EventListenerOptions
   ): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-combo-box': ComboBoxElement;
+    'vaadin-combo-box': ComboBoxElement<unknown>;
   }
 }
 

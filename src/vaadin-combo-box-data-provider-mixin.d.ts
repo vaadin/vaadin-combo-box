@@ -5,10 +5,10 @@ declare function ComboBoxDataProviderMixin<T extends new (...args: any[]) => {}>
 ): T & ComboBoxDataProviderMixinConstructor;
 
 interface ComboBoxDataProviderMixinConstructor {
-  new (...args: any[]): ComboBoxDataProviderMixin;
+  new <T>(...args: any[]): ComboBoxDataProviderMixin<T>;
 }
 
-interface ComboBoxDataProviderMixin {
+interface ComboBoxDataProviderMixin<T> {
   /**
    * Number of items fetched at a time from the dataprovider.
    * @attr {number} page-size
@@ -33,7 +33,7 @@ interface ComboBoxDataProviderMixin {
    *   - `items` Current page of items
    *   - `size` Total number of items.
    */
-  dataProvider: ComboBoxDataProvider | null | undefined;
+  dataProvider: ComboBoxDataProvider<T> | null | undefined;
 
   /**
    * Clears the cached pages and reloads data from dataprovider when needed.
