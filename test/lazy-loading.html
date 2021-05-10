@@ -925,6 +925,38 @@
               expect(comboBox.value).to.equal('item 12');
             });
 
+            it('should set value without auto-open-disabled even if case does not match', () => {
+              comboBox.autoOpenDisabled = false;
+              expect(comboBox.autoOpenDisabled).to.be.false;
+
+              comboBox._inputElementValue = 'ItEm 12';
+              comboBox.filter = 'item 12';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('item 12');
+            });
+
+            it('should set value with auto-open-disabled even if case does not match', () => {
+              comboBox.autoOpenDisabled = true;
+              expect(comboBox.autoOpenDisabled).to.be.true;
+
+              comboBox._inputElementValue = 'iTem 12';
+              comboBox.filter = 'item 12';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('item 12');
+            });
+
+            it('should set value with multiple matches that differ only in case', () => {
+              returnedItems = ['item 12', 'IteM 12'];
+
+              comboBox._inputElementValue = 'IteM 12';
+              comboBox.filter = 'IteM 12';
+              expect(comboBox.opened).to.be.false;
+              expect(comboBox.hasAttribute('focused')).to.be.false;
+              expect(comboBox.value).to.equal('item 12');
+            });
+
             it('should keep empty value if it is not an exact match', () => {
               comboBox._inputElementValue = 'item';
               comboBox.filter = 'item';
