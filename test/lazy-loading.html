@@ -976,8 +976,9 @@
               expect(comboBox.value).to.equal('other value');
 
               returnedItems = ['item 12'];
-              comboBox._inputElementValue = 'item 1';
-              comboBox.filter = 'item 1';
+              const filterValue = 'item 1';
+              comboBox._inputElementValue = filterValue;
+              comboBox.filter = filterValue;
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('other value');
