@@ -907,8 +907,9 @@
               comboBox.autoOpenDisabled = false;
               expect(comboBox.autoOpenDisabled).to.be.false;
 
-              comboBox._inputElementValue = 'item 12';
-              comboBox.filter = 'item 12';
+              const filterValue = 'item 12';
+              comboBox._inputElementValue = filterValue;
+              comboBox.filter = filterValue;
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('item 12');
@@ -918,8 +919,9 @@
               comboBox.autoOpenDisabled = true;
               expect(comboBox.autoOpenDisabled).to.be.true;
 
-              comboBox._inputElementValue = 'item 12';
-              comboBox.filter = 'item 12';
+              const filterValue = 'item 12';
+              comboBox._inputElementValue = filterValue;
+              comboBox.filter = filterValue;
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('item 12');
@@ -929,8 +931,9 @@
               comboBox.autoOpenDisabled = false;
               expect(comboBox.autoOpenDisabled).to.be.false;
 
-              comboBox._inputElementValue = 'ItEm 12';
-              comboBox.filter = 'item 12';
+              const filterValue = 'ItEm 12';
+              comboBox._inputElementValue = filterValue;
+              comboBox.filter = filterValue;
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('item 12');
@@ -940,8 +943,9 @@
               comboBox.autoOpenDisabled = true;
               expect(comboBox.autoOpenDisabled).to.be.true;
 
-              comboBox._inputElementValue = 'iTem 12';
-              comboBox.filter = 'item 12';
+              const filterValue = 'iTem 12';
+              comboBox._inputElementValue = filterValue;
+              comboBox.filter = filterValue;
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('item 12');
@@ -950,8 +954,9 @@
             it('should set value with multiple matches that differ only in case', () => {
               returnedItems = ['item 12', 'IteM 12'];
 
-              comboBox._inputElementValue = 'IteM 12';
-              comboBox.filter = 'IteM 12';
+              const filterValue = 'IteM 12';
+              comboBox._inputElementValue = filterValue;
+              comboBox.filter = filterValue;
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('item 12');
