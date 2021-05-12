@@ -687,8 +687,9 @@ This program is available under Apache License Version 2.0, available at https:/
           this.value = '';
         }
       } else {
+        const toLowerCase = (item) => item && item.toLowerCase && item.toLowerCase();
         const itemsMatchedByLabel = this.filteredItems
-          && this.filteredItems.filter(item => this._getItemLabel(item) === this._inputElementValue)
+          && this.filteredItems.filter(item => toLowerCase(this._getItemLabel(item)) === toLowerCase(this._inputElementValue))
           || [];
         if (this.allowCustomValue
           // to prevent a repetitive input value being saved after pressing ESC and Tab.
@@ -701,7 +702,7 @@ This program is available under Apache License Version 2.0, available at https:/
             this._selectItemForValue(customValue);
             this.value = customValue;
           }
-        } else if (!this.allowCustomValue && !this.opened && itemsMatchedByLabel.length == 1) {
+        } else if (!this.allowCustomValue && !this.opened && itemsMatchedByLabel.length > 0) {
           this.value = this._getItemValue(itemsMatchedByLabel[0]);
         } else {
           this._inputElementValue = this.selectedItem ? this._getItemLabel(this.selectedItem) : (this.value || '');
