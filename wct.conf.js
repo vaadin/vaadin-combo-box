@@ -24,15 +24,16 @@ module.exports = {
       dir: './coverage',
       reporters: ['text-summary', 'lcov'],
       include: [
-        '**/vaadin-accordion/src/*.html'
+        '**/vaadin-combo-box/src/*.html'
       ],
       exclude: [],
       thresholds: {
         global: {
-          statements: 98
+          statements: 94
         }
       }
-    }
+    },
+    'random-output': true
     // MAGI REMOVE END
   },
 
