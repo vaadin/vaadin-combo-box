@@ -10,7 +10,7 @@ module.exports = {
   testTimeout: 180 * 1000,
   verbose: false,
   plugins: {
-    local: {
+    'local': {
       browserOptions: {
         chrome: [
           'headless',
@@ -20,7 +20,7 @@ module.exports = {
       }
     },
     // MAGI REMOVE START
-    istanbul: {
+    'istanbul': {
       dir: './coverage',
       reporters: ['text-summary', 'lcov'],
       include: [
