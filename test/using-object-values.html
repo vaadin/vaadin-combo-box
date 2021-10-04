@@ -313,6 +313,28 @@
         });
       });
     });
+
+    describe('custom-value-set event', () => {
+      let combobox;
+
+      beforeEach(() => {
+        combobox = fixture('combobox');
+        combobox.items = ['a', 'b'];
+        combobox.allowCustomValue = true;
+      });
+
+      it('should not fire custom-value-set event when combo-box is read-only', () => {
+        const spy = sinon.spy();
+        combobox.addEventListener('custom-value-set', spy);
+
+        combobox.readonly = true;
+        combobox.inputElement.value = 'not found';
+        combobox.focus();
+        fire('focusout', combobox.inputElement);
+
+        expect(spy.called).to.be.false;
+      });
+    });
   </script>
 
 </body>
