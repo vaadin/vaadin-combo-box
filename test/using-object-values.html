@@ -120,6 +120,7 @@
         combobox.itemValuePath = 'custom';
         expect(combobox.value).to.be.equal('bazs');
       });
+
       it('should use toString if provided label and value paths are not found', () => {
         combobox.items[0].toString = () => {
           return 'default';
