@@ -115,12 +115,18 @@
         expect(combobox.value).to.eql('bashcsdfsa');
       });
 
+      it('it should change combo-box value when value path changes', () => {
+        selectItem(0);
+        combobox.itemValuePath = 'custom';
+        expect(combobox.value).to.be.equal('bazs');
+      });
+
       it('should use toString if provided label and value paths are not found', () => {
-        combobox.itemValuePath = 'not.found';
-        combobox.itemLabelPath = 'not.found';
         combobox.items[0].toString = () => {
           return 'default';
         };
+        combobox.itemValuePath = 'not.found';
+        combobox.itemLabelPath = 'not.found';
 
         selectItem(0);
 
