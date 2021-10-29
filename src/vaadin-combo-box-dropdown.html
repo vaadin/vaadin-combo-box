@@ -44,6 +44,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
 <script>
   (function() {
+    let memoizedTemplate;
+
+
     /**
      * The overlay element.
      *
@@ -60,6 +63,15 @@ This program is available under Apache License Version 2.0, available at https:/
     class ComboBoxOverlayElement extends Vaadin.OverlayElement {
       static get is() {
         return 'vaadin-combo-box-overlay';
+      }
+
+      static get template() {
+        if (!memoizedTemplate) {
+          memoizedTemplate = super.template.cloneNode(true);
+          memoizedTemplate.content.querySelector('[part~="overlay"]').removeAttribute('tabindex');
+        }
+
+        return memoizedTemplate;
       }
 
       connectedCallback() {

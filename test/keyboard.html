@@ -170,6 +170,16 @@
 
         expect(getFocusedIndex()).to.equal(0);
       });
+
+      it('should not have a focusable overlay', () => {
+        const overlay = comboBox.$.overlay.$.dropdown.$.overlay.$.overlay;
+        expect(overlay.hasAttribute('tabindex')).to.be.false;
+      });
+
+      it('should have unfocusable items', () => {
+        const item = comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item');
+        expect(item.getAttribute('tabindex')).to.equal('-1');
+      });
     });
 
     describe('selecting items', () => {
