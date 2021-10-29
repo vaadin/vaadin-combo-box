@@ -285,11 +285,8 @@
           comboBox.value = 'foo';
         });
 
-        // Running on IE11, the P3-converted test passes locally but not on CI.
-        // Probably has to do with the elementFromPoint (used in the clickAtPositionOf test helper)
-        // polyfill issues. Skipping the test on IE11.
-        const isIE = !!(navigator.userAgent.match(/Trident/) && !navigator.userAgent.match(/MSIE/));
-        if (!isIE) {
+        // elementFromPoint doesn't work properly with shadydom
+        if (!window.ShadyDOM) {
           it('should be clickable when overlay is open', () => {
             const clickSpy = sinon.spy();
             clearButton.addEventListener('click', clickSpy);
