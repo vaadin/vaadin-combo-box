@@ -435,6 +435,25 @@
           done();
         }, 1);
       });
+
+      it('should not clear the value on esc if clear button is not visible', () => {
+        esc();
+        expect(comboBox.value).to.equal('bar');
+      });
+
+      it('should clear the value on esc if clear button is visible', () => {
+        comboBox.close();
+        comboBox.clearButtonVisible = true;
+        esc(); // it is clearing the combo-box input but not the combo-box value
+        expect(comboBox.value).to.equal('');
+      });
+
+      it('should not clear the value on esc if the overlay is open', () => {
+        comboBox.clearButtonVisible = true;
+        comboBox.opened = true;
+        esc();
+        expect(comboBox.value).to.equal('bar');
+      });
     });
 
     // TODO: these tests are here to prevent possible regressions with using
@@ -627,6 +646,30 @@
         esc();
         expect(comboBox._inputElementValue).to.equal('');
         expect(comboBox.value).to.equal('');
+      });
+
+      it('should revert changed input value on esc if clear button is visible', () => {
+        comboBox.value = 'bar';
+        comboBox.clearButtonVisible = true;
+        inputText('foo');
+        esc();
+        expect(comboBox._inputElementValue).to.equal('bar');
+        expect(comboBox.value).to.equal('bar');
+      });
+
+      it('should clear the value on esc if clear button is visible', () => {
+        comboBox.value = 'bar';
+        comboBox.clearButtonVisible = true;
+        esc();
+        expect(comboBox.value).to.equal('');
+      });
+
+      it('should not clear the value on esc if the overlay is open', () => {
+        comboBox.value = 'bar';
+        comboBox.clearButtonVisible = true;
+        comboBox.opened = true;
+        esc();
+        expect(comboBox.value).to.equal('bar');
       });
 
     });
