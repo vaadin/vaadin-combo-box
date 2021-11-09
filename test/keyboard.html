@@ -657,7 +657,8 @@
         expect(comboBox.value).to.equal('bar');
       });
 
-      it('should clear the value on esc if clear button is visible', () => {
+      // TODO: unskip when https://github.com/vaadin/vaadin-text-field/pull/585 gets released
+      it.skip('should clear the value on esc if clear button is visible', () => {
         comboBox.value = 'bar';
         comboBox.clearButtonVisible = true;
         esc();
