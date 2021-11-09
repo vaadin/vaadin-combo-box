@@ -296,6 +296,20 @@
         document.body.removeEventListener('keydown', listener);
       });
 
+      it('escape key event should be propagated if dropdown is closed', () => {
+        let propagated = false;
+        const listener = e => {
+          if (e.keyCode === 27) {
+            propagated = true;
+          }
+        };
+        comboBox.close();
+        document.body.addEventListener('keydown', listener);
+        esc();
+        expect(propagated).to.be.true;
+        document.body.removeEventListener('keydown', listener);
+      });
+
       it('click event should not be propagated', () => {
         const listener = document.body.addEventListener('click', () => {
           throw new Error('Click event was propagated to body');
