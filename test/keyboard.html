@@ -662,8 +662,7 @@
         expect(comboBox.value).to.equal('');
       });
 
-      // TODO: unskip when https://github.com/vaadin/vaadin-text-field/pull/585 gets released
-      it.skip('should revert changed input value on esc if clear button is visible', () => {
+      it('should revert changed input value on esc if clear button is visible', () => {
         comboBox.value = 'bar';
         comboBox.clearButtonVisible = true;
         inputText('foo');

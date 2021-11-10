@@ -583,6 +583,7 @@ This program is available under Apache License Version 2.0, available at https:/
         // Auto-open is disabled
         if (this.value !== this._inputElementValue && this._inputElementValue.length > 0) {
           // The input value has changed but the change hasn't been committed, so cancel it.
+          this._stopPropagation(e);
           this._focusedIndex = -1;
           this.cancel();
         } else if (this.clearButtonVisible && !this.opened && !!this.value) {
