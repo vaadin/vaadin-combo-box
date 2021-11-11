@@ -684,6 +684,7 @@
         comboBox.opened = true;
         esc();
         expect(comboBox.value).to.equal('bar');
+        expect(comboBox._inputElementValue).to.equal('bar');
       });
 
     });

@@ -581,8 +581,9 @@ This program is available under Apache License Version 2.0, available at https:/
     _onEscape(e) {
       if (this.autoOpenDisabled) {
         // Auto-open is disabled
-        if (this.value !== this._inputElementValue && this._inputElementValue.length > 0) {
-          // The input value has changed but the change hasn't been committed, so cancel it.
+        if (this.opened || (this.value !== this._inputElementValue && this._inputElementValue.length > 0)) {
+          // The overlay is open or
+          // the input value has changed but the change hasn't been committed, so cancel it.
           this._stopPropagation(e);
           this._focusedIndex = -1;
           this.cancel();
