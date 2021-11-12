@@ -394,12 +394,8 @@ This program is available under Apache License Version 2.0, available at https:/
           // Stop propagation of Esc in capturing phase so that
           // vaadin-text-field will not handle Esc as a shortcut
           // to clear the value.
-          // We need to set this listener for "this.inputElement"
-          // instead of just "this", otherwise keyboard navigation behaviour
-          // breaks a bit on Safari and some related tests fail.
-          this.inputElement.addEventListener('keydown', e => {
+          this.addEventListener('keydown', e => {
             if (this._isEventKey(e, 'esc')) {
-              this._stopPropagation(e);
               // Trigger _onEscape method of vaadin-combo-box-mixin because
               // bubbling phase is not reached.
               this._onEscape(e);

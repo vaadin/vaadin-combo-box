@@ -31,6 +31,7 @@
 <script>
 
   describe('keyboard navigation', () => {
+    const KEY_ESC = 27;
 
     // Not need to test in iOS, just speed up build.
     if (ios || android) {
@@ -87,6 +88,17 @@
     beforeEach(() => {
       comboBox = fixture('combobox');
       comboBox.items = ['foo', 'bar', 'baz'];
+    });
+
+    it('should not propagate esc keydown event when overlay is closed, clear button is visible and value is not empty', () => {
+      comboBox.value = 'bar';
+      comboBox.clearButtonVisible = true;
+
+      const keyDownSpy = sinon.spy();
+      document.body.addEventListener('keydown', keyDownSpy);
+      esc();
+      document.body.removeEventListener('keydown', keyDownSpy);
+      expect(keyDownSpy).not.to.have.been.calledWithMatch({keyCode: KEY_ESC});
     });
 
     describe('opening the overlay', () => {
@@ -283,15 +295,30 @@
         expect(comboBox.opened).to.equal(false);
       });
 
-      it('escape key event should not be propagated', () => {
-        const listener = document.body.addEventListener('keydown', e => {
-          if (e.keyCode == 27) {
+      it('escape key event should not be propagated when overlay is open', () => {
+        const listener = e => {
+          if (e.keyCode === KEY_ESC) {
             throw new Error('Escape key was propagated to body');
           }
-        });
+        };
+        document.body.addEventListener('keydown', listener);
 
         esc();
 
+        document.body.removeEventListener('keydown', listener);
+      });
+
+      it('escape key event should be propagated if dropdown is closed', () => {
+        let propagated = false;
+        const listener = e => {
+          if (e.keyCode === 27) {
+            propagated = true;
+          }
+        };
+        comboBox.close();
+        document.body.addEventListener('keydown', listener);
+        esc();
+        expect(propagated).to.be.true;
         document.body.removeEventListener('keydown', listener);
       });
 
@@ -434,6 +461,25 @@
           done();
         }, 1);
       });
+
+      it('should not clear the value on esc if clear button is not visible', () => {
+        esc();
+        expect(comboBox.value).to.equal('bar');
+      });
+
+      it('should clear the value on esc if clear button is visible', () => {
+        comboBox.close();
+        comboBox.clearButtonVisible = true;
+        esc(); // it is clearing the combo-box input but not the combo-box value
+        expect(comboBox.value).to.equal('');
+      });
+
+      it('should not clear the value on esc if the overlay is open', () => {
+        comboBox.clearButtonVisible = true;
+        comboBox.opened = true;
+        esc();
+        expect(comboBox.value).to.equal('bar');
+      });
     });
 
     // TODO: these tests are here to prevent possible regressions with using
@@ -571,6 +617,8 @@
     describe('auto open disabled', () => {
 
       beforeEach(() => {
+        comboBox = fixture('combobox');
+        comboBox.items = ['foo', 'bar', 'baz'];
         comboBox.autoOpenDisabled = true;
       });
 
@@ -624,6 +672,54 @@
         esc();
         expect(comboBox._inputElementValue).to.equal('');
         expect(comboBox.value).to.equal('');
+      });
+
+      it('should revert changed input value on esc if clear button is visible', () => {
+        comboBox.value = 'bar';
+        comboBox.clearButtonVisible = true;
+        inputText('foo');
+        esc();
+        expect(comboBox._inputElementValue).to.equal('bar');
+        expect(comboBox.value).to.equal('bar');
+      });
+
+      it('should clear the value on esc if clear button is visible', () => {
+        comboBox.value = 'bar';
+        comboBox.clearButtonVisible = true;
+        esc();
+        expect(comboBox.value).to.equal('');
+      });
+
+      it('should not clear the value on esc if the overlay is open', () => {
+        comboBox.value = 'bar';
+        comboBox.clearButtonVisible = true;
+        comboBox.opened = true;
+        esc();
+        expect(comboBox.value).to.equal('bar');
+        expect(comboBox._inputElementValue).to.equal('bar');
+      });
+
+      describe('esc keydown event propagation', () => {
+        it('should not propagate when input value is not empty', () => {
+          inputText('foo');
+
+          const keyDownSpy = sinon.spy();
+          document.body.addEventListener('keydown', keyDownSpy);
+          esc();
+          document.body.removeEventListener('keydown', keyDownSpy);
+          expect(keyDownSpy).not.to.have.been.calledWithMatch({keyCode: KEY_ESC});
+        });
+
+        it('should not propagate when clear button is visible and the value is not empty', () => {
+          comboBox.value = 'bar';
+          comboBox.clearButtonVisible = true;
+
+          const keyDownSpy = sinon.spy();
+          document.body.addEventListener('keydown', keyDownSpy);
+          esc();
+          document.body.removeEventListener('keydown', keyDownSpy);
+          expect(keyDownSpy).not.to.have.been.calledWithMatch({keyCode: KEY_ESC});
+        });
       });
 
     });

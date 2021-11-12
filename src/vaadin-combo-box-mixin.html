@@ -580,16 +580,36 @@ This program is available under Apache License Version 2.0, available at https:/
      */
     _onEscape(e) {
       if (this.autoOpenDisabled) {
-        this._focusedIndex = -1;
-        this.cancel();
-      } else if (this.opened) {
-        this._stopPropagation(e);
-
-        if (this._focusedIndex > -1) {
+        // Auto-open is disabled
+        if (this.opened || (this.value !== this._inputElementValue && this._inputElementValue.length > 0)) {
+          // The overlay is open or
+          // the input value has changed but the change hasn't been committed, so cancel it.
+          this._stopPropagation(e);
           this._focusedIndex = -1;
-          this._revertInputValue();
-        } else {
           this.cancel();
+        } else if (this.clearButtonVisible && !this.opened && !!this.value) {
+          this._stopPropagation(e);
+          // The clear button is visible and the overlay is closed, so clear the value.
+          this._clear();
+        }
+      } else {
+        // Auto-open is enabled
+        if (this.opened) {
+          // The overlay is open
+          this._stopPropagation(e);
+
+          if (this._focusedIndex > -1) {
+            // An item is focused, revert the input to the filtered value
+            this._focusedIndex = -1;
+            this._revertInputValue();
+          } else {
+            // No item is focused, cancel the change and close the overlay
+            this.cancel();
+          }
+        } else if (this.clearButtonVisible && !!this.value) {
+          this._stopPropagation(e);
+          // The clear button is visible and the overlay is closed, so clear the value.
+          this._clear();
         }
       }
     }
