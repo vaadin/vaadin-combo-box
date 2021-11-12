@@ -89,6 +89,21 @@
       comboBox.items = ['foo', 'bar', 'baz'];
     });
 
+    it('should not propagate esc keydown event when overlay is closed, clear button is visible and value is not empty', () => {
+      comboBox.value = 'bar';
+      comboBox.clearButtonVisible = true;
+      const keyDownSpy = sinon.spy();
+      const listener = e => {
+        if (e.keyCode == 27) {
+          keyDownSpy();
+        }
+      };
+      document.body.addEventListener('keydown', listener);
+      esc();
+      expect(keyDownSpy).to.not.be.called;
+      document.body.removeEventListener('keydown', listener);
+    });
+
     describe('opening the overlay', () => {
       it('should open the overlay with arrow down and not focus any item', () => {
         arrowDown();
@@ -283,7 +298,7 @@
         expect(comboBox.opened).to.equal(false);
       });
 
-      it('escape key event should not be propagated', () => {
+      it('escape key event should not be propagated when overlay is open', () => {
         const listener = e => {
           if (e.keyCode == 27) {
             throw new Error('Escape key was propagated to body');
@@ -685,6 +700,38 @@
         esc();
         expect(comboBox.value).to.equal('bar');
         expect(comboBox._inputElementValue).to.equal('bar');
+      });
+
+      describe('esc keydown event propagation', () => {
+        it('should not propagate when input value is not empty', () => {
+          inputText('foo');
+          const keyDownSpy = sinon.spy();
+          const listener = e => {
+            if (e.keyCode == 27) {
+              keyDownSpy();
+            }
+          };
+          document.body.addEventListener('keydown', listener);
+          esc();
+          expect(keyDownSpy).to.not.be.called;
+          document.body.removeEventListener('keydown', listener);
+        });
+
+        it('should not propagate when clear button is visible and the value is not empty', () => {
+          comboBox.value = 'bar';
+          comboBox.clearButtonVisible = true;
+
+          const keyDownSpy = sinon.spy();
+          const listener = e => {
+            if (e.keyCode == 27) {
+              keyDownSpy();
+            }
+          };
+          document.body.addEventListener('keydown', listener);
+          esc();
+          expect(keyDownSpy).to.not.be.called;
+          document.body.removeEventListener('keydown', listener);
+        });
       });
 
     });
