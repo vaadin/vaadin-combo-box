@@ -30,12 +30,23 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="in-modal-dialog">
+    <template>
+      <vaadin-dialog>
+        <template>
+          <vaadin-combo-box items="[1,2,3]"></vaadin-combo-box>
+        </template>
+      </vaadin-dialog>
+    </template>
+  </test-fixture>
+
   <script>
     describe('vaadin-combo-box-dropdown', () => {
       let dropdown, overlay;
 
       beforeEach(() => {
         dropdown = fixture('default');
+        dropdown.positionTarget = document.createElement('button');
         overlay = dropdown.$.overlay;
       });
 
@@ -77,7 +88,7 @@
 
       function touchstart(node) {
         const event = new CustomEvent('touchstart', {bubbles: true, cancelable: true});
-    
+
         const nodeRect = node.getBoundingClientRect();
         const clientX = nodeRect.left;
         const clientY = nodeRect.top;
@@ -108,6 +119,44 @@
         touchstart(cbBox);
         requestAnimationFrame(() => {
           expect(cbBoxDropdownWrapper.$.dropdown.$.overlay._last).to.be.true;
+          done();
+        });
+      });
+    });
+
+    describe('in modal dialog', () => {
+      let backdrop;
+      let dialog;
+      let comboBox;
+
+      beforeEach((done) => {
+        dialog = fixture('in-modal-dialog');
+        dialog.opened = true;
+        requestAnimationFrame(() => {
+          comboBox = dialog.$.overlay.querySelector('vaadin-combo-box');
+          backdrop = dialog.$.overlay.$.backdrop;
+          done();
+        });
+      });
+
+      it('should not close the dialog on outside click', (done) => {
+        comboBox.open();
+
+        requestAnimationFrame(() => {
+          // For this test we need to remove the focus from the input element without closing the combobox dropdown,
+          // otherwise the issue is not reproducible, because the combo box overlay will be closed by the focus out
+          // event, rather than the click event. While this shouldn't never be the case for the combo box itself,
+          // this is a valid case for other components using combo box, such as time picker.
+          comboBox.addEventListener("focusout", e => {
+            e.stopPropagation()
+          }, true);
+          comboBox.blur();
+          expect(comboBox.opened).to.be.true;
+
+          // Clicking on backdrop should close the combo box overlay, but not the dialog overlay
+          backdrop.click();
+          expect(comboBox.opened).to.be.false;
+          expect(dialog.opened).to.be.true;
           done();
         });
       });
