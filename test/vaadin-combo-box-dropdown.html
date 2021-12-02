@@ -147,8 +147,8 @@
           // otherwise the issue is not reproducible, because the combo box overlay will be closed by the focus out
           // event, rather than the click event. While this shouldn't never be the case for the combo box itself,
           // this is a valid case for other components using combo box, such as time picker.
-          comboBox.addEventListener("focusout", e => {
-            e.stopPropagation()
+          comboBox.addEventListener('focusout', e => {
+            e.stopPropagation();
           }, true);
           comboBox.blur();
           expect(comboBox.opened).to.be.true;
