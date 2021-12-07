@@ -125,7 +125,6 @@
     });
 
     describe('in modal dialog', () => {
-      let backdrop;
       let dialog;
       let comboBox;
 
@@ -143,7 +142,6 @@
         dialog.opened = true;
         requestAnimationFrame(() => {
           comboBox = dialog.$.overlay.querySelector('vaadin-combo-box');
-          backdrop = dialog.$.overlay.$.backdrop;
           done();
         });
       });
