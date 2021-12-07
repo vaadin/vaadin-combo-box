@@ -129,6 +129,15 @@
       let dialog;
       let comboBox;
 
+      function outsideClick() {
+        // Move focus to body
+        document.body.tabIndex = 0;
+        document.body.focus();
+        document.body.tabIndex = -1;
+        // Outside click
+        document.body.click();
+      }
+
       beforeEach((done) => {
         dialog = fixture('in-modal-dialog');
         dialog.opened = true;
@@ -153,8 +162,8 @@
           comboBox.blur();
           expect(comboBox.opened).to.be.true;
 
-          // Clicking on backdrop should close the combo box overlay, but not the dialog overlay
-          backdrop.click();
+          // Clicking outside should close the combo box overlay, but not the dialog overlay
+          outsideClick();
           expect(comboBox.opened).to.be.false;
           expect(dialog.opened).to.be.true;
           done();
