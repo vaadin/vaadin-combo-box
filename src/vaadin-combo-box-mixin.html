@@ -711,9 +711,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
         // Try to find an item whose label matches the input value. A matching item is searched from
         // the filteredItems array (if available) and the selectedItem (if available).
-        const itemMatchingByLabel = [...(this.filteredItems || []), this.selectedItem].find((item) => {
+        const itemMatchingByLabel = [...(this.filteredItems || []), this.selectedItem].filter((item) => {
           return toLowerCase(this._getItemLabel(item)) === toLowerCase(this._inputElementValue);
-        });
+        })[0];
 
         if (this.allowCustomValue
           // to prevent a repetitive input value being saved after pressing ESC and Tab.
