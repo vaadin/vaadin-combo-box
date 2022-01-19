@@ -286,6 +286,36 @@
             comboBox.inputElement.blur();
             expect(spy).to.not.have.been.called;
           });
+
+          it('should not fire when the custom value equals the label of the selected item', () => {
+            const spy = sinon.spy();
+            comboBox.addEventListener('custom-value-set', spy);
+            comboBox.selectedItem = {
+              label: 'foo',
+              value: 'bar'
+            };
+
+            comboBox.open();
+            comboBox.inputElement.value = 'foo';
+            comboBox.close();
+
+            expect(spy.called).to.be.false;
+          });
+
+          it('should fire when the custom value equals the value of the selected item', () => {
+            const spy = sinon.spy();
+            comboBox.addEventListener('custom-value-set', spy);
+            comboBox.selectedItem = {
+              label: 'foo',
+              value: 'bar'
+            };
+
+            comboBox.open();
+            comboBox.inputElement.value = 'bar';
+            comboBox.close();
+
+            expect(spy.calledOnce).to.be.true;
+          });
         });
       });
 
