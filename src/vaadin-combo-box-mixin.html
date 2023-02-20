@@ -1099,7 +1099,10 @@ This program is available under Apache License Version 2.0, available at https:/
      * @return {boolean} True if the value is valid and sets the `invalid` flag appropriately
      */
     validate() {
-      return !(this.invalid = !this.checkValidity());
+      const isValid = this.checkValidity();
+      this.invalid = !isValid;
+      this.dispatchEvent(new CustomEvent('validated', {detail: {valid: isValid}}));
+      return isValid;
     }
 
     /**
@@ -1209,6 +1212,14 @@ This program is available under Apache License Version 2.0, available at https:/
      * Fired when value changes.
      * To comply with https://developer.mozilla.org/en-US/docs/Web/Events/change
      * @event change
+     */
+
+    /**
+     * Fired whenever the field is validated.
+     *
+     * @event validated
+     * @param {Object} detail
+     * @param {boolean} detail.valid the result of the validation.
      */
   };
 </script>
