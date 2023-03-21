@@ -77,6 +77,42 @@
       });
     });
 
+    describe('initial validation', () => {
+      let comboBox;
+      let validateSpy;
+
+      beforeEach(() => {
+        comboBox = document.createElement('vaadin-combo-box');
+        comboBox.allowCustomValue = true;
+        validateSpy = sinon.spy(comboBox, 'validate');
+      });
+
+      afterEach(() => {
+        comboBox.remove();
+      });
+
+      it('should not validate by default', async() => {
+        document.body.appendChild(comboBox);
+        await nextRender();
+        expect(validateSpy.called).to.be.false;
+      });
+
+      it('should not validate when the field has an initial value', async() => {
+        comboBox.value = 'foo';
+        document.body.appendChild(comboBox);
+        await nextRender();
+        expect(validateSpy.called).to.be.false;
+      });
+
+      it('should not validate when the field has an initial value and invalid', async() => {
+        comboBox.value = 'foo';
+        comboBox.invalid = true;
+        document.body.appendChild(comboBox);
+        await nextRender();
+        expect(validateSpy.called).to.be.false;
+      });
+    });
+
     describe('using the field in iron-form', () => {
       let comboBox, ironForm, form;
 

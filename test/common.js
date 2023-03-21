@@ -81,6 +81,12 @@ var getItemArray = length => {
     .map((item, index) => 'item ' + index);
 };
 
+var nextRender = (element) => {
+  return new Promise(resolve => {
+    Polymer.RenderStatus.afterNextRender(element, resolve);
+  });
+};
+
 // IE11 throws errors when the fixture is removed from the DOM and the focus remains in the native input.
 // Also, FF and Chrome are unable to focus the input when tests are run in the headless window manager used in Travis
 function monkeyPatchTextFieldFocus() {
