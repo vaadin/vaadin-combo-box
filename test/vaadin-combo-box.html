@@ -10,6 +10,7 @@
   <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="common-imports.html">
   <script src="common.js"></script>
+  <script src="invalid-common.js"></script>
 </head>
 
 <body>
@@ -525,6 +526,31 @@
           comboBox.readonly = true;
           expect(getComputedStyle(clearButton).display).to.equal('none');
         });
+      });
+    });
+
+    describe('combo-box invalid', () => {
+      let element;
+    
+      function nextRender(element) {
+        return new Promise(resolve => {
+          Polymer.RenderStatus.afterNextRender(element, resolve);
+        });
+      }
+    
+      beforeEach(async() => {
+        element = fixtureSync('<vaadin-combo-box></vaadin-combo-box>');
+        element._shouldSetInvalid = (invalid) => invalid;
+        await nextRender();
+      });
+
+      it('should set invalid only when it is true', async() => {
+        element.required = true;
+        element.validate();
+        expect(element.invalid).to.be.true;
+        element.value = 'value';
+        element.validate();
+        expect(element.invalid).to.be.true;
       });
     });
   </script>
