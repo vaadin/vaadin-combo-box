@@ -9,9 +9,15 @@
   <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
   <link rel="import" href="../src/vaadin-combo-box.html">
   <link rel="import" href="helpers.html">
+  <link rel="import" href="../../test-fixture/test-fixture.html">
 </head>
 
 <body>
+  <test-fixture id="combo-box">
+    <template>
+      <vaadin-combo-box></vaadin-combo-box>
+    </template>
+  </test-fixture>
   <script>
   describe('initial validation', () => {
     let comboBox;
@@ -46,6 +52,34 @@
       document.body.appendChild(comboBox);
       await nextRender();
       expect(validateSpy.called).to.be.false;
+    });
+  });
+  describe('basic', () => {
+    let comboBox;
+
+    beforeEach(() => {
+      comboBox = fixture('combo-box');
+    });
+
+    it('should fire a validated event on validation success', () => {
+      const validatedSpy = sinon.spy();
+      comboBox.addEventListener('validated', validatedSpy);
+      comboBox.validate();
+
+      expect(validatedSpy.calledOnce).to.be.true;
+      const event = validatedSpy.firstCall.args[0];
+      expect(event.detail.valid).to.be.true;
+    });
+
+    it('should fire a validated event on validation failure', () => {
+      const validatedSpy = sinon.spy();
+      comboBox.addEventListener('validated', validatedSpy);
+      comboBox.required = true;
+      comboBox.validate();
+
+      expect(validatedSpy.calledOnce).to.be.true;
+      const event = validatedSpy.firstCall.args[0];
+      expect(event.detail.valid).to.be.false;
     });
   });
   </script>
