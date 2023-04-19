@@ -82,6 +82,24 @@
       expect(event.detail.valid).to.be.false;
     });
   });
+  describe('invalid cannot be set to false', () => {
+    let comboBox;
+  
+    beforeEach(async() => {
+      comboBox = fixture('combo-box');
+      comboBox._shouldSetInvalid = (invalid) => invalid;
+      await nextRender();
+    });
+  
+    it('should set invalid only when it is true', async() => {
+      comboBox.required = true;
+      comboBox.validate();
+      expect(comboBox.invalid).to.be.true;
+      comboBox.value = 'foo';
+      comboBox.validate();
+      expect(comboBox.invalid).to.be.true;
+    });
+  });
   </script>
 
 </body>
