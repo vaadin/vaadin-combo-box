@@ -55,7 +55,7 @@
         beforeEach(async() => {
           hasInputValueChangedSpy = sinon.spy();
           valueChangedSpy = sinon.spy();
-          comboBox = fixture('combobox');
+          comboBox = fixture('combo-box');
           comboBox.allowCustomValue = true;
           input = comboBox.inputElement.inputElement;
           comboBox.addEventListener('has-input-value-changed', hasInputValueChangedSpy);
