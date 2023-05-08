@@ -171,6 +171,16 @@ This program is available under Apache License Version 2.0, available at https:/
         },
 
         /**
+         * Whether the input element has a non-empty value.
+         * @protected
+         */
+        _hasInputValue: {
+          type: Boolean,
+          value: false,
+          observer: '_hasInputValueChanged',
+        },
+
+        /**
          * Path for label of the item. If `items` is an array of objects, the
          * `itemLabelPath` is used to fetch the displayed string label for each
          * item.
@@ -265,7 +275,8 @@ This program is available under Apache License Version 2.0, available at https:/
         '_templateOrRendererChanged(_itemTemplate, renderer)',
         '_loadingChanged(loading)',
         '_selectedItemChanged(selectedItem, itemValuePath, itemLabelPath)',
-        '_toggleElementChanged(_toggleElement)'
+        '_toggleElementChanged(_toggleElement)',
+        '_inputElementValueChanged(_inputElementValue)'
       ];
     }
 
@@ -636,6 +647,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this.selectedItem = null;
 
       if (this.allowCustomValue) {
+        this._inputElementValue = '';
         this.value = '';
       }
 
@@ -765,6 +777,10 @@ This program is available under Apache License Version 2.0, available at https:/
         this._inputElementValue = this.inputElement[this._propertyForValue];
         this._filterFromInput(e);
       }
+    }
+
+    _inputElementValueChanged(inputElementValue) {
+      this._hasInputValue = inputElementValue != null ? inputElementValue.length > 0 : false;
     }
 
     /** @private */
@@ -1091,6 +1107,17 @@ This program is available under Apache License Version 2.0, available at https:/
 
       event.preventDefault();
       this._clear();
+    }
+
+    /**
+     * Observer to notify about the change of private property.
+     *
+     * @private
+     */
+    _hasInputValueChanged(hasValue, oldHasValue) {
+      if (hasValue || oldHasValue) {
+        this.dispatchEvent(new CustomEvent('has-input-value-changed'));
+      }
     }
 
     /**
