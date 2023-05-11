@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-combo-box events tests</title>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <link rel="import" href="common-imports.html">
+  <script src="common.js"></script>
+</head>
+
+<body>
+  <test-fixture id="combo-box-light">
+    <template>
+      <vaadin-combo-box-light>
+         <vaadin-text-field></vaadin-text-field>
+      </vaadin-combo-box-light>
+    </template>
+  </test-fixture>
+  <script>
+    (ios ? describe.skip : describe)('vaadin-combo-box-light events', () => {
+      function inputChar(target, char) {
+        target.value += char;
+        MockInteractions.keyDownOn(target, char.charCodeAt(0));
+        target.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
+      }
+    
+      function inputText(target, text) {
+        for (var i = 0; i < text.length; i++) {
+          inputChar(target, text[i]);
+        }
+      }
+    
+      function arrowDown(target) {
+        MockInteractions.keyDownOn(target, 40);
+      }
+    
+      function enter(target) {
+        MockInteractions.pressEnter(target);
+      }
+    
+      function space(target) {
+        MockInteractions.pressSpace(target);
+      }
+    
+      function esc(target) {
+        MockInteractions.keyDownOn(target, 27, null, 'Escape');
+      }
+    
+      describe('has-input-value-changed event', () => {
+        let comboBox, input, clearButton, hasInputValueChangedSpy, valueChangedSpy;
+    
+        beforeEach(async() => {
+          hasInputValueChangedSpy = sinon.spy();
+          valueChangedSpy = sinon.spy();
+          comboBox = fixture('combo-box-light');
+          comboBox.allowCustomValue = true;
+          input = comboBox.inputElement.inputElement;
+          comboBox.addEventListener('has-input-value-changed', hasInputValueChangedSpy);
+          comboBox.addEventListener('value-changed', valueChangedSpy);
+          input.focus();
+        });
+    
+        describe('without value', () => {
+          describe('with user input', () => {
+            beforeEach(async() => {
+              inputText(input, 'foo');
+              hasInputValueChangedSpy.reset();
+              valueChangedSpy.reset();
+            });
+    
+            it('should be fired when clearing the user input with Esc', async() => {
+              expect(input.value).to.equal('foo');
+              // Clear selection in the dropdown.
+              esc(input);
+              // Clear the user input.
+              esc(input);
+              expect(input.value).to.be.empty;
+              expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+            });
+    
+            it('should not fire the event when modifying input', async() => {
+              input.value = 'foobar';
+              input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
+              expect(hasInputValueChangedSpy.called).to.be.false;
+            });
+    
+            it('should fire the event once when removing input', async() => {
+              input.value = '';
+              input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
+              expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+              expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+            });
+    
+            it('should fire the event once on programmatic clear', async() => {
+              comboBox._clear();
+              expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+              expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+            });
+          });
+    
+          describe('without user input', () => {
+            it('should fire the event once when entering input', async() => {
+              input.value = 'foo';
+              input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
+              expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+              expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+            });
+    
+            it('should not fire the event on programmatic clear', async() => {
+              comboBox._clear();
+              expect(hasInputValueChangedSpy.called).to.be.false;
+            });
+          });
+        });
+    
+        describe('with value', () => {
+          beforeEach(async() => {
+            comboBox.clearButtonVisible = true;
+            clearButton = comboBox.inputElement.$.clearButton;
+            inputText(input, 'foo');
+            enter(input);
+            valueChangedSpy.reset();
+            hasInputValueChangedSpy.reset();
+          });
+    
+          it('should be fired on clear button click', () => {
+            expect(input.value).to.equal('foo');
+            clearButton.click();
+            expect(input.value).to.be.empty;
+            expect(valueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+          });
+    
+          it('should be fired when clearing the value with Esc', async() => {
+            esc(input);
+            expect(input.value).to.be.empty;
+            expect(valueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
