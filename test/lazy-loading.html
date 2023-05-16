@@ -989,7 +989,6 @@
               comboBox.allowCustomValue = true;
               comboBox.open();
               setInputValue('other value');
-              comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
               comboBox.close();
               expect(comboBox.value).to.eql('other value');
 
