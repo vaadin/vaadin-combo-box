@@ -335,6 +335,7 @@
 
         combobox.readonly = true;
         combobox.inputElement.value = 'not found';
+        combobox.inputElement.dispatchEvent(new CustomEvent('input'));
         combobox.focus();
         fire('focusout', combobox.inputElement);
 

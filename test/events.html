@@ -83,13 +83,13 @@
     
             it('should not fire the event when modifying input', async() => {
               input.value = 'foobar';
-              input.dispatchEvent(new CustomEvent('input'));
+              input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
               expect(hasInputValueChangedSpy.called).to.be.false;
             });
     
             it('should fire the event once when removing input', async() => {
               input.value = '';
-              input.dispatchEvent(new CustomEvent('input'));
+              input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
               expect(hasInputValueChangedSpy.calledOnce).to.be.true;
               expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
             });
@@ -104,7 +104,7 @@
           describe('without user input', () => {
             it('should fire the event once when entering input', async() => {
               input.value = 'foo';
-              input.dispatchEvent(new CustomEvent('input'));
+              input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
               expect(hasInputValueChangedSpy.calledOnce).to.be.true;
               expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
             });
@@ -116,7 +116,7 @@
           });
         });
     
-        describe('with value', () => {
+        describe('with custom value', () => {
           beforeEach(async() => {
             comboBox.clearButtonVisible = true;
             clearButton = comboBox.inputElement.$.clearButton;
@@ -137,6 +137,30 @@
     
           it('should be fired when clearing the value with Esc', async() => {
             esc(input);
+            expect(input.value).to.be.empty;
+            expect(valueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+          });
+        });
+
+        describe('with dropdown value', () => {
+          beforeEach(async() => {
+            comboBox.items = ['foo', 'bar', 'baz', 'qux'];
+            comboBox.clearButtonVisible = true;
+            clearButton = comboBox.inputElement.$.clearButton;
+            // Open the combo-box
+            arrowDown(input);
+            // select the first option
+            arrowDown(input);
+            enter(input);
+            valueChangedSpy.reset();
+            hasInputValueChangedSpy.reset();
+          });
+
+          it('should be fired on clear button click', () => {
+            expect(input.value).to.equal('foo');
+            clearButton.click();
             expect(input.value).to.be.empty;
             expect(valueChangedSpy.calledOnce).to.be.true;
             expect(hasInputValueChangedSpy.calledOnce).to.be.true;

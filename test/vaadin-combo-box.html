@@ -272,6 +272,7 @@
 
             comboBox.open();
             comboBox.inputElement.value = 'a';
+            comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
             comboBox.$.overlay._selector.querySelector('vaadin-combo-box-item').click();
             expect(spy).to.not.have.been.called;
           });
@@ -282,6 +283,7 @@
 
             comboBox.open();
             comboBox.inputElement.value = 'a';
+            comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
             comboBox.close();
             comboBox.inputElement.blur();
             expect(spy).to.not.have.been.called;
@@ -297,6 +299,7 @@
 
             comboBox.open();
             comboBox.inputElement.value = 'foo';
+            comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
             comboBox.close();
 
             expect(spy.called).to.be.false;
@@ -312,6 +315,7 @@
 
             comboBox.open();
             comboBox.inputElement.value = 'bar';
+            comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
             comboBox.close();
 
             expect(spy.calledOnce).to.be.true;

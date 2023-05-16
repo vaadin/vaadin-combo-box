@@ -151,7 +151,9 @@
             comboBox.items = ['foo', 'bar', 'baz', 'qux'];
             comboBox.clearButtonVisible = true;
             clearButton = comboBox.inputElement.$.clearButton;
-            comboBox.open();
+            // Open the combo-box
+            arrowDown(input);
+            // select the first option
             arrowDown(input);
             enter(input);
             valueChangedSpy.reset();

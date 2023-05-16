@@ -83,6 +83,7 @@
           comboBox.inputElement.inputElement.value = value;
         } else {
           comboBox.inputElement.value = value;
+          comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
         }
       };
 
