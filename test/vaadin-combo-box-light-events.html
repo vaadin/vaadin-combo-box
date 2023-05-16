@@ -157,6 +157,7 @@
             valueChangedSpy.reset();
             hasInputValueChangedSpy.reset();
           });
+
           it('should be fired on clear button click', () => {
             expect(input.value).to.equal('foo');
             clearButton.click();
