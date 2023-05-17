@@ -774,7 +774,9 @@ This program is available under Apache License Version 2.0, available at https:/
     _inputValueChanged(e) {
       // Handle only input events from our inputElement.
       if (e.composedPath().indexOf(this.inputElement) !== -1) {
-        this._inputElementValue = this.inputElement[this._propertyForValue];
+        if (!e.__fromClearButton) {
+          this._inputElementValue = this.inputElement[this._propertyForValue];
+        }
         this._filterFromInput(e);
       }
     }

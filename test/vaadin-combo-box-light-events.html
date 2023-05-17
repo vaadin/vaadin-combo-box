@@ -118,7 +118,7 @@
           });
         });
     
-        describe('with value', () => {
+        describe('with custom value', () => {
           beforeEach(async() => {
             comboBox.clearButtonVisible = true;
             clearButton = comboBox.inputElement.$.clearButton;
@@ -139,6 +139,30 @@
     
           it('should be fired when clearing the value with Esc', async() => {
             esc(input);
+            expect(input.value).to.be.empty;
+            expect(valueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledOnce).to.be.true;
+            expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
+          });
+        });
+
+        describe('with dropdown value', () => {
+          beforeEach(async() => {
+            comboBox.items = ['foo', 'bar', 'baz', 'qux'];
+            comboBox.clearButtonVisible = true;
+            clearButton = comboBox.inputElement.$.clearButton;
+            // Open the combo-box
+            arrowDown(input);
+            // select the first option
+            arrowDown(input);
+            enter(input);
+            valueChangedSpy.reset();
+            hasInputValueChangedSpy.reset();
+          });
+
+          it('should be fired on clear button click', () => {
+            expect(input.value).to.equal('foo');
+            clearButton.click();
             expect(input.value).to.be.empty;
             expect(valueChangedSpy.calledOnce).to.be.true;
             expect(hasInputValueChangedSpy.calledOnce).to.be.true;

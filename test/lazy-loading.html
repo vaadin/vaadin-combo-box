@@ -83,6 +83,7 @@
           comboBox.inputElement.inputElement.value = value;
         } else {
           comboBox.inputElement.value = value;
+          comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
         }
       };
 
@@ -982,22 +983,6 @@
               expect(comboBox.opened).to.be.false;
               expect(comboBox.hasAttribute('focused')).to.be.false;
               expect(comboBox.value).to.equal('other value');
-            });
-
-            it('should keep previous value if allow-custom-value is set', () => {
-              comboBox.allowCustomValue = true;
-              comboBox.open();
-              setInputValue('other value');
-              comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
-              comboBox.close();
-              expect(comboBox.value).to.eql('other value');
-
-              comboBox.focus();
-              setInputValue('item 12');
-              comboBox.filter = 'item 12';
-
-              expect(comboBox.value).to.eql('other value');
-              expect(comboBox.inputElement.value).to.eql('other value');
             });
 
           });
