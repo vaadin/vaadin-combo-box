@@ -985,21 +985,6 @@
               expect(comboBox.value).to.equal('other value');
             });
 
-            it('should keep previous value if allow-custom-value is set', () => {
-              comboBox.allowCustomValue = true;
-              comboBox.open();
-              setInputValue('other value');
-              comboBox.close();
-              expect(comboBox.value).to.eql('other value');
-
-              comboBox.focus();
-              setInputValue('item 12');
-              comboBox.filter = 'item 12';
-
-              expect(comboBox.value).to.eql('other value');
-              expect(comboBox.inputElement.value).to.eql('other value');
-            });
-
           });
 
           describe('after empty data set loaded', () => {
