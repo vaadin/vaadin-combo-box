@@ -1,12 +1,12 @@
 {
   "name": "@vaadin/vaadin-combo-box",
-  "version": "5.4.11",
+  "version": "5.5.1",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@vaadin/vaadin-combo-box",
-      "version": "5.4.11",
+      "version": "5.5.1",
       "license": "Apache-2.0",
       "dependencies": {
         "@polymer/iron-a11y-announcer": "^3.0.0",
@@ -20,7 +20,7 @@
         "@vaadin/vaadin-lumo-styles": "^1.1.1",
         "@vaadin/vaadin-material-styles": "^1.1.2",
         "@vaadin/vaadin-overlay": "^3.5.0",
-        "@vaadin/vaadin-text-field": "^2.8.0",
+        "@vaadin/vaadin-text-field": "^2.9.0",
         "@vaadin/vaadin-themable-mixin": "^1.6.1"
       },
       "devDependencies": {
