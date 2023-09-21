@@ -309,33 +309,33 @@
 
         it('should clear the selection when clicking on the clear button', () => {
           comboBox.open();
-    
+
           fire('click', clearButton);
-    
+
           expect(comboBox.value).to.eql('');
           expect(comboBox.$.overlay._selectedItem).to.be.null;
           expect(comboBox.selectedItem).to.be.null;
         });
-    
+
         it('should not close the dropdown after clearing a selection', () => {
           comboBox.open();
-    
+
           fire('click', clearButton);
-    
+
           expect(comboBox.opened).to.eql(true);
         });
-    
+
         it('should not open the dropdown after clearing a selection', () => {
           fire('click', clearButton);
-    
+
           expect(comboBox.opened).to.eql(false);
         });
-    
+
         it('should cancel click event to avoid input blur', () => {
           comboBox.open();
-    
+
           const event = fire('click', clearButton);
-    
+
           expect(event.defaultPrevented).to.eql(true);
         });
 
