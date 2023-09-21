@@ -7,6 +7,7 @@
 
   <script src="../../web-component-tester/browser.js"></script>
   <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+  <link rel="import" href="../../iron-test-helpers/mock-interactions.html">
   <link rel="import" href="../src/vaadin-combo-box.html">
   <link rel="import" href="helpers.html">
   <link rel="import" href="../../test-fixture/test-fixture.html">
@@ -15,10 +16,32 @@
 <body>
   <test-fixture id="combo-box">
     <template>
-      <vaadin-combo-box></vaadin-combo-box>
+      <vaadin-combo-box items='["foo"]'></vaadin-combo-box>
     </template>
   </test-fixture>
+
+  <test-fixture id="combo-box-required">
+    <template>
+      <vaadin-combo-box required items='["foo"]'></vaadin-combo-box>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="combo-box-required-value-invalid">
+    <template>
+      <vaadin-combo-box required items='["foo"]' value="foo" invalid></vaadin-combo-box>
+    </template>
+  </test-fixture>
+
   <script>
+  function outsideClick() {
+    // Move focus to body
+    document.body.tabIndex = 0;
+    document.body.focus();
+    document.body.tabIndex = -1;
+    // Outside click
+    document.body.click();
+  }
+
   describe('initial validation', () => {
     let comboBox;
     let validateSpy;
@@ -54,11 +77,54 @@
       expect(validateSpy.called).to.be.false;
     });
   });
+
   describe('basic', () => {
-    let comboBox;
+    let comboBox, validateSpy, changeSpy;
 
     beforeEach(() => {
       comboBox = fixture('combo-box');
+      validateSpy = sinon.spy(comboBox, 'validate');
+      changeSpy = sinon.spy();
+      comboBox.addEventListener('change', changeSpy);
+    });
+
+    it('should disable validation of internal text-field', () => {
+      comboBox.required = true;
+      comboBox.inputElement.validate();
+      expect(comboBox.inputElement.invalid).to.be.false;
+    });
+
+    it('should validate on blur', () => {
+      comboBox.focus();
+      comboBox.blur();
+      expect(validateSpy.calledOnce).to.be.true;
+    });
+
+    it('should validate on outside click', async() => {
+      comboBox.focus();
+      comboBox.click();
+      await nextRender();
+      outsideClick();
+      expect(validateSpy.calledOnce).to.be.true;
+    });
+
+    it('should validate before change event on Enter', () => {
+      comboBox.focus();
+      comboBox.inputElement.value = 'foo';
+      comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
+      MockInteractions.pressAndReleaseKeyOn(comboBox.inputElement, 13, null, 'Enter');
+      expect(validateSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledAfter(validateSpy)).to.be.true;
+    });
+
+    it('should validate before change event on clear button click', () => {
+      comboBox.value = 'foo';
+      validateSpy.reset();
+      comboBox.inputElement.$.clearButton.click();
+      expect(validateSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledAfter(validateSpy)).to.be.true;
     });
 
     it('should fire a validated event on validation success', () => {
@@ -82,15 +148,47 @@
       expect(event.detail.valid).to.be.false;
     });
   });
+
+  describe('required', () => {
+    let comboBox;
+
+    beforeEach(async() => {
+      comboBox = fixture('combo-box-required');
+      await nextRender();
+    });
+
+    it('should pass validation with value', () => {
+      comboBox.value = 'foo';
+      expect(comboBox.checkValidity()).to.be.true;
+    });
+
+    it('should fail validation without value', () => {
+      expect(comboBox.checkValidity()).to.be.false;
+    });
+  });
+
+  describe('required + value + invalid', () => {
+    let comboBox;
+
+    beforeEach(async() => {
+      comboBox = fixture('combo-box-required-value-invalid');
+      await nextRender();
+    });
+
+    it('should propagate invalid state to internal text-field', () => {
+      expect(comboBox.inputElement.invalid).to.be.true;
+    });
+  });
+
   describe('invalid cannot be set to false', () => {
     let comboBox;
-  
+
     beforeEach(async() => {
       comboBox = fixture('combo-box');
       comboBox._shouldSetInvalid = (invalid) => invalid;
       await nextRender();
     });
-  
+
     it('should set invalid only when it is true', async() => {
       comboBox.required = true;
       comboBox.validate();

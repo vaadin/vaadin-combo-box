@@ -387,6 +387,13 @@ This program is available under Apache License Version 2.0, available at https:/
         ready() {
           super.ready();
 
+          // Disable the internal text-field's validation to prevent it from overriding
+          // the invalid state that was propagated to the text-field from the combo-box.
+          this.inputElement.validate = () => {};
+          // Restore the internal text-field's invalid state in case
+          // it got overridden before the validation was disabled above.
+          this.inputElement.invalid = this.invalid;
+
           this._nativeInput = this.inputElement.focusElement;
           this._toggleElement = this.$.toggleButton;
           this._clearElement = this.inputElement.shadowRoot.querySelector('[part="clear-button"]');
