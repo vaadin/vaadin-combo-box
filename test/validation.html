@@ -81,8 +81,9 @@
   describe('basic', () => {
     let comboBox, validateSpy, changeSpy;
 
-    beforeEach(() => {
+    beforeEach(async() => {
       comboBox = fixture('combo-box');
+      await nextRender();
       validateSpy = sinon.spy(comboBox, 'validate');
       changeSpy = sinon.spy();
       comboBox.addEventListener('change', changeSpy);
@@ -95,21 +96,21 @@
     });
 
     it('should validate on blur', () => {
-      comboBox.focus();
-      comboBox.blur();
+      comboBox.inputElement.focus();
+      comboBox.inputElement.blur();
       expect(validateSpy.calledOnce).to.be.true;
     });
 
     it('should validate on outside click', async() => {
-      comboBox.focus();
-      comboBox.click();
+      comboBox.inputElement.focus();
+      comboBox.inputElement.dispatchEvent(new CustomEvent('click', {composed: true, bubbles: true}));
       await nextRender();
       outsideClick();
       expect(validateSpy.calledOnce).to.be.true;
     });
 
     it('should validate before change event on Enter', () => {
-      comboBox.focus();
+      comboBox.inputElement.focus();
       comboBox.inputElement.value = 'foo';
       comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
       MockInteractions.pressAndReleaseKeyOn(comboBox.inputElement, 13, null, 'Enter');
@@ -121,7 +122,7 @@
     it('should validate before change event on clear button click', () => {
       comboBox.value = 'foo';
       validateSpy.reset();
-      comboBox.inputElement.$.clearButton.click();
+      comboBox.inputElement.$.clearButton.dispatchEvent(new CustomEvent('click', {composed: true, bubbles: true}));
       expect(validateSpy.calledOnce).to.be.true;
       expect(changeSpy.calledOnce).to.be.true;
       expect(changeSpy.calledAfter(validateSpy)).to.be.true;

@@ -234,7 +234,7 @@
       });
 
       it('should validate the paper-input element on checkValidity', () => {
-        const spy = sinon.spy(comboBox.inputElement, 'checkValidity');
+        const spy = sinon.spy(comboBox.inputElement, 'validate');
 
         comboBox.required = true;
         comboBox.value = 'foo';
