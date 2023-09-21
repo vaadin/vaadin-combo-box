@@ -95,17 +95,8 @@
       expect(comboBox.inputElement.invalid).to.be.false;
     });
 
-    it('should validate on blur', () => {
-      comboBox.inputElement.focus();
-      comboBox.inputElement.blur();
-      expect(validateSpy.calledOnce).to.be.true;
-    });
-
-    it('should validate on outside click', async() => {
-      comboBox.inputElement.focus();
-      comboBox.inputElement.dispatchEvent(new CustomEvent('click', {composed: true, bubbles: true}));
-      await nextRender();
-      outsideClick();
+    it('should validate on focusout', () => {
+      comboBox.inputElement.dispatchEvent(new CustomEvent('focusout', {bubbles: true, composed: true}));
       expect(validateSpy.calledOnce).to.be.true;
     });
 
