@@ -142,6 +142,17 @@ This program is available under Apache License Version 2.0, available at https:/
         return this.getRootNode().activeElement === this.inputElement;
       }
 
+      /**
+       * Returns true if the current input value satisfies all constraints (if any).
+       * @return {boolean}
+       */
+      checkValidity() {
+        if (this.inputElement && this.inputElement.validate) {
+          return this.inputElement.validate();
+        }
+        return super.checkValidity();
+      }
+
       /** @protected */
       connectedCallback() {
         super.connectedCallback();

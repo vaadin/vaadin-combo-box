@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-combo-box validation tests</title>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+  <link rel="import" href="../../iron-test-helpers/mock-interactions.html">
+  <link rel="import" href="../src/vaadin-combo-box.html">
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+</head>
+
+<body>
+  <test-fixture id="combo-box">
+    <template>
+      <vaadin-combo-box items='["foo"]'></vaadin-combo-box>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="combo-box-required">
+    <template>
+      <vaadin-combo-box required items='["foo"]'></vaadin-combo-box>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="combo-box-required-value-invalid">
+    <template>
+      <vaadin-combo-box required items='["foo"]' value="foo" invalid></vaadin-combo-box>
+    </template>
+  </test-fixture>
+
+  <script>
+  function outsideClick() {
+    // Move focus to body
+    document.body.tabIndex = 0;
+    document.body.focus();
+    document.body.tabIndex = -1;
+    // Outside click
+    document.body.click();
+  }
+
+  describe('initial validation', () => {
+    let comboBox;
+    let validateSpy;
+
+    beforeEach(() => {
+      comboBox = document.createElement('vaadin-combo-box');
+      comboBox.allowCustomValue = true;
+      validateSpy = sinon.spy(comboBox, 'validate');
+    });
+
+    afterEach(() => {
+      comboBox.remove();
+    });
+
+    it('should not validate by default', async() => {
+      document.body.appendChild(comboBox);
+      await nextRender();
+      expect(validateSpy.called).to.be.false;
+    });
+
+    it('should not validate when the field has an initial value', async() => {
+      comboBox.value = 'foo';
+      document.body.appendChild(comboBox);
+      await nextRender();
+      expect(validateSpy.called).to.be.false;
+    });
+
+    it('should not validate when the field has an initial value and invalid', async() => {
+      comboBox.value = 'foo';
+      comboBox.invalid = true;
+      document.body.appendChild(comboBox);
+      await nextRender();
+      expect(validateSpy.called).to.be.false;
+    });
+  });
+
+  describe('basic', () => {
+    let comboBox, validateSpy, changeSpy;
+
+    beforeEach(async() => {
+      comboBox = fixture('combo-box');
+      await nextRender();
+      validateSpy = sinon.spy(comboBox, 'validate');
+      changeSpy = sinon.spy();
+      comboBox.addEventListener('change', changeSpy);
+    });
+
+    it('should disable validation of internal text-field', () => {
+      comboBox.required = true;
+      comboBox.inputElement.validate();
+      expect(comboBox.inputElement.invalid).to.be.false;
+    });
+
+    it('should validate on focusout', () => {
+      comboBox.inputElement.dispatchEvent(new CustomEvent('focusout', {bubbles: true, composed: true}));
+      expect(validateSpy.calledOnce).to.be.true;
+    });
+
+    it('should validate before change event on Enter', () => {
+      comboBox.inputElement.focus();
+      comboBox.inputElement.value = 'foo';
+      comboBox.inputElement.dispatchEvent(new CustomEvent('input'));
+      MockInteractions.pressAndReleaseKeyOn(comboBox.inputElement, 13, null, 'Enter');
+      expect(validateSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledAfter(validateSpy)).to.be.true;
+    });
+
+    it('should validate before change event on clear button click', () => {
+      comboBox.value = 'foo';
+      validateSpy.reset();
+      comboBox.inputElement.$.clearButton.dispatchEvent(new CustomEvent('click', {composed: true, bubbles: true}));
+      expect(validateSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledOnce).to.be.true;
+      expect(changeSpy.calledAfter(validateSpy)).to.be.true;
+    });
+  });
+
+  describe('required', () => {
+    let comboBox;
+
+    beforeEach(async() => {
+      comboBox = fixture('combo-box-required');
+      await nextRender();
+    });
+
+    it('should pass validation with value', () => {
+      comboBox.value = 'foo';
+      expect(comboBox.checkValidity()).to.be.true;
+    });
+
+    it('should fail validation without value', () => {
+      expect(comboBox.checkValidity()).to.be.false;
+    });
+  });
+
+  describe('required + value + invalid', () => {
+    let comboBox;
+
+    beforeEach(async() => {
+      comboBox = fixture('combo-box-required-value-invalid');
+      await nextRender();
+    });
+
+    it('should propagate invalid state to internal text-field', () => {
+      expect(comboBox.inputElement.invalid).to.be.true;
+    });
+  });
+  </script>
+
+</body>
+
+</html>

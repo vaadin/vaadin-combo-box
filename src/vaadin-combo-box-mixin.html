@@ -916,6 +916,7 @@ This program is available under Apache License Version 2.0, available at https:/
     /** @private */
     _detectAndDispatchChange() {
       if (this.value !== this._lastCommittedValue) {
+        this.validate();
         this.dispatchEvent(new CustomEvent('change', {bubbles: true}));
         this._lastCommittedValue = this.value;
       }
@@ -1080,6 +1081,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
       if (!this.readonly && !this._closeOnBlurIsPrevented) {
         this._closeOrCommit();
+        this.validate();
       }
     }
 
@@ -1109,8 +1111,8 @@ This program is available under Apache License Version 2.0, available at https:/
      * @return {boolean | undefined}
      */
     checkValidity() {
-      if (this.inputElement.validate) {
-        return this.inputElement.validate();
+      if (this.inputElement.checkValidity) {
+        return this.inputElement.checkValidity();
       }
     }
 
