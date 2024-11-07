@@ -63,8 +63,14 @@ jobs:
       - name: Add 'localhost-for-saucelabs' to /etc/hosts
         run: echo "127.0.0.1 localhost-for-saucelabs" | sudo tee -a /etc/hosts
 
-      - name: Run unit tests on SauceLabs
-        run: "npm test -- --env saucelabs"
+      - name: Run unit tests on SauceLabs [Batch 1]
+        run: "npm test -- --env saucelabs --suites batch1"
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+
+      - name: Run unit tests on SauceLabs [Batch 2]
+        run: "npm test -- --env saucelabs --suites batch2"
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}

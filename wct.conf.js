@@ -1,5 +1,7 @@
 var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
+var suitesIndex = process.argv.indexOf('--suites') + 1;
+var suitesParam = suitesIndex ? process.argv[suitesIndex] : undefined;
 
 // workaround for Android 7+ blocking all HTTP traffic
 // see https://wiki.saucelabs.com/display/DOCS/Known+Issues
@@ -22,6 +24,13 @@ module.exports = {
   },
 
   registerHooks: function(context) {
+
+    if (suitesParam) {
+      context.options.suites = suites[suitesParam] || [];
+    } else {
+      context.options.suites = suites.all;
+    }
+
     const testBrowsers = [
       {
         deviceName: 'Android GoogleAPI Emulator',
