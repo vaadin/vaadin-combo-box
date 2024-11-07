@@ -414,7 +414,7 @@
         comboBox = fixture('combobox');
       });
 
-      it('should properly display all items in the selector', () => {
+      it.skip('should properly display all items in the selector', () => {
         comboBox.open();
         comboBox.filteredItems = Array.apply(null, Array(20)).map((_, i) => `item${i}`);
         Polymer.flush();

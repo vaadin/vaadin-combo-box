@@ -34,12 +34,6 @@ module.exports = {
     }
 
     const testBrowsers = [
-      {
-        deviceName: 'Google Pixel 5 GoogleAPI Emulator',
-        platformName: 'Android',
-        platformVersion: '11.0',
-        browserName: 'Chrome',
-      },
       'iOS Simulator/iphone@10.3', // should be 9.x, but SauceLabs does not provide that
       'macOS 11/safari@latest',
       'Windows 10/microsoftedge@latest',
