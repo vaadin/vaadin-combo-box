@@ -1,31 +1,31 @@
 const batch1 = [
-  'dynamic-size-change.html',
-  'vaadin-combo-box.html',
-  'toggling-dropdown.html',
-  'overlay-position.html',
-  'selecting-items.html',
-  'form-input.html',
-  'filtering.html',
-  'keyboard.html',
-  'scrolling.html',
-  'aria.html',
-  'using-object-values.html',
+  'test/dynamic-size-change.html',
+  'test/vaadin-combo-box.html',
+  'test/toggling-dropdown.html',
+  'test/overlay-position.html',
+  'test/selecting-items.html',
+  'test/form-input.html',
+  'test/filtering.html',
+  'test/keyboard.html',
+  'test/scrolling.html',
+  'test/aria.html',
+  'test/using-object-values.html',
 ];
 
 const batch2 = [
-  'data-binding.html',
-  'vaadin-combo-box-light.html',
-  'item-renderer.html',
-  'item-template.html',
-  'vaadin-combo-box-dropdown.html',
-  'lazy-loading.html',
-  'validation.html',
-  'events.html',
-  'vaadin-combo-box-light-events.html'
+  'test/data-binding.html',
+  'test/vaadin-combo-box-light.html',
+  'test/item-renderer.html',
+  'test/item-template.html',
+  'test/vaadin-combo-box-dropdown.html',
+  'test/lazy-loading.html',
+  'test/validation.html',
+  'test/events.html',
+  'test/vaadin-combo-box-light-events.html'
 ];
 
 const polymer2Only = [
-  'late-upgrade.html',
+  'test/late-upgrade.html',
 ];
 
 const all = [

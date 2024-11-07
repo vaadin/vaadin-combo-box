@@ -20,38 +20,39 @@
     </template>
   </test-fixture>
   <script>
-    (ios ? describe.skip : describe)('events', () => {
+    const describeOrSkip = ios ? function() {} : describe;
+    describeOrSkip('events', () => {
       function inputChar(target, char) {
         target.value += char;
         MockInteractions.keyDownOn(target, char.charCodeAt(0));
         target.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
       }
-    
+
       function inputText(target, text) {
         for (var i = 0; i < text.length; i++) {
           inputChar(target, text[i]);
         }
       }
-    
+
       function arrowDown(target) {
         MockInteractions.keyDownOn(target, 40);
       }
-    
+
       function enter(target) {
         MockInteractions.pressEnter(target);
       }
-    
+
       function space(target) {
         MockInteractions.pressSpace(target);
       }
-    
+
       function esc(target) {
         MockInteractions.keyDownOn(target, 27, null, 'Escape');
       }
-    
+
       describe('has-input-value-changed event', () => {
         let comboBox, input, clearButton, hasInputValueChangedSpy, valueChangedSpy;
-    
+
         beforeEach(async() => {
           hasInputValueChangedSpy = sinon.spy();
           valueChangedSpy = sinon.spy();
@@ -62,7 +63,7 @@
           comboBox.addEventListener('value-changed', valueChangedSpy);
           input.focus();
         });
-    
+
         describe('without value', () => {
           describe('with user input', () => {
             beforeEach(async() => {
@@ -70,7 +71,7 @@
               hasInputValueChangedSpy.reset();
               valueChangedSpy.reset();
             });
-    
+
             it('should be fired when clearing the user input with Esc', async() => {
               expect(input.value).to.equal('foo');
               // Clear selection in the dropdown.
@@ -80,27 +81,27 @@
               expect(input.value).to.be.empty;
               expect(hasInputValueChangedSpy.calledOnce).to.be.true;
             });
-    
+
             it('should not fire the event when modifying input', async() => {
               input.value = 'foobar';
               input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
               expect(hasInputValueChangedSpy.called).to.be.false;
             });
-    
+
             it('should fire the event once when removing input', async() => {
               input.value = '';
               input.dispatchEvent(new CustomEvent('input', {bubbles: true, composed: true}));
               expect(hasInputValueChangedSpy.calledOnce).to.be.true;
               expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
             });
-    
+
             it('should fire the event once on programmatic clear', async() => {
               comboBox._clear();
               expect(hasInputValueChangedSpy.calledOnce).to.be.true;
               expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
             });
           });
-    
+
           describe('without user input', () => {
             it('should fire the event once when entering input', async() => {
               input.value = 'foo';
@@ -108,14 +109,14 @@
               expect(hasInputValueChangedSpy.calledOnce).to.be.true;
               expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
             });
-    
+
             it('should not fire the event on programmatic clear', async() => {
               comboBox._clear();
               expect(hasInputValueChangedSpy.called).to.be.false;
             });
           });
         });
-    
+
         describe('with custom value', () => {
           beforeEach(async() => {
             comboBox.clearButtonVisible = true;
@@ -125,7 +126,7 @@
             valueChangedSpy.reset();
             hasInputValueChangedSpy.reset();
           });
-    
+
           it('should be fired on clear button click', () => {
             expect(input.value).to.equal('foo');
             clearButton.click();
@@ -134,7 +135,7 @@
             expect(hasInputValueChangedSpy.calledOnce).to.be.true;
             expect(hasInputValueChangedSpy.calledBefore(valueChangedSpy)).to.be.true;
           });
-    
+
           it('should be fired when clearing the value with Esc', async() => {
             esc(input);
             expect(input.value).to.be.empty;

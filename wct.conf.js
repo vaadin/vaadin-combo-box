@@ -1,3 +1,5 @@
+const suites = require('./test/test-suites');
+
 var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
 var suitesIndex = process.argv.indexOf('--suites') + 1;

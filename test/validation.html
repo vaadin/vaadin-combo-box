@@ -53,7 +53,7 @@
     });
 
     afterEach(() => {
-      comboBox.remove();
+      comboBox.parentNode.removeChild(comboBox);
     });
 
     it('should not validate by default', async() => {
