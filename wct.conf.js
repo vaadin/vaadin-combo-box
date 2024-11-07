@@ -35,7 +35,7 @@ module.exports = {
 
     const testBrowsers = [
       {
-        deviceName: 'Android GoogleAPI Emulator',
+        deviceName: 'Google Pixel 5 GoogleAPI Emulator',
         platformName: 'Android',
         platformVersion: '11.0',
         browserName: 'Chrome',
