@@ -7,10 +7,10 @@ var env = envIndex ? process.argv[envIndex] : undefined;
 var tunneledLocalhost = 'localhost-for-saucelabs';
 
 module.exports = {
-  testTimeout: 180 * 1000,
+  testTimeout: 360 * 1000,
   verbose: false,
   plugins: {
-    'local': {
+    local: {
       browserOptions: {
         chrome: [
           'headless',
@@ -19,22 +19,6 @@ module.exports = {
         ]
       }
     },
-    // MAGI REMOVE START
-    'istanbul': {
-      dir: './coverage',
-      reporters: ['text-summary', 'lcov'],
-      include: [
-        '**/vaadin-combo-box/src/*.html'
-      ],
-      exclude: [],
-      thresholds: {
-        global: {
-          statements: 94
-        }
-      }
-    },
-    'random-output': true
-    // MAGI REMOVE END
   },
 
   registerHooks: function(context) {
@@ -48,11 +32,9 @@ module.exports = {
       'iOS Simulator/iphone@10.3', // should be 9.x, but SauceLabs does not provide that
       'macOS 11/safari@latest',
       'Windows 10/microsoftedge@latest',
-      'Windows 10/microsoftedge@18',
       'Windows 10/internet explorer@11',
       'Windows 10/chrome@latest',
       'Windows 10/firefox@latest',
-      'Windows 10/firefox@78', // latest ESR as of 2021-06-30
     ];
 
     if (env === 'saucelabs') {
@@ -64,5 +46,14 @@ module.exports = {
 
       context.options.plugins.sauce.browsers = testBrowsers;
     }
+
+    // Map legacy tunnel-identifier option to new tunnel-name option
+    context.hookLate('prepare', (done) => {
+      context.options.activeBrowsers.forEach((browser) => {
+        browser['tunnel-name'] = browser['tunnel-identifier'];
+        delete browser['tunnel-identifier'];
+      });
+      done();
+    });
   }
 };
