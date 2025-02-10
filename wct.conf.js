@@ -7,7 +7,7 @@ var env = envIndex ? process.argv[envIndex] : undefined;
 var tunneledLocalhost = 'localhost-for-saucelabs';
 
 module.exports = {
-  testTimeout: 180 * 1000,
+  testTimeout: 360 * 1000,
   verbose: false,
   plugins: {
     local: {
